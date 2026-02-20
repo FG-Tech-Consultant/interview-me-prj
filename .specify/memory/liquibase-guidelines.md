@@ -1,7 +1,11 @@
 # Liquibase Database Evolution Guidelines
 
 **Last Updated:** 2026-02-19
-**Version:** 1.0.0
+**Version:** 1.0.1
+
+**Changelog:**
+- v1.0.1: Clarified PostgreSQL as only database (removed confusing H2 reference for development)
+- v1.0.0: Initial version adapted from Travian Bot
 
 ---
 
@@ -15,7 +19,9 @@ This project uses **Liquibase** for all database schema management. Hibernate is
 
 ### 1. PostgreSQL as Primary Database
 
-**IMPORTANT:** This project uses PostgreSQL as the primary database for production. Development may optionally use H2 for local testing, but production schema MUST be PostgreSQL-compatible.
+**IMPORTANT:** This project uses PostgreSQL 14+ as the primary and only database for both production AND development. PostgreSQL-specific features (JSONB, pgvector) are core to the application and cannot be replaced with simpler databases.
+
+**Note on Testing:** H2 in-memory database may be used ONLY for isolated unit tests that do not require PostgreSQL-specific features. For integration tests, use Testcontainers with PostgreSQL to ensure schema compatibility.
 
 **PostgreSQL Features Used:**
 - **JSONB**: Semi-structured data (metrics, settings, LLM prompts)

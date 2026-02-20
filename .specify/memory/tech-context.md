@@ -227,7 +227,7 @@ python /tmp/update_tasks.py
 **Spring Profiles:**
 - `dev` - Development (local PostgreSQL via Docker Compose, verbose logging)
 - `prod` - Production (managed PostgreSQL service, optimized logging, cloud storage)
-- `test` - Testing (H2 in-memory DB for unit tests, test fixtures)
+- `test` - Testing (Testcontainers with PostgreSQL for integration tests; H2 only for simple unit tests that don't use JSONB/pgvector)
 
 **File Storage:**
 - `STORAGE_TYPE` - Storage backend type (`LOCAL`, `S3`, `GCS`)

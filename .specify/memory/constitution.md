@@ -1,13 +1,14 @@
 # Project Constitution
 
 <!--
-Sync Impact Report (Version 2.0.1 - Technical Corrections):
-- Version: 2.0.0 → 2.0.1 (PATCH - Clarifications and corrections)
-- Corrected Principle 2: Removed embedded database references, clarified PostgreSQL + cloud storage architecture
-- Corrected Principle 4: Emphasized PostgreSQL as the only database (not embedded), added JSONB and pgvector details
-- Previous version (2.0.0):
-- Version: 1.5.1 → 2.0.0 (MAJOR - Complete project context change)
-- Project changed from Travian Bot → Live Resume & Career Copilot
+Sync Impact Report (Version 2.1.0 - New Principle Added):
+- Version: 2.0.1 → 2.1.0 (MINOR - New principle added)
+- Added Principle 9: Freemium Model and Coin-Based Monetization
+- Renumbered subsequent principles: old 9→10, 10→11, 11→12, 12→13, 13→14
+- Templates requiring updates: None (new principle, not replacing existing)
+- Previous versions:
+  - v2.0.1: Technical corrections (PostgreSQL clarifications, removed embedded DB references)
+  - v2.0.0: Complete project context change (Travian Bot → Live Resume & Career Copilot)
 - All principles adapted to new context while preserving valuable technical patterns
 - Modified principles:
   - ALL principles: Updated examples and context from game automation → career platform
@@ -44,7 +45,7 @@ Sync Impact Report (Version 2.0.1 - Technical Corrections):
 
 **Project Name:** Live Resume & Career Copilot
 
-**Version:** 2.0.1
+**Version:** 2.1.0
 
 **Ratification Date:** 2026-02-19
 
@@ -210,7 +211,61 @@ This constitution establishes the foundational principles, architectural decisio
 
 ---
 
-### Principle 9: Full-Stack Modularity and Separation of Concerns
+### Principle 9: Freemium Model and Coin-Based Monetization
+
+**Statement:** The platform MUST implement a sustainable freemium business model with coin-based monetization. All premium features (exports, extra AI usage) MUST cost coins. The free tier MUST be generous enough to demonstrate value while incentivizing upgrades. Coin transactions MUST be tracked, auditable, and reversible (for refunds).
+
+**Rationale:** A coin-based model provides flexibility for users (pay-as-you-go) while ensuring platform sustainability. Clear pricing and transparent coin usage build trust. Freemium allows users to experience core value (live resume, basic chat) before paying, reducing friction and increasing conversion.
+
+**Application:**
+
+**Coin Wallet System:**
+- Each tenant has ONE `CoinWallet` with balance (integer, non-negative)
+- All coin movements tracked in `CoinTransaction` table with:
+  - `type`: EARN, SPEND, REFUND, PURCHASE
+  - `amount`: Integer (positive for earn/purchase, negative for spend)
+  - `refType` and `refId`: Link to related entity (e.g., EXPORT → exportHistoryId)
+  - `createdAt`: Timestamp for audit trail
+- Wallet balance MUST NEVER go negative (enforce in service layer with optimistic locking)
+
+**Free Tier (Always-On):**
+- Live public resume page (unlimited, free forever)
+- Recruiter chat: X messages per month (e.g., 50 free messages/month per tenant)
+- LinkedIn inbox drafts: Y drafts per month (e.g., 10 free drafts/month)
+- LinkedIn Profile Score Analyzer: Unlimited scoring, but only 1 free suggestion per section
+
+**Coin-Based Features (Always Cost Coins):**
+- ALL exports (resume, deck, cover letter): Cost coins
+- Recruiter chat beyond free tier: Cost coins per message
+- LinkedIn inbox drafts beyond free tier: Cost coins per draft
+- LinkedIn Score Analyzer extra suggestions: Cost coins per additional suggestion (beyond first free one)
+
+**Coin Pricing Strategy:**
+- Define base costs per feature in configuration (e.g., `RESUME_EXPORT_COST=10`, `CHAT_MESSAGE_COST=1`)
+- Costs stored in database or environment variables for easy adjustment
+- Display costs to user BEFORE action ("This will cost X coins")
+- Track "estimated cost" in LLM metrics for future pricing adjustments
+
+**Coin Acquisition:**
+- Phase 1 (MVP): Manual coin grants by admin (for testing)
+- Phase 2: Stripe integration for coin purchases (packs: 100 coins, 500 coins, 1000 coins)
+- Phase 3: Subscription tiers ("Pro" plan with auto-refilling coins per month)
+
+**Usage Limits and Quotas:**
+- Implement rate limiting per tenant (e.g., max 100 chat messages/day even with coins to prevent abuse)
+- Track free tier usage separately from paid usage
+- Reset free tier quotas monthly (e.g., 1st of each month)
+- Notify users when approaching free tier limits
+
+**Transparency and Refunds:**
+- All coin transactions MUST be visible to user in billing page
+- Failed operations (e.g., export generation error) MUST refund coins automatically
+- Admins can manually refund coins for customer support cases
+- Display current balance and recent transactions prominently in UI
+
+---
+
+### Principle 10: Full-Stack Modularity and Separation of Concerns
 
 **Statement:** All layers of the application MUST be organized into specialized, cohesive components with clear boundaries and single responsibilities. This applies to both backend (Java services) and frontend (React components). Components exceeding reasonable size limits MUST be refactored.
 
@@ -252,7 +307,7 @@ This constitution establishes the foundational principles, architectural decisio
 
 ---
 
-### Principle 10: Database Schema Evolution
+### Principle 11: Database Schema Evolution
 
 **Statement:** All database schema changes MUST be managed through Liquibase migrations with explicit versioning, timestamp-based naming, and rollback support. Direct SQL modifications to production schemas are PROHIBITED. Each migration MUST be atomic, idempotent, and include descriptive changelogs.
 
@@ -287,7 +342,7 @@ This constitution establishes the foundational principles, architectural decisio
 
 ---
 
-### Principle 11: Async Job Processing and Background Tasks
+### Principle 12: Async Job Processing and Background Tasks
 
 **Statement:** Long-running operations (export generation, bulk LinkedIn analysis, email notifications) MUST use asynchronous job processing via background queues. Jobs MUST be retryable, idempotent, and include proper error handling.
 
@@ -314,7 +369,7 @@ This constitution establishes the foundational principles, architectural decisio
 
 ---
 
-### Principle 12: LinkedIn Compliance and ToS Respect
+### Principle 13: LinkedIn Compliance and ToS Respect
 
 **Statement:** All LinkedIn-related features MUST respect LinkedIn's Terms of Service and avoid aggressive automation. The system MUST prefer user-initiated actions and manual workflows over automated scraping or message sending.
 
@@ -338,7 +393,7 @@ This constitution establishes the foundational principles, architectural decisio
 
 ---
 
-### Principle 13: Event-Driven Architecture and Reactive Patterns
+### Principle 14: Event-Driven Architecture and Reactive Patterns
 
 **Statement:** The system SHOULD adopt event-driven patterns for domain events (resources updated, exports completed, coin transactions). Components SHOULD respond to state changes via event listeners rather than tight coupling. This enables reactive workflows and better decoupling.
 

@@ -28,7 +28,7 @@ This directory contains the specification-driven development artifacts for the *
 
 ## Constitution
 
-The project constitution (v2.0.1) establishes **13 core principles**:
+The project constitution (v2.1.0) establishes **14 core principles**:
 
 1. **Simplicity First** - React SPA + Spring Boot REST API; standard patterns
 2. **Containerization as First-Class Citizen** - Docker-first design
@@ -38,11 +38,12 @@ The project constitution (v2.0.1) establishes **13 core principles**:
 6. **Observability and Debugging** - Comprehensive logging and monitoring
 7. **Security, Privacy, and Credential Management** - JWT auth, BCrypt passwords, public/private content separation
 8. **Multi-Tenant Architecture** - Soft multi-tenancy from day one
-9. **Full-Stack Modularity and Separation of Concerns** - Backend services max 500 lines, React components max 300 lines
-10. **Database Schema Evolution** - Liquibase timestamp-based migrations
-11. **Async Job Processing and Background Tasks** - Spring `@Async` or job queue library
-12. **LinkedIn Compliance and ToS Respect** - Draft-only, user-initiated features
-13. **Event-Driven Architecture and Reactive Patterns** - Domain events, loosely-coupled components
+9. **Freemium Model and Coin-Based Monetization** - Sustainable pricing with virtual currency
+10. **Full-Stack Modularity and Separation of Concerns** - Backend services max 500 lines, React components max 300 lines
+11. **Database Schema Evolution** - Liquibase timestamp-based migrations
+12. **Async Job Processing and Background Tasks** - Spring `@Async` or job queue library
+13. **LinkedIn Compliance and ToS Respect** - Draft-only, user-initiated features
+14. **Event-Driven Architecture and Reactive Patterns** - Domain events, loosely-coupled components
 
 All specifications, plans, and tasks should reference applicable constitutional principles.
 
@@ -93,11 +94,11 @@ A modern career management platform combining:
 ## Key Documents
 
 ### Memory Files (Project Context)
-- **constitution.md** - Core principles and governance model (v2.0.1)
-- **project-overview.md** - Goals, architecture, personas, roadmap (v1.0.0)
+- **constitution.md** - Core principles and governance model (v2.1.0 - 14 principles)
+- **project-overview.md** - Goals, architecture, personas, roadmap (v2.0.0)
 - **tech-context.md** - Technology stack and decisions (v1.0.1)
 - **version-tracking.md** - Version history and release protocol (v1.0.0)
-- **liquibase-guidelines.md** - Database migration best practices (v1.0.0)
+- **liquibase-guidelines.md** - Database migration best practices (v1.0.1)
 
 ### Templates
 - **spec-template.md** - Feature specification structure
@@ -146,15 +147,15 @@ This `.specify/` folder was adapted from the **Travian Bot** project (a game aut
 - Spring Boot + Gradle + Docker patterns
 - Java 21 best practices (virtual threads, records, pattern matching)
 
-**What was changed:**
-- All project context (game automation → career platform)
-- Domain model (villages/heroes → profiles/stories/skills)
-- **Database:** SQLite embedded → PostgreSQL 14+ (production database, not embedded)
-- **Frontend:** Vanilla JS → React 18+ with TypeScript
-- **AI integration:** Selenium browser automation → LLM/RAG (OpenAI, Gemini, Claude APIs)
-- **Security:** Game credentials → Multi-tenant SaaS with JWT, RBAC, LinkedIn ToS compliance
-- **File storage:** Local filesystem → Cloud storage (S3/GCS) with local fallback for development
-- **Deployment:** Single container with embedded DB → Multi-container (backend + frontend + PostgreSQL)
+**What was changed from Travian Bot template:**
+- **Project context:** Game automation platform → Career management SaaS
+- **Domain model:** Villages/heroes/farm lists → Profiles/stories/skills/packages
+- **Database:** ~~SQLite (embedded)~~ → **PostgreSQL 14+** (production-grade relational DB with JSONB and pgvector for RAG)
+- **Frontend:** ~~Vanilla JavaScript~~ → **React 18+ with TypeScript**
+- **AI integration:** ~~Selenium browser automation~~ → **LLM/RAG APIs** (OpenAI, Gemini, Claude)
+- **Security model:** Game credentials → **Multi-tenant SaaS** with JWT, RBAC, LinkedIn ToS compliance
+- **File storage:** Local filesystem only → **Cloud storage** (S3/GCS) with local volume for development
+- **Deployment:** Single container with embedded DB → **Multi-container architecture** (backend + frontend + PostgreSQL in separate containers)
 
 ---
 

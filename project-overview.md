@@ -4,6 +4,8 @@
 
 > **"Interview Me"** – A personal career platform combining live resume, skills graph, AI copilot, and SaaS monetization for developers.
 
+> **📋 Note:** This is the working PRD document with external references. The canonical version used by AI agents is at `.specify/memory/project-overview.md` (v2.0.0)
+
 ***
 
 ## Table of Contents
