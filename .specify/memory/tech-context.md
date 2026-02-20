@@ -10,7 +10,7 @@ This document tracks the technology stack and architectural decisions made acros
 ## Core Stack
 
 **Language & Runtime:**
-- Java 21 LTS (minimum required version)
+- Java 25 (minimum required version)
 - JVM: Eclipse Temurin, OpenJDK, or Oracle JDK
 - Node.js 18+ LTS (for React frontend build)
 
@@ -28,7 +28,7 @@ This document tracks the technology stack and architectural decisions made acros
 - Build Tool: Vite or Create React App
 
 **Database:**
-- PostgreSQL 14+ (primary database)
+- PostgreSQL 18 (primary database)
 - pgvector extension (for embeddings/RAG)
 - Liquibase 4.25.0+ (schema versioning)
 
@@ -140,7 +140,7 @@ This document tracks the technology stack and architectural decisions made acros
 - JWT-based authentication (stateless)
 - BCrypt password encoding
 - Soft multi-tenancy (tenant filtering in JPA repositories)
-- Java 21 records for DTOs and domain events
+- Java 25 records for DTOs and domain events
 - Configuration via `application.yml` + environment variables
 
 ---
@@ -204,7 +204,7 @@ python /tmp/update_tasks.py
 
 - **Simplicity First**: React SPA + Spring Boot REST API; standard patterns
 - **Containerization**: Docker-first deployment (backend + frontend)
-- **Modern Java**: Java 21 features (virtual threads, records, pattern matching)
+- **Modern Java**: Java 25 features (virtual threads, records, pattern matching)
 - **Multi-Tenant Architecture**: Soft multi-tenancy with tenant filtering
 - **AI Integration**: Backend-controlled LLM with cost tracking
 - **Database Evolution**: Liquibase timestamp-based migrations
@@ -247,7 +247,7 @@ python /tmp/update_tasks.py
 ## Performance Considerations
 
 **Backend:**
-- Use virtual threads (Java 21) for concurrent LLM calls and async job processing
+- Use virtual threads (Java 25) for concurrent LLM calls and async job processing
 - Connection pooling (HikariCP) for database
 - Enable HTTP/2 for better frontend-backend communication
 - Caching strategy: Spring Cache with Redis (future)
@@ -288,9 +288,10 @@ python /tmp/update_tasks.py
 
 ---
 
-**Document Version:** 1.0.1
+**Document Version:** 1.0.2
 **Last Updated:** 2026-02-19
 
 **Changelog:**
+- v1.0.2: Updated to Java 25 and PostgreSQL 18
 - v1.0.1: Added file storage configuration (LOCAL/S3/GCS), clarified Spring profiles (PostgreSQL in dev, not embedded DB)
 - v1.0.0: Initial version adapted from Travian Bot

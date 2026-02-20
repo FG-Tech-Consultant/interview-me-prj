@@ -196,7 +196,7 @@ Unlike traditional resume builders or LinkedIn itself:
 **Recruiter Chatbox:**
 - Embedded chat component for recruiters to ask questions like:
   - "Tell me about your biggest high-traffic payments project."
-  - "What is your experience with Java 21 and Kubernetes in production?"
+  - "What is your experience with Java 25 and Kubernetes in production?"
 
 **Backend RAG Flow:**
 - For each question, retrieve relevant public stories/experiences/skills from database
@@ -319,13 +319,13 @@ Unlike traditional resume builders or LinkedIn itself:
 - Build: Vite or Create React App
 
 **Backend:**
-- Spring Boot 3.x, Java 21 (LTS)
+- Spring Boot 3.x, Java 25
 - Spring Security (JWT auth, RBAC)
 - Spring Data JPA (with tenant filtering)
 - REST APIs under `/api/v1/*`
 
 **Database:**
-- PostgreSQL 14+ (primary and only database)
+- PostgreSQL 18 (primary and only database)
 - pgvector extension (for embeddings/RAG)
 - Liquibase 4.25.0+ (schema versioning)
 
@@ -414,7 +414,7 @@ Unlike traditional resume builders or LinkedIn itself:
                         │ HTTP/REST API (JSON)
                         │
 ┌───────────────────────▼─────────────────────────────────────┐
-│               Spring Boot Backend (Java 21)                  │
+│               Spring Boot Backend (Java 25)                  │
 │  ┌──────────────────────────────────────────────────────┐  │
 │  │  REST Controllers (/api/v1/*)                        │  │
 │  │  - AuthController, ProfileController,               │  │
@@ -567,7 +567,7 @@ From `constitution.md` (v2.0.1):
 
 1. **Simplicity First**: React SPA + Spring Boot REST API; standard patterns
 2. **Containerization**: Docker-first design with PostgreSQL in separate container
-3. **Modern Java**: Use Java 21 features (virtual threads, records)
+3. **Modern Java**: Use Java 25 features (virtual threads, records)
 4. **Multi-Tenant Architecture**: Soft multi-tenancy with tenant filtering
 5. **AI Integration**: Backend-controlled LLM with cost tracking
 6. **Security**: JWT auth, BCrypt passwords, public/private content separation
@@ -581,12 +581,19 @@ From `constitution.md` (v2.0.1):
 ## How to Find Information
 
 - **Project Goals & Architecture**: This file (`.specify/memory/project-overview.md`) or `./project-overview.md`
-- **Constitutional Principles**: `.specify/memory/constitution.md` (v2.0.1)
-- **Technology Stack**: `.specify/memory/tech-context.md` (v1.0.1)
+- **Constitutional Principles**: `.specify/memory/constitution.md` (v2.1.0)
+- **Technology Stack**: `.specify/memory/tech-context.md` (v1.0.2)
 - **Version History**: `.specify/memory/version-tracking.md` (v1.0.0)
-- **Liquibase Guidelines**: `.specify/memory/liquibase-guidelines.md` (v1.0.0)
+- **Liquibase Guidelines**: `.specify/memory/liquibase-guidelines.md` (v1.0.2)
 - **Feature Specs**: `specs/` directory (to be created)
 - **User Documentation**: `README.md` (to be created)
+
+---
+
+## External References
+
+**Confluence Documentation:**
+- Project Space: https://techfernandogomes.atlassian.net/wiki/spaces/INTME/overview?homepageId=310149424
 
 ---
 

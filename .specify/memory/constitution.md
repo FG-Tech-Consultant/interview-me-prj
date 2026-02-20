@@ -14,7 +14,7 @@ Sync Impact Report (Version 2.1.0 - New Principle Added):
   - ALL principles: Updated examples and context from game automation → career platform
   - Principle 1: Simplicity First → Now emphasizes React SPA + REST API architecture
   - Principle 2: Containerization → Maintained (applies to any Spring Boot app)
-  - Principle 3: Modern Java Standards → Maintained with Java 21
+  - Principle 3: Modern Java Standards → Maintained with Java 25
   - Principle 4: Data Sovereignty → Updated to multi-tenant career data with Postgres/pgvector
   - Principle 5: Browser Automation Reliability → REMOVED (not applicable to career platform)
   - Principle 6: Observability → Maintained with career platform examples
@@ -55,7 +55,7 @@ Sync Impact Report (Version 2.1.0 - New Principle Added):
 
 ## Purpose
 
-This constitution establishes the foundational principles, architectural decisions, and governance model for the Live Resume & Career Copilot project. This platform provides a modern career management solution combining a live resume/portfolio site, AI-powered recruiter chat, LinkedIn optimization tools, and document generation capabilities. Built with React, Spring Boot, Java 21, and deployed as a containerized SaaS application, this document ensures consistency, quality, and maintainability throughout the development lifecycle.
+This constitution establishes the foundational principles, architectural decisions, and governance model for the Live Resume & Career Copilot project. This platform provides a modern career management solution combining a live resume/portfolio site, AI-powered recruiter chat, LinkedIn optimization tools, and document generation capabilities. Built with React, Spring Boot, Java 25, PostgreSQL 18, and deployed as a containerized SaaS application, this document ensures consistency, quality, and maintainability throughout the development lifecycle.
 
 ---
 
@@ -97,16 +97,16 @@ This constitution establishes the foundational principles, architectural decisio
 
 ### Principle 3: Modern Java Standards
 
-**Statement:** The project MUST leverage Java 21 features and follow current Java ecosystem best practices. Code MUST be idiomatic and utilize language improvements that enhance readability, performance, or safety.
+**Statement:** The project MUST leverage Java 25 features and follow current Java ecosystem best practices. Code MUST be idiomatic and utilize language improvements that enhance readability, performance, or safety.
 
-**Rationale:** Java 21 provides significant improvements including virtual threads, pattern matching, and records. Using modern features ensures the codebase benefits from language evolution and remains relevant for future maintenance.
+**Rationale:** Java 25 provides significant improvements including enhanced virtual threads, pattern matching, records, and performance optimizations. Using modern features ensures the codebase benefits from language evolution and remains relevant for future maintenance.
 
 **Application:**
-- Use Java 21 LTS as the minimum required version
+- Use Java 25 as the minimum required version
 - Leverage virtual threads for concurrent LLM calls and async job processing
 - Use records for immutable data transfer objects (DTOs)
 - Apply pattern matching where it improves clarity
-- Follow Spring Boot 3.x conventions aligned with Java 21
+- Follow Spring Boot 3.x conventions aligned with Java 25
 - Use Lombok annotations (@Slf4j, @RequiredArgsConstructor) for boilerplate reduction
 
 ---
@@ -118,7 +118,7 @@ This constitution establishes the foundational principles, architectural decisio
 **Rationale:** Multi-tenant SaaS requires strict data isolation to prevent data leaks. PostgreSQL provides JSONB for semi-structured data (metrics, settings), pgvector for embeddings (RAG), and robust performance for complex queries. Application-level tenant filtering provides scalability and simplicity. Liquibase provides declarative, version-controlled schema management that enables safe upgrades and rollbacks.
 
 **Application:**
-- Use PostgreSQL 14+ as the primary and only database (production and development)
+- Use PostgreSQL 18 as the primary and only database (production and development)
 - Configure database connection via environment variables (DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD)
 - All tenant-owned entities MUST include `tenant_id` column with index
 - Tenant filter MUST be applied to all queries automatically via Spring AOP or custom JPA filter
@@ -364,7 +364,7 @@ This constitution establishes the foundational principles, architectural decisio
   - Dead letter queue for permanently failed jobs
 - Store job metadata (tenant, user, parameters, result) in database
 - Expose job status API for frontend polling or SSE
-- Use virtual threads (Java 21) for concurrent job processing
+- Use virtual threads (Java 25) for concurrent job processing
 - Track job metrics (count, latency, success rate) per type
 
 ---

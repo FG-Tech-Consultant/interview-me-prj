@@ -32,7 +32,7 @@ The project constitution (v2.1.0) establishes **14 core principles**:
 
 1. **Simplicity First** - React SPA + Spring Boot REST API; standard patterns
 2. **Containerization as First-Class Citizen** - Docker-first design
-3. **Modern Java Standards** - Leverage Java 21 features (virtual threads, records)
+3. **Modern Java Standards** - Leverage Java 25 features (virtual threads, records)
 4. **Data Sovereignty and Multi-Tenant Isolation** - PostgreSQL with tenant filtering
 5. **AI Integration and LLM Management** - Backend-controlled LLM with cost tracking
 6. **Observability and Debugging** - Comprehensive logging and monitoring
@@ -84,8 +84,8 @@ A modern career management platform combining:
 
 **Tech Stack:**
 - **Frontend:** React 18+ with TypeScript, React Query, MUI/Chakra UI
-- **Backend:** Spring Boot 3.x with Java 21, Spring Security (JWT), Spring Data JPA
-- **Database:** PostgreSQL 14+ with JSONB and pgvector extension
+- **Backend:** Spring Boot 3.x with Java 25, Spring Security (JWT), Spring Data JPA
+- **Database:** PostgreSQL 18 with JSONB and pgvector extension
 - **AI/LLM:** OpenAI, Gemini, Claude APIs (backend-controlled)
 - **Infrastructure:** Docker, Gradle, Logback + Logstash Encoder
 
@@ -96,9 +96,9 @@ A modern career management platform combining:
 ### Memory Files (Project Context)
 - **constitution.md** - Core principles and governance model (v2.1.0 - 14 principles)
 - **project-overview.md** - Goals, architecture, personas, roadmap (v2.0.0)
-- **tech-context.md** - Technology stack and decisions (v1.0.1)
+- **tech-context.md** - Technology stack and decisions (v1.0.2)
 - **version-tracking.md** - Version history and release protocol (v1.0.0)
-- **liquibase-guidelines.md** - Database migration best practices (v1.0.1)
+- **liquibase-guidelines.md** - Database migration best practices (v1.0.2)
 
 ### Templates
 - **spec-template.md** - Feature specification structure
@@ -145,17 +145,24 @@ This `.specify/` folder was adapted from the **Travian Bot** project (a game aut
 - Liquibase best practices (timestamp-based migrations, PostgreSQL patterns)
 - Constitution structure (principles, governance, versioning)
 - Spring Boot + Gradle + Docker patterns
-- Java 21 best practices (virtual threads, records, pattern matching)
+- Java 25 best practices (virtual threads, records, pattern matching)
 
 **What was changed from Travian Bot template:**
 - **Project context:** Game automation platform → Career management SaaS
 - **Domain model:** Villages/heroes/farm lists → Profiles/stories/skills/packages
-- **Database:** ~~SQLite (embedded)~~ → **PostgreSQL 14+** (production-grade relational DB with JSONB and pgvector for RAG)
+- **Database:** ~~SQLite (embedded)~~ → **PostgreSQL 18** (production-grade relational DB with JSONB and pgvector for RAG)
 - **Frontend:** ~~Vanilla JavaScript~~ → **React 18+ with TypeScript**
 - **AI integration:** ~~Selenium browser automation~~ → **LLM/RAG APIs** (OpenAI, Gemini, Claude)
 - **Security model:** Game credentials → **Multi-tenant SaaS** with JWT, RBAC, LinkedIn ToS compliance
 - **File storage:** Local filesystem only → **Cloud storage** (S3/GCS) with local volume for development
 - **Deployment:** Single container with embedded DB → **Multi-container architecture** (backend + frontend + PostgreSQL in separate containers)
+
+---
+
+## External References
+
+**Confluence Documentation:**
+- Project Space: https://techfernandogomes.atlassian.net/wiki/spaces/INTME/overview?homepageId=310149424
 
 ---
 
