@@ -225,9 +225,22 @@ python /tmp/update_tasks.py
 - `CORS_ALLOWED_ORIGINS` - Frontend origin for CORS
 
 **Spring Profiles:**
-- `dev` - Development (embedded DB, verbose logging)
-- `prod` - Production (PostgreSQL, optimized logging)
-- `test` - Testing (in-memory DB, test fixtures)
+- `dev` - Development (local PostgreSQL via Docker Compose, verbose logging)
+- `prod` - Production (managed PostgreSQL service, optimized logging, cloud storage)
+- `test` - Testing (H2 in-memory DB for unit tests, test fixtures)
+
+**File Storage:**
+- `STORAGE_TYPE` - Storage backend type (`LOCAL`, `S3`, `GCS`)
+- `STORAGE_LOCAL_PATH` - Local storage directory (development only, mounted volume)
+- `STORAGE_S3_BUCKET` - S3 bucket name (production)
+- `STORAGE_S3_REGION` - S3 region
+- `STORAGE_GCS_BUCKET` - Google Cloud Storage bucket (alternative to S3)
+
+**File Storage Strategy:**
+- **Development**: Local filesystem (Docker volume mount at `/app/storage` or `./storage`)
+- **Production**: Cloud object storage (AWS S3, Google Cloud Storage, Azure Blob Storage)
+- **Use cases**: Resume PDFs, background presentation PDFs, cover letters, LinkedIn profile analysis PDFs
+- **Database stores**: File metadata (ExportHistory) with reference to cloud storage URL
 
 ---
 
@@ -275,4 +288,9 @@ python /tmp/update_tasks.py
 
 ---
 
-**Document Version:** 1.0.0
+**Document Version:** 1.0.1
+**Last Updated:** 2026-02-19
+
+**Changelog:**
+- v1.0.1: Added file storage configuration (LOCAL/S3/GCS), clarified Spring profiles (PostgreSQL in dev, not embedded DB)
+- v1.0.0: Initial version adapted from Travian Bot

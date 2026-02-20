@@ -1,7 +1,11 @@
 # Project Constitution
 
 <!--
-Sync Impact Report (Version 2.0.0 - Project Adaptation):
+Sync Impact Report (Version 2.0.1 - Technical Corrections):
+- Version: 2.0.0 → 2.0.1 (PATCH - Clarifications and corrections)
+- Corrected Principle 2: Removed embedded database references, clarified PostgreSQL + cloud storage architecture
+- Corrected Principle 4: Emphasized PostgreSQL as the only database (not embedded), added JSONB and pgvector details
+- Previous version (2.0.0):
 - Version: 1.5.1 → 2.0.0 (MAJOR - Complete project context change)
 - Project changed from Travian Bot → Live Resume & Career Copilot
 - All principles adapted to new context while preserving valuable technical patterns
@@ -40,7 +44,7 @@ Sync Impact Report (Version 2.0.0 - Project Adaptation):
 
 **Project Name:** Live Resume & Career Copilot
 
-**Version:** 2.0.0
+**Version:** 2.0.1
 
 **Ratification Date:** 2026-02-19
 
@@ -76,15 +80,17 @@ This constitution establishes the foundational principles, architectural decisio
 
 **Statement:** The application MUST be designed from the ground up to run in Docker containers. All configuration, data persistence, and external dependencies MUST support containerized deployment without modification.
 
-**Rationale:** Docker deployment ensures consistent runtime environments, simplified installation, and portability across systems. SaaS deployment requires container orchestration for horizontal scaling.
+**Rationale:** Docker deployment ensures consistent runtime environments, simplified installation, and portability across systems. SaaS deployment requires container orchestration for horizontal scaling. Stateless application containers enable horizontal scaling while PostgreSQL handles persistence.
 
 **Application:**
-- All builds MUST produce Docker-compatible artifacts
-- Configuration MUST support environment variables for container orchestration
-- Database connections configured via environment variables (JDBC URLs, credentials)
-- No hardcoded filesystem paths outside documented volume mount points
+- All builds MUST produce Docker-compatible artifacts (Spring Boot JAR for backend, Nginx-served static assets for frontend)
+- Configuration MUST support environment variables for container orchestration (DATABASE_URL, JWT_SECRET, LLM API keys, etc.)
+- Backend container is stateless - no local file storage (use cloud storage for exports: S3, GCS, or local volume for development)
+- PostgreSQL runs in separate container or managed service (AWS RDS, Google Cloud SQL, Azure Database)
+- No hardcoded filesystem paths; use environment variables for file storage locations
 - Dockerfile MUST be maintained as a primary artifact alongside source code
-- Support Docker Compose for local development environment
+- Support Docker Compose for local development environment (backend + frontend + PostgreSQL)
+- Use multi-stage builds to optimize image size (separate build and runtime stages)
 
 ---
 
@@ -106,20 +112,21 @@ This constitution establishes the foundational principles, architectural decisio
 
 ### Principle 4: Data Sovereignty and Multi-Tenant Isolation
 
-**Statement:** All user data, career profiles, and tenant-specific settings MUST be stored in a relational database with strict tenant isolation. Multi-tenancy MUST be enforced at the application layer using tenant filters. Schema evolution MUST be managed through Liquibase migrations with explicit versioning.
+**Statement:** All user data, career profiles, and tenant-specific settings MUST be stored in a PostgreSQL relational database with strict tenant isolation. Multi-tenancy MUST be enforced at the application layer using tenant filters. Schema evolution MUST be managed through Liquibase migrations with explicit versioning.
 
-**Rationale:** Multi-tenant SaaS requires strict data isolation to prevent data leaks. Application-level tenant filtering provides scalability and simplicity. Liquibase provides declarative, version-controlled schema management that enables safe upgrades and rollbacks.
+**Rationale:** Multi-tenant SaaS requires strict data isolation to prevent data leaks. PostgreSQL provides JSONB for semi-structured data (metrics, settings), pgvector for embeddings (RAG), and robust performance for complex queries. Application-level tenant filtering provides scalability and simplicity. Liquibase provides declarative, version-controlled schema management that enables safe upgrades and rollbacks.
 
 **Application:**
-- Use PostgreSQL as the primary database (support for JSON, pgvector for embeddings)
-- All tenant-owned entities MUST include `tenant_id` column
-- Tenant filter MUST be applied to all queries automatically
-- Store database credentials via environment variables (12-factor app)
+- Use PostgreSQL 14+ as the primary and only database (production and development)
+- Configure database connection via environment variables (DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD)
+- All tenant-owned entities MUST include `tenant_id` column with index
+- Tenant filter MUST be applied to all queries automatically via Spring AOP or custom JPA filter
 - Use Liquibase for ALL schema changes (never manual SQL)
 - Timestamp-based migration naming: `yyyyMMddHHmmss-description.xml`
 - Master changelog at `src/main/resources/db/changelog/db.changelog-master.yaml`
 - Each migration MUST include rollback instructions where possible
-- Use pgvector extension for storing skill/story embeddings for RAG
+- Use pgvector extension for storing skill/story embeddings for RAG (vector similarity search)
+- Use JSONB columns for semi-structured data (metrics, preferences, LLM prompts)
 
 ---
 

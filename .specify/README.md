@@ -28,7 +28,7 @@ This directory contains the specification-driven development artifacts for the *
 
 ## Constitution
 
-The project constitution (v2.0.0) establishes **13 core principles**:
+The project constitution (v2.0.1) establishes **13 core principles**:
 
 1. **Simplicity First** - React SPA + Spring Boot REST API; standard patterns
 2. **Containerization as First-Class Citizen** - Docker-first design
@@ -93,11 +93,11 @@ A modern career management platform combining:
 ## Key Documents
 
 ### Memory Files (Project Context)
-- **constitution.md** - Core principles and governance model
-- **project-overview.md** - Goals, architecture, personas, roadmap
-- **tech-context.md** - Technology stack and decisions
-- **version-tracking.md** - Version history and release protocol
-- **liquibase-guidelines.md** - Database migration best practices
+- **constitution.md** - Core principles and governance model (v2.0.1)
+- **project-overview.md** - Goals, architecture, personas, roadmap (v1.0.0)
+- **tech-context.md** - Technology stack and decisions (v1.0.1)
+- **version-tracking.md** - Version history and release protocol (v1.0.0)
+- **liquibase-guidelines.md** - Database migration best practices (v1.0.0)
 
 ### Templates
 - **spec-template.md** - Feature specification structure
@@ -149,10 +149,12 @@ This `.specify/` folder was adapted from the **Travian Bot** project (a game aut
 **What was changed:**
 - All project context (game automation → career platform)
 - Domain model (villages/heroes → profiles/stories/skills)
-- Database (SQLite → PostgreSQL with pgvector)
-- Frontend (Vanilla JS → React with TypeScript)
-- AI integration principles (browser automation → LLM/RAG for recruiter chat)
-- Security focus (game credentials → multi-tenant SaaS with LinkedIn compliance)
+- **Database:** SQLite embedded → PostgreSQL 14+ (production database, not embedded)
+- **Frontend:** Vanilla JS → React 18+ with TypeScript
+- **AI integration:** Selenium browser automation → LLM/RAG (OpenAI, Gemini, Claude APIs)
+- **Security:** Game credentials → Multi-tenant SaaS with JWT, RBAC, LinkedIn ToS compliance
+- **File storage:** Local filesystem → Cloud storage (S3/GCS) with local fallback for development
+- **Deployment:** Single container with embedded DB → Multi-container (backend + frontend + PostgreSQL)
 
 ---
 
