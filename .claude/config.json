@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "$include": "./../.ai/mcp-servers.local.json"
+  }
+}
