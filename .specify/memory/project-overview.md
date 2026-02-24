@@ -319,7 +319,7 @@ Unlike traditional resume builders or LinkedIn itself:
 - Build: Vite or Create React App
 
 **Backend:**
-- Spring Boot 3.x, Java 25
+- Spring Boot 4.x, Java 25
 - Spring Security (JWT auth, RBAC)
 - Spring Data JPA (with tenant filtering)
 - REST APIs under `/api/v1/*`

@@ -15,7 +15,7 @@ This document tracks the technology stack and architectural decisions made acros
 - Node.js 18+ LTS (for React frontend build)
 
 **Backend Framework:**
-- Spring Boot 3.x (latest stable 3.x series)
+- Spring Boot 4.x (latest stable 4.x series)
 - Spring Framework 6.x
 - Spring Security 6.x (JWT authentication, RBAC)
 - Spring Data JPA (with tenant filtering)

@@ -64,7 +64,7 @@ All research must validate against the 9 constitutional principles:
 
 1. ✅ **Simplicity First** - Prefer simple solutions
 2. ✅ **Containerization** - Must work in Docker
-3. ✅ **Modern Java Standards** - Java 21, Spring Boot 3.x
+3. ✅ **Modern Java Standards** - Java 21, Spring Boot 4.x
 4. ✅ **Data Sovereignty** - Embedded database support
 5. ✅ **Browser Automation Reliability** - Selenium robustness
 6. ✅ **Observability** - Logging and monitoring

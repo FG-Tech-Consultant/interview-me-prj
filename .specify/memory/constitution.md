@@ -1,61 +1,41 @@
 # Project Constitution
 
 <!--
-Sync Impact Report (Version 2.1.0 - New Principle Added):
-- Version: 2.0.1 → 2.1.0 (MINOR - New principle added)
-- Added Principle 9: Freemium Model and Coin-Based Monetization
-- Renumbered subsequent principles: old 9→10, 10→11, 11→12, 12→13, 13→14
-- Templates requiring updates: None (new principle, not replacing existing)
-- Previous versions:
-  - v2.0.1: Technical corrections (PostgreSQL clarifications, removed embedded DB references)
-  - v2.0.0: Complete project context change (Travian Bot → Live Resume & Career Copilot)
-- All principles adapted to new context while preserving valuable technical patterns
-- Modified principles:
-  - ALL principles: Updated examples and context from game automation → career platform
-  - Principle 1: Simplicity First → Now emphasizes React SPA + REST API architecture
-  - Principle 2: Containerization → Maintained (applies to any Spring Boot app)
-  - Principle 3: Modern Java Standards → Maintained with Java 25
-  - Principle 4: Data Sovereignty → Updated to multi-tenant career data with Postgres/pgvector
-  - Principle 5: Browser Automation Reliability → REMOVED (not applicable to career platform)
-  - Principle 6: Observability → Maintained with career platform examples
-  - Principle 7: Security → Enhanced for multi-tenant SaaS with LinkedIn compliance
-  - Principle 8: Reference Implementation → REMOVED (no game automation reference)
-  - Principle 9: Modularity → Maintained with React + Spring Boot context
-  - Principle 10: Database Evolution → Maintained (Liquibase still applies)
-  - Principle 11: Action Queue → REMOVED (replaced with async job queue principle)
-  - Principle 12: Piggybacking → REMOVED (not applicable)
-  - Principle 13: Event-Driven → Maintained with career platform examples
-- Added principles:
-  - Principle 5: AI Integration and LLM Management (NEW)
-  - Principle 8: Multi-Tenant Architecture (NEW)
-  - Principle 11: Async Job Processing (NEW)
-  - Principle 12: LinkedIn Compliance and ToS Respect (NEW)
-- Removed sections:
-  - Browser automation, game automation references
-  - TravianBotSharp references
-  - Piggybacking pattern (game-specific)
+Sync Impact Report (Version 2.2.0 - Architectural Pattern Change):
+- Version: 2.1.0 → 2.2.0 (MINOR - Architectural pattern changes)
+- Modified Principles:
+  - Principle 1: Simplicity First → Updated from "separate frontend/backend containers" to "monolithic deployment with frontend served by Spring Boot"
+  - Principle 2: Containerization → Updated to reflect single Docker image serving both frontend and backend
+  - Principle 10: Full-Stack Modularity → Updated to MANDATE multi-module Gradle structure (backend, frontend, common modules)
+- Rationale: Architectural decision to simplify deployment by serving React static assets from Spring Boot backend
+- Benefits:
+  - Single Docker image (simpler than multi-container orchestration)
+  - No CORS configuration needed (same-origin deployment)
+  - Simplified local development (single Gradle command)
+  - Multi-module Gradle provides clear separation while maintaining monolithic deployment
 - Templates requiring updates:
-  ⚠ spec-template.md (needs review for new principles)
-  ⚠ plan-template.md (needs review for new principles)
-  ⚠ tasks-template.md (needs review for new task categories)
-- Follow-up TODOs:
-  - Review all spec/plan/task templates for applicability to career platform
-  - Update command files in .specify/templates/commands/
+  ⚠ plan-template.md (needs update for single-container architecture)
+  ⚠ spec-template.md (needs update for monolithic deployment pattern)
+  ⚠ tasks-template.md (needs update for Gradle multi-module tasks)
+- Previous versions:
+  - v2.1.0: Added Principle 9 (Freemium Model)
+  - v2.0.1: PostgreSQL corrections
+  - v2.0.0: Project context change (Travian Bot → Live Resume & Career Copilot)
 -->
 
 **Project Name:** Live Resume & Career Copilot
 
-**Version:** 2.1.0
+**Version:** 2.2.0
 
 **Ratification Date:** 2026-02-19
 
-**Last Amended:** 2026-02-19
+**Last Amended:** 2026-02-22
 
 ---
 
 ## Purpose
 
-This constitution establishes the foundational principles, architectural decisions, and governance model for the Live Resume & Career Copilot project. This platform provides a modern career management solution combining a live resume/portfolio site, AI-powered recruiter chat, LinkedIn optimization tools, and document generation capabilities. Built with React, Spring Boot, Java 25, PostgreSQL 18, and deployed as a containerized SaaS application, this document ensures consistency, quality, and maintainability throughout the development lifecycle.
+This constitution establishes the foundational principles, architectural decisions, and governance model for the Live Resume & Career Copilot project. This platform provides a modern career management solution combining a live resume/portfolio site, AI-powered recruiter chat, LinkedIn optimization tools, and document generation capabilities. Built with React (served by Spring Boot), Spring Boot, Java 25, PostgreSQL 18, and deployed as a containerized monolithic application using multi-module Gradle, this document ensures consistency, quality, and maintainability throughout the development lifecycle.
 
 ---
 
@@ -63,35 +43,45 @@ This constitution establishes the foundational principles, architectural decisio
 
 ### Principle 1: Simplicity First
 
-**Statement:** The system MUST prioritize simplicity in both architecture and implementation. Technical solutions MUST favor straightforward patterns over complex abstractions unless complexity is demonstrably necessary. The frontend-backend separation MUST be clean and conventional.
+**Statement:** The system MUST prioritize simplicity in both architecture and implementation. Technical solutions MUST favor straightforward patterns over complex abstractions unless complexity is demonstrably necessary. The system MUST use a monolithic deployment pattern with the React frontend served as static assets by the Spring Boot backend.
 
-**Rationale:** A clean separation between React frontend and Spring Boot REST API backend ensures maintainability, testability, and enables independent scaling. Simplicity reduces the learning curve for contributors and operational overhead.
+**Rationale:** A monolithic architecture serving the React SPA from Spring Boot simplifies deployment (single Docker image), eliminates CORS configuration complexity, reduces operational overhead, and provides a simpler mental model for developers. This approach maintains clear separation of concerns via multi-module Gradle structure while avoiding the complexity of microservices or separate frontend deployment. For early-stage SaaS, monolithic deployment is faster to develop, easier to debug, and scales sufficiently for thousands of users.
 
 **Application:**
-- React SPA communicating via REST APIs under `/api/*`
+- Frontend React SPA served as static assets from Spring Boot's `/` path
+- Backend REST APIs under `/api/*` namespace
+- Single Docker image contains both frontend and backend
+- Multi-module Gradle structure separates frontend build and backend code
 - Prefer standard Spring Boot patterns over custom abstractions
 - Use conventional React patterns (React Query, context for global state)
 - Choose proven libraries (MUI/Chakra UI, Spring Data JPA)
 - Keep backend layered: Controller → Service → Repository
 - Avoid premature optimization; profile before optimizing
+- No CORS configuration needed (same-origin deployment)
 
 ---
 
 ### Principle 2: Containerization as First-Class Citizen
 
-**Statement:** The application MUST be designed from the ground up to run in Docker containers. All configuration, data persistence, and external dependencies MUST support containerized deployment without modification.
+**Statement:** The application MUST be designed from the ground up to run in a single Docker container. All configuration, data persistence, and external dependencies MUST support containerized deployment without modification. The container MUST include both the Spring Boot backend and the React frontend static assets.
 
-**Rationale:** Docker deployment ensures consistent runtime environments, simplified installation, and portability across systems. SaaS deployment requires container orchestration for horizontal scaling. Stateless application containers enable horizontal scaling while PostgreSQL handles persistence.
+**Rationale:** Single-container deployment ensures consistent runtime environments, simplified installation, and portability across systems. SaaS deployment benefits from simpler orchestration with a monolithic container. Stateless application container enables horizontal scaling while PostgreSQL handles persistence. Multi-stage Docker build compiles both frontend and backend, producing a single optimized image.
 
 **Application:**
-- All builds MUST produce Docker-compatible artifacts (Spring Boot JAR for backend, Nginx-served static assets for frontend)
-- Configuration MUST support environment variables for container orchestration (DATABASE_URL, JWT_SECRET, LLM API keys, etc.)
-- Backend container is stateless - no local file storage (use cloud storage for exports: S3, GCS, or local volume for development)
+- Single Docker image contains Spring Boot JAR with embedded React static assets
+- Multi-stage Dockerfile:
+  - Stage 1: Build React frontend with Node.js (Vite build)
+  - Stage 2: Build Spring Boot backend with Gradle (bootJar)
+  - Stage 3: Copy frontend build output to backend static resources
+  - Stage 4: Runtime stage with JRE only (no build tools)
+- Configuration MUST support environment variables (DATABASE_URL, JWT_SECRET, LLM API keys, etc.)
+- Application container is stateless - no local file storage (use cloud storage for exports: S3, GCS, or local volume for development)
 - PostgreSQL runs in separate container or managed service (AWS RDS, Google Cloud SQL, Azure Database)
-- No hardcoded filesystem paths; use environment variables for file storage locations
-- Dockerfile MUST be maintained as a primary artifact alongside source code
-- Support Docker Compose for local development environment (backend + frontend + PostgreSQL)
-- Use multi-stage builds to optimize image size (separate build and runtime stages)
+- No hardcoded filesystem paths; use environment variables
+- Dockerfile MUST be maintained as primary artifact alongside source code
+- Support Docker Compose for local development (single backend+frontend container + PostgreSQL)
+- Use multi-stage builds to optimize image size
+- Frontend assets served via Spring Boot static resource handling (no Nginx needed)
 
 ---
 
@@ -106,7 +96,7 @@ This constitution establishes the foundational principles, architectural decisio
 - Leverage virtual threads for concurrent LLM calls and async job processing
 - Use records for immutable data transfer objects (DTOs)
 - Apply pattern matching where it improves clarity
-- Follow Spring Boot 3.x conventions aligned with Java 25
+- Follow Spring Boot 4.x conventions aligned with Java 25
 - Use Lombok annotations (@Slf4j, @RequiredArgsConstructor) for boilerplate reduction
 
 ---
@@ -124,9 +114,9 @@ This constitution establishes the foundational principles, architectural decisio
 - Tenant filter MUST be applied to all queries automatically via Spring AOP or custom JPA filter
 - Use Liquibase for ALL schema changes (never manual SQL)
 - Timestamp-based migration naming: `yyyyMMddHHmmss-description.xml`
-- Master changelog at `src/main/resources/db/changelog/db.changelog-master.yaml`
+- Master changelog at `backend/src/main/resources/db/changelog/db.changelog-master.yaml`
 - Each migration MUST include rollback instructions where possible
-- Use pgvector extension for storing skill/story embeddings for RAG (vector similarity search)
+- Use pgvector extension for storing skill/story embeddings for RAG
 - Use JSONB columns for semi-structured data (metrics, preferences, LLM prompts)
 
 ---
@@ -189,6 +179,7 @@ This constitution establishes the foundational principles, architectural decisio
   - Public content: visible on live resume and usable by recruiter chat
   - Private content: visible only to owner and internal tools; recruiter chat MUST ignore
 - Tokenized package links use expiring or revocable tokens
+- No CORS configuration needed (frontend served from same origin)
 
 ---
 
@@ -267,33 +258,60 @@ This constitution establishes the foundational principles, architectural decisio
 
 ### Principle 10: Full-Stack Modularity and Separation of Concerns
 
-**Statement:** All layers of the application MUST be organized into specialized, cohesive components with clear boundaries and single responsibilities. This applies to both backend (Java services) and frontend (React components). Components exceeding reasonable size limits MUST be refactored.
+**Statement:** All layers of the application MUST be organized into specialized, cohesive components with clear boundaries and single responsibilities. This applies to both backend (Java services in Gradle modules) and frontend (React components). Components exceeding reasonable size limits MUST be refactored. The project MUST use multi-module Gradle structure to separate frontend, backend, and shared code.
 
-**Rationale:** Modular architecture improves code maintainability, testability, reusability, and team collaboration. Specialized components with narrow scope are easier to understand, modify, and debug.
+**Rationale:** Modular architecture improves code maintainability, testability, reusability, and team collaboration. Specialized components with narrow scope are easier to understand, modify, and debug. Multi-module Gradle structure provides clear separation of concerns while maintaining monolithic deployment, enabling independent development of frontend and backend with shared common utilities.
 
 **Application:**
 
-**Backend (Java Services):**
+**Multi-Module Gradle Structure (REQUIRED):**
+
+The project MUST use the following Gradle module structure:
+
+```
+root-project/
+├── settings.gradle.kts           # Declares all subprojects
+├── build.gradle.kts              # Root build configuration
+├── backend/                      # Spring Boot backend module
+│   ├── build.gradle.kts          # Backend dependencies and bootJar task
+│   └── src/main/java/            # Backend source code
+├── frontend/                     # React frontend module
+│   ├── build.gradle.kts          # Frontend build with npm/Vite
+│   ├── package.json
+│   └── src/                      # React source code
+├── common/                       # Shared DTOs, constants, utilities
+│   ├── build.gradle.kts          # Common dependencies
+│   └── src/main/java/            # Shared Java code
+└── docker/                       # Docker configuration (optional module)
+    └── Dockerfile                # Multi-stage build
+```
+
+**Module Dependencies:**
+- `backend` depends on `common` (shared DTOs, constants)
+- `frontend` is independent (JavaScript/TypeScript)
+- Final Docker image: builds frontend → copies to backend static resources → builds backend JAR
+
+**Backend Module (Java Services):**
 - Follow layered architecture: Controller → Service → Repository
-- Domain packages (modular structure):
-  - `com.yourapp.config` - Security, CORS, LLM provider config
-  - `com.yourapp.auth` - User registration, login, JWT
-  - `com.yourapp.tenancy` - Tenant entity, tenant resolver, multi-tenant filter
-  - `com.yourapp.profile` - Profile, jobs, education
-  - `com.yourapp.skills` - Skills catalog, user skills, tagging
-  - `com.yourapp.experience` - Projects and stories
-  - `com.yourapp.packages` - Packages and tokenized share links
-  - `com.yourapp.exports` - Resume/deck/cover letter generation
-  - `com.yourapp.ai` - LLM client abstraction, prompts, RAG pipeline
-  - `com.yourapp.chat` - Recruiter chat sessions/messages
-  - `com.yourapp.linkedin` - Inbox assistant + profile analyzer
-  - `com.yourapp.billing` - Coins, transactions, usage limits
+- Domain packages (modular structure within backend module):
+  - `com.interviewme.config` - Security, LLM provider config
+  - `com.interviewme.auth` - User registration, login, JWT
+  - `com.interviewme.tenancy` - Tenant entity, tenant resolver, multi-tenant filter
+  - `com.interviewme.profile` - Profile, jobs, education
+  - `com.interviewme.skills` - Skills catalog, user skills, tagging
+  - `com.interviewme.experience` - Projects and stories
+  - `com.interviewme.packages` - Packages and tokenized share links
+  - `com.interviewme.exports` - Resume/deck/cover letter generation
+  - `com.interviewme.ai` - LLM client abstraction, prompts, RAG pipeline
+  - `com.interviewme.chat` - Recruiter chat sessions/messages
+  - `com.interviewme.linkedin` - Inbox assistant + profile analyzer
+  - `com.interviewme.billing` - Coins, transactions, usage limits
 - Each service MUST have a clearly defined responsibility
 - Services SHOULD NOT exceed 500 lines of code; split into sub-services if larger
 - Use dependency injection (`@Service`, `@RequiredArgsConstructor`)
 - Apply Single Responsibility Principle (SRP) rigorously
 
-**Frontend (React Components):**
+**Frontend Module (React Components):**
 - Organize components by feature/domain:
   - `components/` - Generic reusable components (Form, TextField, TagInput, SkillChip, StoryCard, ChatBox, CoinBalanceBadge)
   - `pages/` - Route-level page components (DashboardPage, ProfileEditorPage, PackagesPage, ExportsPage, LinkedInAssistantPage, BillingPage)
@@ -305,6 +323,20 @@ This constitution establishes the foundational principles, architectural decisio
 - Use TypeScript for type safety
 - Prefer composition over inheritance
 
+**Common Module (Shared Code):**
+- DTOs used by both frontend (TypeScript types) and backend (Java records)
+- API constants (endpoint paths, error codes)
+- Validation rules shared between frontend and backend
+- Build process: generates TypeScript types from Java records (optional enhancement)
+
+**Gradle Build Integration:**
+- Root `build.gradle.kts` coordinates builds
+- `backend:bootJar` task depends on `frontend:build` task
+- Frontend build output copied to `backend/src/main/resources/static`
+- Single JAR artifact contains both frontend and backend
+- Local development: run `backend:bootRun` serves both API and frontend
+- Frontend development mode: optional separate Vite dev server with proxy to backend
+
 ---
 
 ### Principle 11: Database Schema Evolution
@@ -315,7 +347,7 @@ This constitution establishes the foundational principles, architectural decisio
 
 **Application:**
 - Use Liquibase Core 4.25.0+ as the migration framework
-- Master changelog: `src/main/resources/db/changelog/db.changelog-master.yaml`
+- Master changelog: `backend/src/main/resources/db/changelog/db.changelog-master.yaml`
 - **Naming Convention (REQUIRED):**
   - **Timestamp-based naming:** `yyyyMMddHHmmss-description.xml`
   - Example: `20260219143000-add-hero-inventory-table.xml`
@@ -407,29 +439,8 @@ This constitution establishes the foundational principles, architectural decisio
   - `ExportCompletedEvent(tenantId, userId, exportType, fileUrl, coinsSpent)`
   - `CoinTransactionEvent(tenantId, walletId, amount, type, refId)`
   - `LinkedInAnalysisCompletedEvent(tenantId, userId, analysisId, overallScore)`
-- Publish events using Spring's `ApplicationEventPublisher`:
-  ```java
-  @Service
-  public class ExportService {
-      @Autowired
-      private ApplicationEventPublisher eventPublisher;
-
-      public void generateResume(Tenant tenant, User user, ...) {
-          // ... generation logic
-          eventPublisher.publishEvent(new ExportCompletedEvent(tenant.getId(), user.getId(), "RESUME", fileUrl, coinsSpent));
-      }
-  }
-  ```
-- Subscribe to events using `@EventListener`:
-  ```java
-  @Component
-  public class NotificationService {
-      @EventListener
-      public void onExportCompleted(ExportCompletedEvent event) {
-          // Send notification to user
-      }
-  }
-  ```
+- Publish events using Spring's `ApplicationEventPublisher`
+- Subscribe to events using `@EventListener`
 
 **Event Processing Rules:**
 - Event listeners MUST be non-blocking (use `@Async` if needed)

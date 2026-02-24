@@ -84,7 +84,7 @@ A modern career management platform combining:
 
 **Tech Stack:**
 - **Frontend:** React 18+ with TypeScript, React Query, MUI/Chakra UI
-- **Backend:** Spring Boot 3.x with Java 25, Spring Security (JWT), Spring Data JPA
+- **Backend:** Spring Boot 4.x with Java 25, Spring Security (JWT), Spring Data JPA
 - **Database:** PostgreSQL 18 with JSONB and pgvector extension
 - **AI/LLM:** OpenAI, Gemini, Claude APIs (backend-controlled)
 - **Infrastructure:** Docker, Gradle, Logback + Logstash Encoder

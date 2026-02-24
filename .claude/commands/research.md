@@ -45,7 +45,7 @@ This command performs focused technical research to answer specific questions ab
 **Examples:**
 - "Research task scheduling libraries for Java Spring Boot"
   - Topic: Task scheduling libraries
-  - Context: Java 21, Spring Boot 3.x
+  - Context: Java 21, Spring Boot 4.x
   - Constraints: Simplicity First, Containerization, Modern Java
   - Criteria: Ease of use, Spring integration, Docker compatibility
 
@@ -72,7 +72,7 @@ This command performs focused technical research to answer specific questions ab
 **Extract applicable constraints:**
 - **Principle 1 (Simplicity):** Prefer simple solutions over complex ones
 - **Principle 2 (Containerization):** Must work in Docker
-- **Principle 3 (Modern Java):** Java 21, Spring Boot 3.x, records, virtual threads
+- **Principle 3 (Modern Java):** Java 21, Spring Boot 4.x, records, virtual threads
 - **Principle 4 (Data Sovereignty):** Embedded database (H2/SQLite)
 - **Principle 5 (Selenium Reliability):** Explicit waits, retries, error handling
 - **Principle 6 (Observability):** Logging, monitoring, debugging support
@@ -116,7 +116,7 @@ This command performs focused technical research to answer specific questions ab
    - Example: "Quartz scheduler Docker container issues"
 
 **Search Guidelines:**
-- Include version numbers (Java 21, Spring Boot 3.x)
+- Include version numbers (Java 21, Spring Boot 4.x)
 - Prefer recent content (2023-2024) unless researching mature libraries
 - Cross-reference multiple sources (minimum 3 sources per finding)
 - Prioritize: Official Docs > Spring Guides > Baeldung > Stack Overflow > Medium
@@ -140,17 +140,17 @@ grep -r "scheduler\|scheduling\|timer" .reference/TravianBotSharp/ --include="*.
 
 **For each solution candidate, validate against principles:**
 
-| Principle | Question | Pass/Fail |
-|-----------|----------|-----------|
-| 1. Simplicity | Is this the simplest solution that works? | ✅/❌ |
-| 2. Containerization | Does it work in Docker without modification? | ✅/❌ |
-| 3. Modern Java | Does it leverage Java 21/Spring Boot 3.x features? | ✅/❌ |
-| 4. Data Sovereignty | Does it support embedded database? | ✅/N/A |
-| 5. Selenium Reliability | Does it handle retries/errors gracefully? | ✅/N/A |
-| 6. Observability | Can we log/monitor its execution? | ✅/❌ |
-| 7. Security | Does it handle credentials securely? | ✅/N/A |
-| 8. Reference Compatibility | Does TBS use similar approach? | ✅/N/A |
-| 9. Modularity | Can it be implemented in <500 lines? | ✅/❌ |
+| Principle | Question                                           | Pass/Fail |
+|-----------|----------------------------------------------------|-----------|
+| 1. Simplicity | Is this the simplest solution that works?          | ✅/❌ |
+| 2. Containerization | Does it work in Docker without modification?       | ✅/❌ |
+| 3. Modern Java | Does it leverage Java 21/Spring Boot 4.x features? | ✅/❌ |
+| 4. Data Sovereignty | Does it support embedded database?                 | ✅/N/A |
+| 5. Selenium Reliability | Does it handle retries/errors gracefully?          | ✅/N/A |
+| 6. Observability | Can we log/monitor its execution?                  | ✅/❌ |
+| 7. Security | Does it handle credentials securely?               | ✅/N/A |
+| 8. Reference Compatibility | Does TBS use similar approach?                     | ✅/N/A |
+| 9. Modularity | Can it be implemented in <500 lines?               | ✅/❌ |
 
 **Mark N/A for non-applicable principles.**
 
@@ -448,7 +448,7 @@ References:
 3. Unverified code snippets
 
 **Red Flags (Avoid):**
-- Information about different major versions (e.g., Spring Boot 2.x when using 3.x)
+- Information about different major versions (e.g., Spring Boot 4.x when using 4.x)
 - Conflicting information without explanation
 - Code examples that violate project principles
 - Sources promoting specific commercial products without disclosure
@@ -469,7 +469,7 @@ References:
 
 3. **Principle 3 (Modern Java):**
    - Leverages Java 21 features when beneficial
-   - Compatible with Spring Boot 3.x
+   - Compatible with Spring Boot 4.x
    - Uses modern patterns (records, streams, optionals)
 
 4. **Principle 9 (Modularity):**

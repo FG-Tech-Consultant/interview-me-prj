@@ -26,7 +26,7 @@ The Travian Bot needs a way for the backend to push real-time notifications to t
 **Project Constraints:**
 - **Principle 1 (Simplicity First):** Must be simple to implement, minimal dependencies
 - **Principle 2 (Containerization):** Must work in Docker containers without special configuration
-- **Principle 3 (Modern Java):** Should leverage Java 21 and Spring Boot 3.x features
+- **Principle 3 (Modern Java):** Should leverage Java 21 and Spring Boot 4.x features
 - **Principle 6 (Observability):** Should be easy to monitor and debug
 - **Principle 9 (Modularity):** Implementation should be <500 lines for services
 
@@ -67,7 +67,7 @@ Server-Sent Events (SSE) is an HTML5 standard that allows servers to push data t
 **Constitutional Compliance:**
 - ✅ **Principle 1 (Simplicity):** Minimal code, no extra dependencies, straightforward implementation
 - ✅ **Principle 2 (Containerization):** Works in Docker without modifications (single instance)
-- ✅ **Principle 3 (Modern Java):** Compatible with Java 21, Spring Boot 3.x, can use records for DTOs
+- ✅ **Principle 3 (Modern Java):** Compatible with Java 21, Spring Boot 4.x, can use records for DTOs
 - ✅ **Principle 6 (Observability):** Easy to log events, track active connections via emitter list
 - ✅ **Principle 7 (Security):** Works with existing Spring Security, no additional config
 - ✅ **Principle 9 (Modularity):** Simple service (<100 lines), clean separation of concerns
@@ -120,7 +120,7 @@ Long polling is a technique where the client sends a request to the server, and 
 **Constitutional Compliance:**
 - ⚠️ **Principle 1 (Simplicity):** Server simple, but client more complex (7/10)
 - ✅ **Principle 2 (Containerization):** Works perfectly in Docker
-- ✅ **Principle 3 (Modern Java):** Compatible with Java 21, Spring Boot 3.x
+- ✅ **Principle 3 (Modern Java):** Compatible with Java 21, Spring Boot 4.x
 - ⚠️ **Principle 6 (Observability):** Higher logging overhead, harder to track active clients (7/10)
 - ✅ **Principle 7 (Security):** Standard HTTP, works with Spring Security
 - ✅ **Principle 9 (Modularity):** Can be modular, but more code needed
@@ -174,7 +174,7 @@ WebSocket is a full-duplex communication protocol that provides bidirectional, p
 **Constitutional Compliance:**
 - ❌ **Principle 1 (Simplicity):** Complex setup, extra dependency, over-engineered for use case (FAIL)
 - ⚠️ **Principle 2 (Containerization):** Works but needs sticky sessions or broker (CONDITIONAL)
-- ✅ **Principle 3 (Modern Java):** Full Spring Boot 3.x support
+- ✅ **Principle 3 (Modern Java):** Full Spring Boot 4.x support
 - ⚠️ **Principle 6 (Observability):** More complex monitoring (CONDITIONAL)
 - ⚠️ **Principle 7 (Security):** Requires additional security configuration (CONDITIONAL)
 - ⚠️ **Principle 9 (Modularity):** More code and configuration classes (CONDITIONAL)

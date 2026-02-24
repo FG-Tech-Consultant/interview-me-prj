@@ -38,7 +38,7 @@
 
 **✅ Principle 3: Modern Java Standards**
 - **Alignment:** [Java 21 features utilized]
-- **Evidence:** [Specific language features, Spring Boot 3.x usage]
+- **Evidence:** [Specific language features, Spring Boot 4.x usage]
 - **Gate:** PASSED | FAILED | N/A
 
 **✅ Principle 4: Data Sovereignty and Persistence**
