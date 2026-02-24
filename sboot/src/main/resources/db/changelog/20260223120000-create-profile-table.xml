@@ -53,7 +53,7 @@
             baseTableName="profile"
             baseColumnNames="user_id"
             constraintName="fk_profile_user"
-            referencedTableName="user"
+            referencedTableName="users"
             referencedColumnNames="id"/>
 
         <createIndex indexName="idx_profile_tenant_id" tableName="profile">

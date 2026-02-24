@@ -9,8 +9,8 @@ import com.interviewme.model.User;
 import com.interviewme.repository.TenantRepository;
 import com.interviewme.repository.UserRepository;
 import com.interviewme.security.JwtService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class AuthService implements UserDetailsService {
 
@@ -32,6 +31,18 @@ public class AuthService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    public AuthService(UserRepository userRepository,
+                       TenantRepository tenantRepository,
+                       PasswordEncoder passwordEncoder,
+                       JwtService jwtService,
+                       @Lazy AuthenticationManager authenticationManager) {
+        this.userRepository = userRepository;
+        this.tenantRepository = tenantRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+    }
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {

@@ -28,7 +28,7 @@ public interface StoryRepository extends JpaRepository<Story, Long> {
     @Query("""
         SELECT s FROM Story s
         JOIN ExperienceProject p ON s.experienceProjectId = p.id
-        JOIN com.interviewme.profile.model.JobExperience j ON p.jobExperienceId = j.id
+        JOIN JobExperience j ON p.jobExperienceId = j.id
         WHERE j.profileId = :profileId
         AND s.visibility = 'public'
         AND s.deletedAt IS NULL
