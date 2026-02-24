@@ -1,0 +1,437 @@
+openapi: 3.0.3
+info:
+  title: Live Resume & Career Copilot API - Base Structure
+  description: |
+    Authentication and health check endpoints for the Live Resume & Career Copilot platform base structure.
+    This specification covers only the foundational endpoints for Feature 001.
+  version: 1.0.0
+  contact:
+    name: Project Team
+    email: support@interviewme.example.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.interviewme.example.com
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User registration and login endpoints
+  - name: Health
+    description: Application health and readiness checks
+
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register new user and tenant
+      description: |
+        Creates a new tenant and user account. The tenant is automatically created
+        with the provided tenant name, and the user is associated with it.
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              standard:
+                summary: Standard registration
+                value:
+                  email: user@example.com
+                  password: SecurePass123!
+                  tenantName: "Acme Corp"
+      responses:
+        '201':
+          description: User and tenant created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              examples:
+                success:
+                  summary: Successful registration
+                  value:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    email: user@example.com
+                    tenantId: 1
+        '400':
+          description: Invalid input (validation errors)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidEmail:
+                  summary: Invalid email format
+                  value:
+                    timestamp: "2026-02-22T10:00:00Z"
+                    status: 400
+                    error: Bad Request
+                    message: Email must be valid
+                    path: /api/auth/register
+                shortPassword:
+                  summary: Password too short
+                  value:
+                    timestamp: "2026-02-22T10:00:00Z"
+                    status: 400
+                    error: Bad Request
+                    message: Password must be at least 8 characters
+                    path: /api/auth/register
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                emailExists:
+                  summary: Duplicate email
+                  value:
+                    timestamp: "2026-02-22T10:00:00Z"
+                    status: 409
+                    error: Conflict
+                    message: Email already exists
+                    path: /api/auth/register
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login with email and password
+      description: |
+        Authenticates a user with email and password, returning a JWT token
+        that contains user ID, email, and tenant ID claims.
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              standard:
+                summary: Standard login
+                value:
+                  email: user@example.com
+                  password: SecurePass123!
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              examples:
+                success:
+                  summary: Successful login
+                  value:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    email: user@example.com
+                    tenantId: 1
+        '400':
+          description: Invalid input (validation errors)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidCredentials:
+                  summary: Wrong email or password
+                  value:
+                    timestamp: "2026-02-22T10:00:00Z"
+                    status: 401
+                    error: Unauthorized
+                    message: Invalid email or password
+                    path: /api/auth/login
+
+  /api/auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current authenticated user
+      description: |
+        Returns the currently authenticated user's information.
+        Requires valid JWT token in Authorization header.
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+              examples:
+                success:
+                  summary: Current user info
+                  value:
+                    id: 1
+                    email: user@example.com
+                    tenantId: 1
+                    createdAt: "2026-02-22T10:00:00Z"
+        '401':
+          description: Not authenticated or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                noToken:
+                  summary: Missing authorization header
+                  value:
+                    timestamp: "2026-02-22T10:00:00Z"
+                    status: 401
+                    error: Unauthorized
+                    message: Authorization header is required
+                    path: /api/auth/me
+                invalidToken:
+                  summary: Invalid or expired token
+                  value:
+                    timestamp: "2026-02-22T10:00:00Z"
+                    status: 401
+                    error: Unauthorized
+                    message: Invalid or expired token
+                    path: /api/auth/me
+
+  /actuator/health:
+    get:
+      tags:
+        - Health
+      summary: Application health check
+      description: |
+        Returns the health status of the application, including database connectivity.
+        This endpoint is used by container orchestrators and monitoring systems.
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Application is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              examples:
+                healthy:
+                  summary: All systems healthy
+                  value:
+                    status: UP
+                    components:
+                      db:
+                        status: UP
+                        details:
+                          database: PostgreSQL
+                          validationQuery: isValid()
+                      diskSpace:
+                        status: UP
+                        details:
+                          total: 500000000000
+                          free: 300000000000
+                          threshold: 10485760
+        '503':
+          description: Application is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              examples:
+                dbDown:
+                  summary: Database connection failed
+                  value:
+                    status: DOWN
+                    components:
+                      db:
+                        status: DOWN
+                        details:
+                          error: Connection refused
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token obtained from /api/auth/login or /api/auth/register.
+        Include in Authorization header as: `Bearer <token>`
+
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+        - tenantName
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address (will be used as username)
+          example: user@example.com
+          maxLength: 255
+        password:
+          type: string
+          format: password
+          description: User's password (will be hashed with BCrypt)
+          minLength: 8
+          maxLength: 100
+          example: SecurePass123!
+        tenantName:
+          type: string
+          description: Name for the new tenant (organization or personal name)
+          example: Acme Corp
+          minLength: 1
+          maxLength: 255
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          description: User's password
+          example: SecurePass123!
+
+    AuthResponse:
+      type: object
+      required:
+        - token
+        - email
+        - tenantId
+      properties:
+        token:
+          type: string
+          description: JWT authentication token (valid for 24 hours)
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        email:
+          type: string
+          format: email
+          description: Authenticated user's email
+          example: user@example.com
+        tenantId:
+          type: integer
+          format: int64
+          description: ID of the tenant the user belongs to
+          example: 1
+
+    UserResponse:
+      type: object
+      required:
+        - id
+        - email
+        - tenantId
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: User's unique ID
+          example: 1
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: user@example.com
+        tenantId:
+          type: integer
+          format: int64
+          description: ID of the tenant the user belongs to
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when user was created
+          example: "2026-02-22T10:00:00Z"
+
+    ErrorResponse:
+      type: object
+      required:
+        - timestamp
+        - status
+        - error
+        - message
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when error occurred
+          example: "2026-02-22T10:00:00Z"
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        error:
+          type: string
+          description: HTTP status text
+          example: Bad Request
+        message:
+          type: string
+          description: Human-readable error message
+          example: Email must be valid
+        path:
+          type: string
+          description: Request path where error occurred
+          example: /api/auth/register
+        fieldErrors:
+          type: object
+          description: Field-specific validation errors (optional)
+          additionalProperties:
+            type: string
+          example:
+            email: must be a valid email address
+            password: must be at least 8 characters
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [UP, DOWN, OUT_OF_SERVICE, UNKNOWN]
+          description: Overall application health status
+          example: UP
+        components:
+          type: object
+          description: Health status of individual components
+          additionalProperties:
+            $ref: '#/components/schemas/ComponentHealth'
+
+    ComponentHealth:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [UP, DOWN, OUT_OF_SERVICE, UNKNOWN]
+          description: Component health status
+          example: UP
+        details:
+          type: object
+          description: Component-specific details
+          additionalProperties: true
+          example:
+            database: PostgreSQL
+            validationQuery: isValid()
+
+security:
+  - bearerAuth: []

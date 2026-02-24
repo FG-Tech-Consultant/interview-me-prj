@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260222140000-1" author="system">
+        <comment>Create tenant table</comment>
+        <createTable tableName="tenant">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="settings" type="JSONB">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="tenant"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20260222140000-2" author="system">
+        <comment>Create users table</comment>
+        <createTable tableName="users">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password_hash" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="users"
+            baseColumnNames="tenant_id"
+            constraintName="fk_user_tenant"
+            referencedTableName="tenant"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <rollback>
+            <dropTable tableName="users"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20260222140000-3" author="system">
+        <comment>Create indexes for users table</comment>
+        <createIndex indexName="idx_user_tenant_id" tableName="users">
+            <column name="tenant_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_user_email" tableName="users">
+            <column name="email"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex indexName="idx_user_tenant_id" tableName="users"/>
+            <dropIndex indexName="idx_user_email" tableName="users"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
