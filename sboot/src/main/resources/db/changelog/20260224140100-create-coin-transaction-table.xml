@@ -34,9 +34,7 @@
             </column>
         </createTable>
 
-        <addCheckConstraint tableName="coin_transaction"
-                            constraintName="chk_coin_transaction_type"
-                            validate="true">type IN ('EARN', 'SPEND', 'REFUND', 'PURCHASE')</addCheckConstraint>
+        <sql>ALTER TABLE coin_transaction ADD CONSTRAINT chk_coin_transaction_type CHECK (type IN ('EARN', 'SPEND', 'REFUND', 'PURCHASE'))</sql>
 
         <createIndex tableName="coin_transaction" indexName="idx_coin_transaction_tenant_id">
             <column name="tenant_id"/>

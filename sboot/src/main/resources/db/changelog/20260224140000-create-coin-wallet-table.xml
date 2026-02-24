@@ -29,9 +29,7 @@
             </column>
         </createTable>
 
-        <addCheckConstraint tableName="coin_wallet"
-                            constraintName="chk_coin_wallet_balance_non_negative"
-                            validate="true">balance >= 0</addCheckConstraint>
+        <sql>ALTER TABLE coin_wallet ADD CONSTRAINT chk_coin_wallet_balance_non_negative CHECK (balance >= 0)</sql>
 
         <createIndex tableName="coin_wallet" indexName="idx_coin_wallet_tenant_id" unique="true">
             <column name="tenant_id"/>
