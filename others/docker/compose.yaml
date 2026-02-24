@@ -1,0 +1,46 @@
+services:
+
+  interview-me-db:
+    image: pgvector/pgvector:pg16
+    container_name: interview_me_db
+    restart: always
+    environment:
+      - POSTGRES_USER=${IM_PG_USER:-postgres}
+      - POSTGRES_PASSWORD=${IM_PG_PASSWORD:-postgres}
+    ports:
+      - "${IM_PG_PORT:-5432}:5432"
+    volumes:
+      - ./postgresql/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  interview-me-app:
+    image: interview-me:${IM_APP_VERSION:-latest}
+    container_name: interview_me_app
+    restart: always
+    mem_limit: 1024m
+    depends_on:
+      interview-me-db:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=${IM_PROFILE:-dev}
+      - JAVA_TOOL_OPTIONS=-Xms256m -Xmx768m
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://interview-me-db:5432/interview_me
+      - SPRING_DATASOURCE_USERNAME=${IM_PG_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${IM_PG_PASSWORD:-postgres}
+      - JWT_SECRET=${IM_JWT_SECRET:-your-256-bit-secret-must-be-at-least-32-characters-long-for-HS256}
+      - JWT_EXPIRATION_MS=${IM_JWT_EXPIRATION_MS:-86400000}
+      - AI_DEFAULT_PROVIDER=${IM_AI_PROVIDER:-openai}
+      - OPENAI_API_KEY=${IM_OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${IM_GEMINI_API_KEY:-}
+      - CLAUDE_API_KEY=${IM_CLAUDE_API_KEY:-}
+    ports:
+      - "${IM_APP_PORT:-8080}:8080"
+
+volumes:
+  pg_data:
+    driver: local

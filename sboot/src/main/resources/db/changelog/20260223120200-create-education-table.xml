@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260223120200-1" author="claude-code">
+        <createTable tableName="education">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="profile_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="degree" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="institution" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="DATE"/>
+            <column name="end_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="field_of_study" type="VARCHAR(255)"/>
+            <column name="gpa" type="VARCHAR(50)"/>
+            <column name="notes" type="TEXT"/>
+            <column name="visibility" type="VARCHAR(20)" defaultValue="private">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_at" type="TIMESTAMPTZ"/>
+            <column name="version" type="BIGINT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="education"
+            baseColumnNames="tenant_id"
+            constraintName="fk_education_tenant"
+            referencedTableName="tenant"
+            referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+            baseTableName="education"
+            baseColumnNames="profile_id"
+            constraintName="fk_education_profile"
+            referencedTableName="profile"
+            referencedColumnNames="id"/>
+
+        <createIndex indexName="idx_education_tenant_id" tableName="education">
+            <column name="tenant_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_education_profile_id" tableName="education">
+            <column name="profile_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_education_deleted_at" tableName="education">
+            <column name="deleted_at"/>
+        </createIndex>
+
+        <sql>
+            ALTER TABLE education ADD CONSTRAINT chk_education_dates
+            CHECK (start_date IS NULL OR end_date >= start_date);
+        </sql>
+
+        <rollback>
+            <dropTable tableName="education"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

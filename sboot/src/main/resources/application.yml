@@ -1,0 +1,87 @@
+spring:
+  application:
+    name: interview-me-backend
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  threads:
+    virtual:
+      enabled: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+
+server:
+  port: 8080
+
+jwt:
+  secret: ${JWT_SECRET:your-256-bit-secret-must-be-at-least-32-characters-long-for-HS256}
+  expiration: ${JWT_EXPIRATION_MS:86400000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+billing:
+  costs:
+    EXPORT: 5
+    CHAT_MESSAGE: 1
+    LINKEDIN_DRAFT: 3
+    LINKEDIN_SUGGESTION: 2
+    RESUME_EXPORT: 10
+  free-tier:
+    chat-messages-per-month: 50
+    linkedin-drafts-per-month: 10
+  retry:
+    max-attempts: 3
+    backoff-ms: 100
+
+exports:
+  storage-path: ./exports
+  retry:
+    max-attempts: 3
+    initial-delay-ms: 1000
+    multiplier: 2
+
+ai:
+  default-provider: ${AI_DEFAULT_PROVIDER:openai}
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    chat-model: gpt-4o-mini
+    embedding-model: text-embedding-3-small
+    base-url: https://api.openai.com/v1
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    chat-model: gemini-2.0-flash
+    base-url: https://generativelanguage.googleapis.com/v1beta
+  claude:
+    api-key: ${CLAUDE_API_KEY:}
+    chat-model: claude-sonnet-4-6
+    base-url: https://api.anthropic.com/v1
+  chat:
+    max-tokens: 500
+    temperature: 0.3
+    max-context-messages: 10
+    rate-limit-per-minute: 5
+    session-expiry-hours: 24
+  embedding:
+    dimension: 1536
+    similarity-threshold: 0.3
+    top-k: 5

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260224190200-1" author="interview-me">
+        <createTable tableName="chat_message">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)" defaultValue="SENT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tokens_used" type="INTEGER"/>
+            <column name="llm_provider" type="VARCHAR(50)"/>
+            <column name="llm_model" type="VARCHAR(100)"/>
+            <column name="latency_ms" type="INTEGER"/>
+            <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="chat_message" baseColumnNames="tenant_id"
+                                 referencedTableName="tenant" referencedColumnNames="id"
+                                 constraintName="fk_chat_message_tenant"/>
+        <addForeignKeyConstraint baseTableName="chat_message" baseColumnNames="session_id"
+                                 referencedTableName="chat_session" referencedColumnNames="id"
+                                 constraintName="fk_chat_message_session"/>
+
+        <createIndex tableName="chat_message" indexName="idx_chat_message_tenant_id">
+            <column name="tenant_id"/>
+        </createIndex>
+        <createIndex tableName="chat_message" indexName="idx_chat_message_session_id">
+            <column name="session_id"/>
+        </createIndex>
+        <createIndex tableName="chat_message" indexName="idx_chat_message_created_at">
+            <column name="created_at"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="chat_message"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

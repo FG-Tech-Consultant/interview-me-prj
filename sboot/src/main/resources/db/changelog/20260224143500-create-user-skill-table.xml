@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260224143500-1" author="claude-code">
+        <createTable tableName="user_skill">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="profile_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="skill_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="years_of_experience" type="INT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proficiency_depth" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_used_date" type="DATE"/>
+            <column name="confidence_level" type="VARCHAR(20)" defaultValue="MEDIUM">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tags" type="JSONB"/>
+            <column name="visibility" type="VARCHAR(20)" defaultValue="private">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_at" type="TIMESTAMPTZ"/>
+            <column name="version" type="BIGINT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="user_skill"
+            baseColumnNames="tenant_id"
+            constraintName="fk_user_skill_tenant"
+            referencedTableName="tenant"
+            referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+            baseTableName="user_skill"
+            baseColumnNames="profile_id"
+            constraintName="fk_user_skill_profile"
+            referencedTableName="profile"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="user_skill"
+            baseColumnNames="skill_id"
+            constraintName="fk_user_skill_skill"
+            referencedTableName="skill"
+            referencedColumnNames="id"
+            onDelete="RESTRICT"/>
+
+        <createIndex indexName="idx_user_skill_tenant_id" tableName="user_skill">
+            <column name="tenant_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_user_skill_profile_id" tableName="user_skill">
+            <column name="profile_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_user_skill_skill_id" tableName="user_skill">
+            <column name="skill_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_user_skill_deleted_at" tableName="user_skill">
+            <column name="deleted_at"/>
+        </createIndex>
+
+        <sql>
+            CREATE UNIQUE INDEX idx_user_skill_unique
+            ON user_skill(tenant_id, profile_id, skill_id)
+            WHERE deleted_at IS NULL;
+        </sql>
+
+        <sql>
+            ALTER TABLE user_skill ADD CONSTRAINT chk_proficiency_depth
+            CHECK (proficiency_depth BETWEEN 1 AND 5);
+        </sql>
+
+        <sql>
+            ALTER TABLE user_skill ADD CONSTRAINT chk_years_of_experience
+            CHECK (years_of_experience >= 0 AND years_of_experience &lt;= 70);
+        </sql>
+
+        <sql>
+            ALTER TABLE user_skill ADD CONSTRAINT chk_confidence_level
+            CHECK (confidence_level IN ('LOW', 'MEDIUM', 'HIGH'));
+        </sql>
+
+        <sql>
+            ALTER TABLE user_skill ADD CONSTRAINT chk_visibility
+            CHECK (visibility IN ('public', 'private'));
+        </sql>
+
+        <rollback>
+            <dropTable tableName="user_skill"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

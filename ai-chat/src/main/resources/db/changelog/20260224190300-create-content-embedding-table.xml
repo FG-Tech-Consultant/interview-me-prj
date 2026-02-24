@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260224190300-1" author="interview-me">
+        <createTable tableName="content_embedding">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_text" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="embedding" type="vector(1536)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMPTZ" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="content_embedding" baseColumnNames="tenant_id"
+                                 referencedTableName="tenant" referencedColumnNames="id"
+                                 constraintName="fk_content_embedding_tenant"/>
+
+        <createIndex tableName="content_embedding" indexName="idx_content_embedding_type_id" unique="true">
+            <column name="tenant_id"/>
+            <column name="content_type"/>
+            <column name="content_id"/>
+        </createIndex>
+        <createIndex tableName="content_embedding" indexName="idx_content_embedding_tenant_id">
+            <column name="tenant_id"/>
+        </createIndex>
+
+        <!-- HNSW index for fast approximate nearest neighbor search -->
+        <sql>
+            CREATE INDEX idx_content_embedding_hnsw
+                ON content_embedding USING hnsw (embedding vector_cosine_ops)
+                WITH (m = 16, ef_construction = 64)
+        </sql>
+
+        <rollback>
+            <dropTable tableName="content_embedding"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

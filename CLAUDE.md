@@ -3,8 +3,10 @@
 ## Build System
 
 **This project uses GRADLE, NOT Maven!**
-- Build: `./gradlew clean bootJar -x test`
-- Run: `./gradlew bootRun`
+- Build: `./gradlew :sboot:bootJar -x test`
+- Run: `./gradlew :sboot:bootRun`
+- The `sboot` module is the Spring Boot bootstrap (Application, configs, resources)
+- The `backend` module is a plain library (domain logic, controllers, services)
 - NEVER use `mvn` or `mvnw` commands
 
 ## Speckit Workflow
@@ -258,14 +260,14 @@ databaseChangeLog:
 TIMESTAMP=$(date +"%Y%m%d%H%M%S")
 
 # 2. Create file
-touch "src/main/resources/db/changelog/${TIMESTAMP}-your-description.xml"
+touch "sboot/src/main/resources/db/changelog/${TIMESTAMP}-your-description.xml"
 
 # 3. Edit file with template above
 
-# 4. Add to db.changelog-master.yaml
+# 4. Add to sboot/src/main/resources/db/changelog/db.changelog-master.yaml
 
 # 5. Test migration
-./gradlew bootRun
+./gradlew :sboot:bootRun
 ```
 
 **Common operations:**

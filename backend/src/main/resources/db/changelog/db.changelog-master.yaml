@@ -1,3 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: db/changelog/20260222140000-initial-schema.xml

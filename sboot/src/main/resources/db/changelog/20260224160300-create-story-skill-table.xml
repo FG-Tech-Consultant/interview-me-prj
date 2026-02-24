@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260224160300-1" author="claude-code">
+        <createTable tableName="story_skill">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="story_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_skill_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="story_skill"
+            baseColumnNames="tenant_id"
+            constraintName="fk_story_skill_tenant"
+            referencedTableName="tenant"
+            referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+            baseTableName="story_skill"
+            baseColumnNames="story_id"
+            constraintName="fk_story_skill_story"
+            referencedTableName="story"
+            referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+            baseTableName="story_skill"
+            baseColumnNames="user_skill_id"
+            constraintName="fk_story_skill_user_skill"
+            referencedTableName="user_skill"
+            referencedColumnNames="id"/>
+
+        <sql>
+            CREATE UNIQUE INDEX idx_story_skill_unique
+            ON story_skill(story_id, user_skill_id);
+        </sql>
+
+        <createIndex indexName="idx_story_skill_tenant_id" tableName="story_skill">
+            <column name="tenant_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="story_skill"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -72,7 +72,8 @@
       "Read(//c/Users/ferna/.claude/**)",
       "SlashCommand(/speckit.specify)",
       "Bash(.specify/scripts/bash/create-liquibase-migration.sh:*)",
-      "Read(//d/Programas/workspaces/helpnei/hn-backend-core-b/**)"
+      "Read(//d/Programas/workspaces/helpnei/hn-backend-core-b/**)",
+      "WebFetch(domain:code.claude.com)"
     ],
     "deny": [],
     "ask": []

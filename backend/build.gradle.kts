@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot")
+    id("org.springframework.boot") apply false
     id("io.spring.dependency-management")
 }
 
@@ -11,6 +11,12 @@ java {
     sourceCompatibility = JavaVersion.VERSION_21
 }
 
+dependencyManagement {
+    imports {
+        mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    }
+}
+
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
@@ -18,19 +24,18 @@ configurations {
 }
 
 dependencies {
-    // Common module
+    // Internal modules
     implementation(project(":common"))
+    implementation(project(":billing"))
+    implementation(project(":ai-chat"))
+    implementation(project(":exports"))
+    implementation(project(":linkedin"))
 
-    // Spring Boot Starters
+    // Spring Boot Starters (provided by sboot at runtime)
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-
-    // Database
-    runtimeOnly("org.postgresql:postgresql")
-    implementation("org.liquibase:liquibase-core:4.25.1")
 
     // JWT
     implementation("io.jsonwebtoken:jjwt-api:0.12.5")
@@ -52,17 +57,4 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-// Copy frontend build to backend static resources
-val copyFrontend = tasks.register<Copy>("copyFrontend") {
-    group = "build"
-    description = "Copy frontend dist to backend static resources"
-    dependsOn(":frontend:npmBuild")
-    from("${project.rootDir}/frontend/dist")
-    into("${project.buildDir}/resources/main/static")
-}
-
-tasks.named("processResources") {
-    dependsOn(copyFrontend)
 }

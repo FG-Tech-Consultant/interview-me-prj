@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260224140100-1" author="interview-me">
+        <createTable tableName="coin_transaction">
+            <column name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_coin_transaction_tenant"
+                             references="tenant(id)"/>
+            </column>
+            <column name="wallet_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_coin_transaction_wallet"
+                             references="coin_wallet(id)"/>
+            </column>
+            <column name="type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(500)"/>
+            <column name="ref_type" type="VARCHAR(50)"/>
+            <column name="ref_id" type="VARCHAR(100)"/>
+            <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addCheckConstraint tableName="coin_transaction"
+                            constraintName="chk_coin_transaction_type"
+                            validate="true">type IN ('EARN', 'SPEND', 'REFUND', 'PURCHASE')</addCheckConstraint>
+
+        <createIndex tableName="coin_transaction" indexName="idx_coin_transaction_tenant_id">
+            <column name="tenant_id"/>
+        </createIndex>
+        <createIndex tableName="coin_transaction" indexName="idx_coin_transaction_wallet_id">
+            <column name="wallet_id"/>
+        </createIndex>
+        <createIndex tableName="coin_transaction" indexName="idx_coin_transaction_type">
+            <column name="type"/>
+        </createIndex>
+        <createIndex tableName="coin_transaction" indexName="idx_coin_transaction_ref_type_ref_id">
+            <column name="ref_type"/>
+            <column name="ref_id"/>
+        </createIndex>
+        <createIndex tableName="coin_transaction" indexName="idx_coin_transaction_created_at">
+            <column name="created_at"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="coin_transaction"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,8 +1,13 @@
 rootProject.name = "interview-me-prj"
 
-include("backend")
-include("frontend")
 include("common")
+include("billing")
+include("backend")
+include("ai-chat")
+include("exports")
+include("linkedin")
+include("sboot")
+include("frontend")
 
 pluginManagement {
     repositories {

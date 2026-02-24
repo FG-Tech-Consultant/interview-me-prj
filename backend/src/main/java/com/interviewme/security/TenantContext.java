@@ -1,18 +1,21 @@
 package com.interviewme.security;
 
+/**
+ * @deprecated Use {@link com.interviewme.common.util.TenantContext} directly.
+ * Kept for backward compatibility during migration.
+ */
+@Deprecated
 public class TenantContext {
 
-    private static final ThreadLocal<Long> currentTenantId = new ThreadLocal<>();
-
     public static void setTenantId(Long tenantId) {
-        currentTenantId.set(tenantId);
+        com.interviewme.common.util.TenantContext.setTenantId(tenantId);
     }
 
     public static Long getTenantId() {
-        return currentTenantId.get();
+        return com.interviewme.common.util.TenantContext.getTenantId();
     }
 
     public static void clear() {
-        currentTenantId.remove();
+        com.interviewme.common.util.TenantContext.clear();
     }
 }

@@ -1,36 +1,3 @@
-# Stage 1: Build Frontend
-FROM node:20-alpine AS frontend-build
-
-WORKDIR /app/frontend
-
-COPY frontend/package*.json ./
-RUN npm ci --only=production
-
-COPY frontend/ ./
-RUN npm run build
-
-# Stage 2: Build Backend
-FROM gradle:8.5-jdk21-alpine AS backend-build
-
-WORKDIR /app
-
-# Copy Gradle configuration
-COPY build.gradle.kts settings.gradle.kts ./
-COPY gradle ./gradle
-
-# Copy common module
-COPY common ./common
-
-# Copy backend module
-COPY backend ./backend
-
-# Copy frontend dist to backend static resources
-COPY --from=frontend-build /app/frontend/dist ./backend/src/main/resources/static
-
-# Build backend (skip frontend build since we already have dist)
-RUN gradle :backend:bootJar --no-daemon -x test -x copyFrontend
-
-# Stage 3: Runtime
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
@@ -38,8 +5,8 @@ WORKDIR /app
 # Create non-root user
 RUN addgroup -S spring && adduser -S spring -G spring
 
-# Copy JAR from backend build
-COPY --from=backend-build /app/backend/build/libs/*.jar app.jar
+# Copy pre-built JAR (build locally with: ./gradlew :sboot:bootJar -x test)
+COPY sboot/build/libs/sboot-*.jar app.jar
 
 # Change ownership
 RUN chown spring:spring app.jar

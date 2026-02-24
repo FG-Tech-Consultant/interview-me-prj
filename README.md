@@ -8,9 +8,14 @@ This is a multi-module Gradle project with the following structure:
 
 ```
 interview-me-prj/
-├── backend/          # Spring Boot backend (Java 21)
-├── frontend/         # React + TypeScript frontend (Vite)
+├── sboot/            # Spring Boot bootstrap module (Application, configs, resources)
+├── backend/          # Core domain logic (controllers, services, models, security)
 ├── common/           # Shared DTOs and constants
+├── billing/          # Billing/wallet module
+├── ai-chat/          # AI chat module
+├── exports/          # PDF export module
+├── linkedin/         # LinkedIn analyzer module
+├── frontend/         # React + TypeScript frontend (Vite)
 ├── .specify/         # Project documentation and specifications
 └── specs/            # Feature specifications
 ```
@@ -35,7 +40,7 @@ interview-me-prj/
 
 ### Infrastructure
 - **Build Tool**: Gradle 8.5+
-- **Container**: Docker + Docker Compose
+- **Container**: Docker
 - **Runtime**: JRE 21 (Eclipse Temurin)
 
 ## Quick Start
@@ -55,12 +60,19 @@ interview-me-prj/
 
 2. Edit `.env` and set secure values (especially `JWT_SECRET` and database password)
 
-3. Start the application:
+3. Build the application locally:
    ```bash
-   docker-compose up --build
+   # Build frontend + backend JAR
+   ./gradlew :sboot:bootJar -x test
    ```
 
-4. Access the application:
+4. Build Docker image and start:
+   ```bash
+   docker build -t interview-me:latest .
+   docker-compose up
+   ```
+
+5. Access the application:
    - Frontend: http://localhost:8080
    - Health check: http://localhost:8080/actuator/health
    - API: http://localhost:8080/api
@@ -74,7 +86,7 @@ interview-me-prj/
 docker-compose up -d db
 
 # Build and run backend
-./gradlew backend:bootRun
+./gradlew :sboot:bootRun
 ```
 
 #### Frontend Only
@@ -93,11 +105,11 @@ Access frontend at http://localhost:5173
 #### Full Build
 
 ```bash
-# Build everything (backend + frontend)
-./gradlew build
+# Build everything (backend + frontend bundled)
+./gradlew :sboot:bootJar -x test
 
-# Run backend JAR (includes bundled frontend)
-java -jar backend/build/libs/backend-1.0.0.jar
+# Run the JAR (includes bundled frontend)
+java -jar sboot/build/libs/sboot-1.0.0.jar
 ```
 
 ## Available Endpoints
@@ -107,10 +119,18 @@ java -jar backend/build/libs/backend-1.0.0.jar
 - `POST /api/auth/login` - Login with email and password
 - `GET /api/auth/me` - Get current authenticated user (requires JWT)
 
+### Profile Management
+- `GET /api/profiles/me` - Get current user's profile
+- `POST /api/profiles` - Create new profile
+- `PUT /api/profiles/{id}` - Update profile
+- `DELETE /api/profiles/{id}` - Delete profile
+- `GET /api/profiles/{id}/job-experiences` - Manage job experiences
+- `GET /api/profiles/{id}/education` - Manage education history
+
 ### Health Check
 - `GET /actuator/health` - Application health status
 
-See `specs/001-project-base-structure/contracts/api-spec.yaml` for full API documentation.
+See `specs/002-profile-crud/API_DOCUMENTATION.md` for full API documentation.
 
 ## Environment Variables
 
@@ -130,15 +150,56 @@ See `.env.example` for all required environment variables:
 ./gradlew test
 
 # Run only backend tests
-./gradlew backend:test
+./gradlew :backend:test
 ```
 
-## Project Documentation
+## Database Migrations
 
-- **Specifications**: `specs/` - Feature specifications with design docs
-- **Research**: `.specify/research/` - Technical research and decisions
-- **Memory**: `.specify/memory/` - Project overview and constitution
-- **Templates**: `.specify/templates/` - Document templates
+This project uses Liquibase with timestamp-based migrations.
+
+Migration files live in `sboot/src/main/resources/db/changelog/`.
+
+### Creating a New Migration
+
+1. Generate timestamp:
+   ```bash
+   # Windows PowerShell
+   Get-Date -Format "yyyyMMddHHmmss"
+
+   # Linux/Mac/Git Bash
+   date +"%Y%m%d%H%M%S"
+   ```
+
+2. Create migration file:
+   ```
+   sboot/src/main/resources/db/changelog/YYYYMMDDHHMMSS-description.xml
+   ```
+
+3. Add to master changelog:
+   ```yaml
+   # sboot/src/main/resources/db/changelog/db.changelog-master.yaml
+   databaseChangeLog:
+     - include:
+         file: db/changelog/YYYYMMDDHHMMSS-description.xml
+   ```
+
+See `.specify/memory/constitution.md` Principle 10 for full migration guidelines.
+
+## Building for Production
+
+```bash
+# 1. Build the JAR locally (frontend included)
+./gradlew :sboot:bootJar -x test
+
+# 2. Build Docker image (just copies the jar, no build inside Docker)
+docker build -t interview-me:latest .
+```
+
+The Docker image:
+- Does NOT build inside Docker — uses pre-built JAR
+- Includes frontend static files served by Spring Boot
+- Runs as non-root user
+- Size optimized with Alpine Linux + JRE only
 
 ## Multi-Tenancy
 
@@ -156,52 +217,6 @@ This application uses discriminator-based multi-tenancy:
 - All API endpoints (except auth) require valid JWT
 - CORS disabled (same-origin deployment)
 - No secrets in version control
-
-## Database Migrations
-
-This project uses Liquibase with timestamp-based migrations:
-
-### Creating a New Migration
-
-1. Generate timestamp:
-   ```bash
-   # Windows PowerShell
-   Get-Date -Format "yyyyMMddHHmmss"
-
-   # Linux/Mac/Git Bash
-   date +"%Y%m%d%H%M%S"
-   ```
-
-2. Create migration file:
-   ```
-   backend/src/main/resources/db/changelog/YYYYMMDDHHMMSS-description.xml
-   ```
-
-3. Add to master changelog:
-   ```yaml
-   # backend/src/main/resources/db/changelog/db.changelog-master.yaml
-   databaseChangeLog:
-     - include:
-         file: db/changelog/YYYYMMDDHHMMSS-description.xml
-   ```
-
-See `.specify/memory/constitution.md` Principle 10 for full migration guidelines.
-
-## Building for Production
-
-```bash
-# Build Docker image
-docker build -t interview-me:latest .
-
-# Or use Docker Compose
-docker-compose up --build
-```
-
-The final image:
-- Uses multi-stage builds
-- Includes frontend static files served by Spring Boot
-- Runs as non-root user
-- Size optimized with Alpine Linux
 
 ## Contributing
 

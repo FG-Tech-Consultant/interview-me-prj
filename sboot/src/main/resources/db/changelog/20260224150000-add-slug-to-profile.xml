@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260224150000-1" author="interview-me">
+        <addColumn tableName="profile">
+            <column name="slug" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <createIndex tableName="profile" indexName="idx_profile_slug" unique="true">
+            <column name="slug"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex tableName="profile" indexName="idx_profile_slug"/>
+            <dropColumn tableName="profile" columnName="slug"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20260224150000-2" author="interview-me">
+        <addColumn tableName="profile">
+            <column name="view_count" type="BIGINT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="profile" columnName="view_count"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
