@@ -26,10 +26,15 @@ public class ProfileController {
     private final ProfileService profileService;
     private final PublicProfileService publicProfileService;
 
+    private Long extractUserId(Authentication authentication) {
+        var user = (com.interviewme.model.User) authentication.getPrincipal();
+        return user.getId();
+    }
+
     @GetMapping("/me")
     @Transactional(readOnly = true)
     public ResponseEntity<ProfileResponse> getCurrentUserProfile(Authentication authentication) {
-        Long userId = Long.parseLong(authentication.getName());
+        Long userId = extractUserId(authentication);
         log.info("GET /api/profiles/me - userId: {}", userId);
 
         ProfileResponse profile = profileService.getProfileByUserId(userId);
@@ -50,7 +55,7 @@ public class ProfileController {
     public ResponseEntity<ProfileResponse> createProfile(
             Authentication authentication,
             @Valid @RequestBody CreateProfileRequest request) {
-        Long userId = Long.parseLong(authentication.getName());
+        Long userId = extractUserId(authentication);
         log.info("POST /api/profiles - userId: {}", userId);
 
         ProfileResponse profile = profileService.createProfile(userId, request);
@@ -80,7 +85,7 @@ public class ProfileController {
     @GetMapping("/exists")
     @Transactional(readOnly = true)
     public ResponseEntity<Boolean> checkProfileExists(Authentication authentication) {
-        Long userId = Long.parseLong(authentication.getName());
+        Long userId = extractUserId(authentication);
         log.info("GET /api/profiles/exists - userId: {}", userId);
 
         boolean exists = profileService.profileExists(userId);

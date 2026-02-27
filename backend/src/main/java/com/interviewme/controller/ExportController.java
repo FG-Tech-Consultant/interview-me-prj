@@ -27,13 +27,18 @@ public class ExportController {
     private final ExportService exportService;
     private final ProfileService profileService;
 
+    private Long extractUserId(Authentication authentication) {
+        var user = (com.interviewme.model.User) authentication.getPrincipal();
+        return user.getId();
+    }
+
     @PostMapping("/resume")
     @Transactional
     public ResponseEntity<ExportHistoryResponse> createResumeExport(
             Authentication authentication,
             @Valid @RequestBody ExportResumeRequest request) {
         Long tenantId = TenantContext.getCurrentTenantId();
-        Long userId = Long.parseLong(authentication.getName());
+        Long userId = extractUserId(authentication);
         log.info("POST /api/exports/resume - tenantId: {}, userId: {}", tenantId, userId);
 
         // Get profile ID from user

@@ -1,10 +1,11 @@
 package com.interviewme.profile.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.interviewme.profile.dto.profile.CreateProfileRequest;
-import com.interviewme.profile.dto.profile.UpdateProfileRequest;
-import com.interviewme.profile.model.Profile;
-import com.interviewme.profile.repository.ProfileRepository;
+import com.interviewme.dto.profile.CreateProfileRequest;
+import com.interviewme.dto.profile.UpdateProfileRequest;
+import com.interviewme.model.Profile;
+import com.interviewme.model.User;
+import com.interviewme.repository.ProfileRepository;
 import com.interviewme.security.TenantContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,14 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -40,22 +42,35 @@ class ProfileControllerTest {
     private ProfileRepository profileRepository;
 
     private static final Long TENANT_ID = 1L;
-    private static final String USER_ID_STR = "100";
+    private static final Long USER_ID = 100L;
 
     @BeforeEach
     void setUp() {
         TenantContext.setTenantId(TENANT_ID);
+        setAuthenticatedUser(USER_ID, "test@example.com");
     }
 
     @AfterEach
     void tearDown() {
         TenantContext.clear();
+        SecurityContextHolder.clearContext();
+    }
+
+    private void setAuthenticatedUser(Long userId, String email) {
+        User mockUser = new User();
+        mockUser.setId(userId);
+        mockUser.setEmail(email);
+        mockUser.setTenantId(TENANT_ID);
+        mockUser.setPasswordHash("encoded");
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        mockUser, null, Collections.emptyList());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     @Test
-    @WithMockUser(username = USER_ID_STR)
     void createProfile_Success() throws Exception {
-        // Given
         CreateProfileRequest request = new CreateProfileRequest(
                 "John Doe",
                 "Senior Developer",
@@ -67,7 +82,6 @@ class ProfileControllerTest {
                 null
         );
 
-        // When/Then
         mockMvc.perform(post("/api/profiles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -75,18 +89,15 @@ class ProfileControllerTest {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.fullName").value("John Doe"))
                 .andExpect(jsonPath("$.headline").value("Senior Developer"))
-                .andExpect(jsonPath("$.userId").value(Long.parseLong(USER_ID_STR)));
+                .andExpect(jsonPath("$.userId").value(USER_ID));
     }
 
     @Test
-    @WithMockUser(username = USER_ID_STR)
     void createProfile_ValidationError() throws Exception {
-        // Given - missing required fullName
         CreateProfileRequest request = new CreateProfileRequest(
                 null, null, null, null, null, null, null, null
         );
 
-        // When/Then
         mockMvc.perform(post("/api/profiles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -95,29 +106,24 @@ class ProfileControllerTest {
     }
 
     @Test
-    @WithMockUser(username = USER_ID_STR)
     void getCurrentUserProfile_Success() throws Exception {
-        // Given
         Profile profile = new Profile();
-        profile.setUserId(Long.parseLong(USER_ID_STR));
+        profile.setUserId(USER_ID);
         profile.setTenantId(TENANT_ID);
         profile.setFullName("Jane Doe");
         profile.setHeadline("Developer");
         profileRepository.save(profile);
 
-        // When/Then
         mockMvc.perform(get("/api/profiles/me"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.fullName").value("Jane Doe"))
-                .andExpect(jsonPath("$.userId").value(Long.parseLong(USER_ID_STR)));
+                .andExpect(jsonPath("$.userId").value(USER_ID));
     }
 
     @Test
-    @WithMockUser(username = USER_ID_STR)
     void updateProfile_Success() throws Exception {
-        // Given
         Profile profile = new Profile();
-        profile.setUserId(Long.parseLong(USER_ID_STR));
+        profile.setUserId(USER_ID);
         profile.setTenantId(TENANT_ID);
         profile.setFullName("Bob Smith");
         profile.setHeadline("Engineer");
@@ -130,7 +136,6 @@ class ProfileControllerTest {
                 profile.getVersion()
         );
 
-        // When/Then
         mockMvc.perform(put("/api/profiles/" + profile.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
@@ -140,42 +145,36 @@ class ProfileControllerTest {
     }
 
     @Test
-    @WithMockUser(username = USER_ID_STR)
     void deleteProfile_Success() throws Exception {
-        // Given
         Profile profile = new Profile();
-        profile.setUserId(Long.parseLong(USER_ID_STR));
+        profile.setUserId(USER_ID);
         profile.setTenantId(TENANT_ID);
         profile.setFullName("Delete Me");
         profile.setHeadline("To Delete");
         profile = profileRepository.save(profile);
 
-        // When/Then
         mockMvc.perform(delete("/api/profiles/" + profile.getId()))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    @WithMockUser(username = USER_ID_STR)
     void checkProfileExists_ReturnsTrue() throws Exception {
-        // Given
         Profile profile = new Profile();
-        profile.setUserId(Long.parseLong(USER_ID_STR));
+        profile.setUserId(USER_ID);
         profile.setTenantId(TENANT_ID);
         profile.setFullName("Exists Test");
         profile.setHeadline("Test");
         profileRepository.save(profile);
 
-        // When/Then
         mockMvc.perform(get("/api/profiles/exists"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }
 
     @Test
-    @WithMockUser(username = "999")
     void checkProfileExists_ReturnsFalse() throws Exception {
-        // When/Then
+        setAuthenticatedUser(999L, "other@example.com");
+
         mockMvc.perform(get("/api/profiles/exists"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));
