@@ -590,6 +590,14 @@ From `constitution.md` (v2.0.1):
 
 ---
 
+## Related Projects
+
+- **E2E Test Project:** [`interview-me-test-prj`](https://github.com/FG-Tech-Consultant/interview-me-test-prj)
+  - Sibling directory: `../interview-me-test-prj/`
+  - End-to-end tests using Playwright (TypeScript)
+  - Targets `http://localhost:8080` (this project's running instance)
+  - Test suites: smoke, auth, dashboard, profile, skills, billing, exports, navigation, public-profile
+
 ## External References
 
 **Confluence Documentation:**

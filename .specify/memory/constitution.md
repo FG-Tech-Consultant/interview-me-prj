@@ -1,23 +1,17 @@
 # Project Constitution
 
 <!--
-Sync Impact Report (Version 2.2.0 - Architectural Pattern Change):
-- Version: 2.1.0 → 2.2.0 (MINOR - Architectural pattern changes)
-- Modified Principles:
-  - Principle 1: Simplicity First → Updated from "separate frontend/backend containers" to "monolithic deployment with frontend served by Spring Boot"
-  - Principle 2: Containerization → Updated to reflect single Docker image serving both frontend and backend
-  - Principle 10: Full-Stack Modularity → Updated to MANDATE multi-module Gradle structure (backend, frontend, common modules)
-- Rationale: Architectural decision to simplify deployment by serving React static assets from Spring Boot backend
-- Benefits:
-  - Single Docker image (simpler than multi-container orchestration)
-  - No CORS configuration needed (same-origin deployment)
-  - Simplified local development (single Gradle command)
-  - Multi-module Gradle provides clear separation while maintaining monolithic deployment
+Sync Impact Report (Version 2.2.1 - Related Projects Section):
+- Version: 2.2.0 → 2.2.1 (PATCH - Added Related Projects reference)
+- Added Sections:
+  - Governance > Related Projects: Cross-reference to E2E test project (interview-me-test-prj)
+- Rationale: Document the sibling E2E test project for discoverability and cross-project awareness
 - Templates requiring updates:
-  ⚠ plan-template.md (needs update for single-container architecture)
-  ⚠ spec-template.md (needs update for monolithic deployment pattern)
-  ⚠ tasks-template.md (needs update for Gradle multi-module tasks)
+  ⚠ plan-template.md (pending - still needs update for single-container architecture from v2.2.0)
+  ⚠ spec-template.md (pending - still needs update for monolithic deployment pattern from v2.2.0)
+  ⚠ tasks-template.md (pending - still needs update for Gradle multi-module tasks from v2.2.0)
 - Previous versions:
+  - v2.2.0: Architectural pattern change (monolithic deployment)
   - v2.1.0: Added Principle 9 (Freemium Model)
   - v2.0.1: PostgreSQL corrections
   - v2.0.0: Project context change (Travian Bot → Live Resume & Career Copilot)
@@ -25,11 +19,11 @@ Sync Impact Report (Version 2.2.0 - Architectural Pattern Change):
 
 **Project Name:** Live Resume & Career Copilot
 
-**Version:** 2.2.0
+**Version:** 2.2.1
 
 **Ratification Date:** 2026-02-19
 
-**Last Amended:** 2026-02-22
+**Last Amended:** 2026-02-27
 
 ---
 
@@ -504,6 +498,16 @@ The following template files MUST remain synchronized with this constitution:
 - `.specify/templates/commands/*.md` - Workflow command definitions
 
 When amending this constitution, review and update dependent templates to maintain alignment.
+
+### Related Projects
+
+- **E2E Test Project:** `interview-me-test-prj` (sibling directory)
+  - **Repository:** https://github.com/FG-Tech-Consultant/interview-me-test-prj
+  - **Purpose:** End-to-end (E2E) tests for the Interview Me application using Playwright
+  - **Tech Stack:** TypeScript, Playwright, Node.js
+  - **Location:** `../interview-me-test-prj/` (same parent directory)
+  - **Base URL:** `http://localhost:8080` (targets this project's running instance)
+  - **Test Suites:** smoke, auth, dashboard, profile, skills, billing, exports, navigation, public-profile
 
 ---
 

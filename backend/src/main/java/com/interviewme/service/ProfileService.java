@@ -4,7 +4,11 @@ import com.interviewme.common.exception.DuplicateProfileException;
 import com.interviewme.common.exception.OptimisticLockException;
 import com.interviewme.common.exception.ProfileNotFoundException;
 import com.interviewme.common.exception.ValidationException;
+import com.interviewme.util.SlugGenerator;
 import com.interviewme.util.SlugValidator;
+import com.interviewme.billing.config.BillingProperties;
+import com.interviewme.billing.model.RefType;
+import com.interviewme.billing.service.CoinWalletService;
 import com.interviewme.dto.profile.CreateProfileRequest;
 import com.interviewme.dto.profile.ProfileResponse;
 import com.interviewme.dto.profile.UpdateProfileRequest;
@@ -26,6 +30,8 @@ import java.time.Instant;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final CoinWalletService coinWalletService;
+    private final BillingProperties billingProperties;
 
     @Transactional(readOnly = true)
     public ProfileResponse getProfileByUserId(Long userId) {
@@ -62,6 +68,14 @@ public class ProfileService {
         Profile profile = ProfileMapper.toEntity(request);
         profile.setUserId(userId);
         profile.setTenantId(tenantId);
+
+        // Auto-generate unique slug from full name
+        String slug = SlugGenerator.generateUniqueSlug(
+            request.fullName(),
+            profileRepository::existsBySlug
+        );
+        profile.setSlug(slug);
+        log.info("Auto-generated slug: {} for userId: {}", slug, userId);
 
         Profile savedProfile = profileRepository.save(profile);
         log.info("Profile created with id: {}", savedProfile.getId());
@@ -129,7 +143,15 @@ public class ProfileService {
         Profile profile = profileRepository.findByIdAndTenantId(profileId, tenantId)
                 .orElseThrow(() -> new ProfileNotFoundException(profileId));
 
+        // Charge coins if user has already changed their slug before (first change is free)
+        if (profile.getSlugChangeCount() > 0) {
+            int cost = billingProperties.getCosts().getOrDefault("SLUG_CHANGE", 5);
+            coinWalletService.spend(tenantId, cost, RefType.SLUG_CHANGE, String.valueOf(profileId), "Slug change: " + normalized);
+            log.info("Charged {} coins for slug change on profile: {}", cost, profileId);
+        }
+
         profile.setSlug(normalized);
+        profile.setSlugChangeCount(profile.getSlugChangeCount() + 1);
         Profile updatedProfile = profileRepository.save(profile);
         log.info("Slug updated successfully for profile: {}", profileId);
 

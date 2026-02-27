@@ -11,6 +11,7 @@ export interface Profile {
   careerPreferences: Record<string, unknown>;
   defaultVisibility: string;
   slug: string | null;
+  slugChangeCount: number;
   viewCount: number;
   version: number;
   createdAt: string;

@@ -19,6 +19,7 @@ import com.interviewme.common.exception.PublicProfileNotFoundException;
 import com.interviewme.util.SlugValidator;
 import com.interviewme.model.UserSkill;
 import com.interviewme.repository.UserSkillRepository;
+import com.interviewme.billing.config.BillingProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class PublicProfileService {
     private final StoryRepository storyRepository;
     private final ExperienceProjectSkillRepository experienceProjectSkillRepository;
     private final StorySkillRepository storySkillRepository;
+    private final BillingProperties billingProperties;
 
     @Transactional(readOnly = true)
     public PublicProfileResponse getPublicProfile(String slug) {
@@ -105,22 +107,23 @@ public class PublicProfileService {
     @Transactional(readOnly = true)
     public SlugCheckResponse checkSlugAvailability(String slug) {
         String normalized = SlugValidator.normalizeSlug(slug);
+        int changeCost = billingProperties.getCosts().getOrDefault("SLUG_CHANGE", 5);
 
         if (!SlugValidator.isValidSlug(normalized)) {
-            return new SlugCheckResponse(normalized, false, Collections.emptyList());
+            return new SlugCheckResponse(normalized, false, Collections.emptyList(), changeCost);
         }
 
         if (SlugValidator.isReservedSlug(normalized)) {
-            return new SlugCheckResponse(normalized, false, Collections.emptyList());
+            return new SlugCheckResponse(normalized, false, Collections.emptyList(), changeCost);
         }
 
         boolean taken = profileRepository.existsBySlug(normalized);
         if (taken) {
             List<String> suggestions = generateSuggestions(normalized);
-            return new SlugCheckResponse(normalized, false, suggestions);
+            return new SlugCheckResponse(normalized, false, suggestions, changeCost);
         }
 
-        return new SlugCheckResponse(normalized, true, Collections.emptyList());
+        return new SlugCheckResponse(normalized, true, Collections.emptyList(), changeCost);
     }
 
     @Transactional

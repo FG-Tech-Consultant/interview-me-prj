@@ -76,4 +76,5 @@ export interface SlugCheckResponse {
   slug: string;
   available: boolean;
   suggestions: string[];
+  changeCost: number;
 }

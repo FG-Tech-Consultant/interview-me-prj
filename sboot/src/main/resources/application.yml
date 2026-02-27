@@ -46,6 +46,7 @@ billing:
     LINKEDIN_DRAFT: 3
     LINKEDIN_SUGGESTION: 2
     RESUME_EXPORT: 10
+    SLUG_CHANGE: 5
   free-tier:
     chat-messages-per-month: 50
     linkedin-drafts-per-month: 10

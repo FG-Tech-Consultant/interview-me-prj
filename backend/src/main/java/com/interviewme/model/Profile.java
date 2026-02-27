@@ -57,6 +57,9 @@ public class Profile {
     @Column(name = "slug", length = 50, unique = true)
     private String slug;
 
+    @Column(name = "slug_change_count", nullable = false)
+    private Integer slugChangeCount = 0;
+
     @Column(name = "view_count", nullable = false)
     private Long viewCount = 0L;
 

@@ -5,6 +5,7 @@ import java.util.List;
 public record SlugCheckResponse(
     String slug,
     boolean available,
-    List<String> suggestions
+    List<String> suggestions,
+    int changeCost
 ) {
 }

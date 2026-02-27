@@ -20,6 +20,7 @@ public record ProfileResponse(
     Map<String, Object> careerPreferences,
     String defaultVisibility,
     String slug,
+    Integer slugChangeCount,
     Long viewCount,
     Instant createdAt,
     Instant updatedAt,

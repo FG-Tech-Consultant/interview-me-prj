@@ -96,7 +96,7 @@ export const ProfileEditorPage: React.FC = () => {
             <Typography variant="h6" gutterBottom>
               Public Profile Settings
             </Typography>
-            <SlugSettingsSection profileId={profile.id} currentSlug={profile.slug ?? null} />
+            <SlugSettingsSection profileId={profile.id} currentSlug={profile.slug ?? null} slugChangeCount={profile.slugChangeCount ?? 0} />
           </Box>
         )}
       </Paper>

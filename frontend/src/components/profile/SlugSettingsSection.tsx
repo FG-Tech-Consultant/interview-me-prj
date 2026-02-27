@@ -15,15 +15,18 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useCheckSlug, useUpdateSlug } from '../../hooks/usePublicProfile';
+import { useWallet, useInvalidateWallet } from '../../hooks/useBilling';
 
 interface SlugSettingsSectionProps {
   profileId: number;
   currentSlug: string | null;
+  slugChangeCount: number;
 }
 
 export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
   profileId,
   currentSlug,
+  slugChangeCount,
 }) => {
   const [slug, setSlug] = useState(currentSlug || '');
   const [saved, setSaved] = useState(false);
@@ -31,11 +34,19 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
 
   const { data: slugCheck, isLoading: isChecking } = useCheckSlug(slug);
   const updateSlug = useUpdateSlug();
+  const { data: wallet } = useWallet();
+  const invalidateWallet = useInvalidateWallet();
 
   const isCurrentSlug = slug === currentSlug;
   const isValid = slug.length >= 3 && /^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(slug) && !slug.includes('--');
   const isAvailable = slugCheck?.available || isCurrentSlug;
-  const canSave = isValid && isAvailable && !isCurrentSlug && !updateSlug.isPending;
+  const isChangingSlug = !!currentSlug && !isCurrentSlug;
+  const isFirstChange = slugChangeCount === 0;
+  const changeCost = slugCheck?.changeCost ?? 0;
+  const balance = wallet?.balance ?? 0;
+  const willCostCoins = isChangingSlug && !isFirstChange;
+  const hasEnoughCoins = !willCostCoins || balance >= changeCost;
+  const canSave = isValid && isAvailable && !isCurrentSlug && !updateSlug.isPending && hasEnoughCoins;
 
   const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -47,6 +58,9 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
     try {
       await updateSlug.mutateAsync({ profileId, slug });
       setSaved(true);
+      if (willCostCoins) {
+        invalidateWallet();
+      }
     } catch {
       // Error handled by mutation
     }
@@ -97,6 +111,19 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
         </Alert>
       )}
 
+      {isChangingSlug && isFirstChange && slug.length >= 3 && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          First slug change is free!
+        </Alert>
+      )}
+
+      {willCostCoins && changeCost > 0 && slug.length >= 3 && (
+        <Alert severity={hasEnoughCoins ? 'info' : 'error'} sx={{ mb: 2 }}>
+          Changing your slug costs {changeCost} coins. Your balance: {balance} coins.
+          {!hasEnoughCoins && ' You do not have enough coins to make this change.'}
+        </Alert>
+      )}
+
       <TextField
         fullWidth
         label="Profile URL Slug"
@@ -125,7 +152,7 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
           onClick={handleSave}
           disabled={!canSave}
         >
-          {updateSlug.isPending ? 'Saving...' : 'Save'}
+          {updateSlug.isPending ? 'Saving...' : willCostCoins ? `Save (${changeCost} coins)` : 'Save'}
         </Button>
 
         {(currentSlug || saved) && (
@@ -147,6 +174,7 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
       {saved && (
         <Alert severity="success" sx={{ mt: 2 }}>
           Slug updated successfully! Your profile is live at: /p/{slug}
+          {willCostCoins && changeCost > 0 && ` (${changeCost} coins deducted)`}
         </Alert>
       )}
 

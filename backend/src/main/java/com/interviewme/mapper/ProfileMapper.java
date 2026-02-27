@@ -37,6 +37,7 @@ public class ProfileMapper {
             entity.getCareerPreferences(),
             entity.getDefaultVisibility(),
             entity.getSlug(),
+            entity.getSlugChangeCount(),
             entity.getViewCount(),
             entity.getCreatedAt(),
             entity.getUpdatedAt(),
