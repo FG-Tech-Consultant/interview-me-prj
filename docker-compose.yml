@@ -2,12 +2,13 @@ services:
   db:
     image: pgvector/pgvector:pg18
     container_name: interview-me-db
+    restart: always
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
       POSTGRES_DB: ${DATABASE_NAME:-interview_me}
     ports:
-      - "5432:5432"
+      - "${IM_PG_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./others/docker/postgresql/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
@@ -20,22 +21,30 @@ services:
       - app-network
 
   app:
+    image: interview-me:${IM_APP_VERSION:-latest}
     build:
       context: .
       dockerfile: Dockerfile
     container_name: interview-me-app
+    restart: always
+    mem_limit: 1024m
     depends_on:
       db:
         condition: service_healthy
     environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      JAVA_TOOL_OPTIONS: -Xms256m -Xmx768m
       DATABASE_URL: jdbc:postgresql://db:5432/${DATABASE_NAME:-interview_me}
       DATABASE_USERNAME: ${DATABASE_USERNAME:-postgres}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
       JWT_SECRET: ${JWT_SECRET:-your-256-bit-secret-must-be-at-least-32-characters-long-for-HS256}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      AI_DEFAULT_PROVIDER: ${AI_DEFAULT_PROVIDER:-openai}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      CLAUDE_API_KEY: ${CLAUDE_API_KEY:-}
     ports:
-      - "8080:8080"
+      - "${IM_APP_PORT:-8080}:8080"
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
       interval: 30s
@@ -47,6 +56,7 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
 
 networks:
   app-network:

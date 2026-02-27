@@ -1,17 +1,18 @@
 services:
 
   interview-me-db:
-    image: pgvector/pgvector:pg16
+    image: pgvector/pgvector:pg18
     container_name: interview_me_db
     restart: always
     environment:
       - POSTGRES_USER=${IM_PG_USER:-postgres}
       - POSTGRES_PASSWORD=${IM_PG_PASSWORD:-postgres}
+      - POSTGRES_DB=${IM_PG_DB:-interview_me}
     ports:
       - "${IM_PG_PORT:-5432}:5432"
     volumes:
       - ./postgresql/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
-      - interview-me-db_pg_data:/var/lib/postgresql/data
+      - interview-me-db_pg_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -27,9 +28,9 @@ services:
       interview-me-db:
         condition: service_healthy
     environment:
-      - SPRING_PROFILES_ACTIVE=${IM_PROFILE:-dev}
+      - SPRING_PROFILES_ACTIVE=${IM_PROFILE:-prod}
       - JAVA_TOOL_OPTIONS=-Xms256m -Xmx768m
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://interview-me-db:5432/interview_me
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://interview-me-db:5432/${IM_PG_DB:-interview_me}
       - SPRING_DATASOURCE_USERNAME=${IM_PG_USER:-postgres}
       - SPRING_DATASOURCE_PASSWORD=${IM_PG_PASSWORD:-postgres}
       - JWT_SECRET=${IM_JWT_SECRET:-your-256-bit-secret-must-be-at-least-32-characters-long-for-HS256}

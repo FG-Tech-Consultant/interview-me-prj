@@ -5,7 +5,7 @@ WORKDIR /app
 # Create non-root user
 RUN addgroup -S spring && adduser -S spring -G spring
 
-# Copy pre-built JAR (build locally with: ./gradlew :sboot:bootJar -x test)
+# Copy pre-built JAR (built by: ./buildImage.sh)
 COPY sboot/build/libs/sboot-*.jar app.jar
 
 # Change ownership

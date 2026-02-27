@@ -1,0 +1,19 @@
+.git
+.gradle
+.specify
+specs
+others
+node_modules
+frontend/
+common/
+backend/
+billing/
+ai-chat/
+exports/
+linkedin/
+gradle/
+*.md
+.env*
+data/
+# Allow only the built JAR
+!sboot/build/libs/
