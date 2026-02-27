@@ -1,4 +1,19 @@
 import React, { useState } from 'react';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  Stack,
+  IconButton,
+  Alert,
+  CircularProgress,
+  Paper,
+  Divider,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useJobExperiences, useDeleteJobExperience } from '../../hooks/useJobExperience';
 import { JobExperienceForm } from './JobExperienceForm';
 import { ProjectList } from '../experience/ProjectList';
@@ -40,67 +55,76 @@ export const JobExperienceList: React.FC<JobExperienceListProps> = ({ profileId 
   };
 
   if (isLoading) {
-    return <div>Loading job experiences...</div>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {
     return (
-      <div className="text-red-600">
+      <Alert severity="error">
         Error loading job experiences: {error instanceof Error ? error.message : 'Unknown error'}
-      </div>
+      </Alert>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <Stack spacing={3}>
       {/* Add Button */}
       {!isAdding && !editingId && (
-        <button
-          onClick={handleAdd}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
-          + Add Job Experience
-        </button>
+        <Box>
+          <Button variant="contained" onClick={handleAdd}>
+            + Add Job Experience
+          </Button>
+        </Box>
       )}
 
       {/* Add Form */}
       {isAdding && (
-        <div className="border border-gray-300 rounded-lg p-6 bg-gray-50">
-          <h3 className="text-lg font-semibold mb-4">Add New Job Experience</h3>
+        <Paper elevation={2} sx={{ p: 3 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Add New Job Experience
+          </Typography>
           <JobExperienceForm
             profileId={profileId}
             onSuccess={handleCancelAdd}
             onCancel={handleCancelAdd}
           />
-        </div>
+        </Paper>
       )}
 
       {/* Experience List */}
-      <div className="space-y-4">
+      <Stack spacing={2}>
         {experiences && experiences.length > 0 ? (
           experiences.map((experience) => (
-            <div key={experience.id} className="border border-gray-300 rounded-lg p-6">
-              {editingId === experience.id ? (
-                <JobExperienceForm
-                  profileId={profileId}
-                  experience={experience}
-                  onSuccess={handleCancelEdit}
-                  onCancel={handleCancelEdit}
-                />
-              ) : (
-                <JobExperienceCard
-                  experience={experience}
-                  onEdit={() => handleEdit(experience.id)}
-                  onDelete={() => handleDelete(experience.id)}
-                />
-              )}
-            </div>
+            <Card key={experience.id} variant="outlined">
+              <CardContent>
+                {editingId === experience.id ? (
+                  <JobExperienceForm
+                    profileId={profileId}
+                    experience={experience}
+                    onSuccess={handleCancelEdit}
+                    onCancel={handleCancelEdit}
+                  />
+                ) : (
+                  <JobExperienceCard
+                    experience={experience}
+                    onEdit={() => handleEdit(experience.id)}
+                    onDelete={() => handleDelete(experience.id)}
+                  />
+                )}
+              </CardContent>
+            </Card>
           ))
         ) : (
-          <p className="text-gray-600">No job experiences added yet. Click "Add Job Experience" to get started.</p>
+          <Typography color="text.secondary">
+            No job experiences added yet. Click "Add Job Experience" to get started.
+          </Typography>
         )}
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 };
 
@@ -118,53 +142,51 @@ const JobExperienceCard: React.FC<JobExperienceCardProps> = ({ experience, onEdi
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <h3 className="text-xl font-semibold">{experience.role}</h3>
-          <p className="text-lg text-gray-700">{experience.company}</p>
-          <p className="text-sm text-gray-600">
-            {formatDate(experience.startDate)} - {experience.isCurrent ? 'Present' : experience.endDate ? formatDate(experience.endDate) : 'N/A'}
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
+        <Box>
+          <Typography variant="h6">{experience.role}</Typography>
+          <Typography variant="subtitle1" color="text.secondary">
+            {experience.company}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {formatDate(experience.startDate)} -{' '}
+            {experience.isCurrent ? 'Present' : experience.endDate ? formatDate(experience.endDate) : 'N/A'}
             {experience.location && ` \u2022 ${experience.location}`}
-          </p>
-        </div>
-        <div className="flex space-x-2">
-          <button
-            onClick={onEdit}
-            className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-          >
-            Edit
-          </button>
-          <button
-            onClick={onDelete}
-            className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
+          </Typography>
+        </Box>
+        <Stack direction="row" spacing={0.5}>
+          <IconButton size="small" onClick={onEdit}>
+            <EditIcon fontSize="small" />
+          </IconButton>
+          <IconButton size="small" onClick={onDelete} color="error">
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Stack>
+      </Box>
 
       {experience.responsibilities && (
-        <p className="text-gray-700 mb-3">{experience.responsibilities}</p>
+        <Typography variant="body2" sx={{ mb: 1.5 }}>
+          {experience.responsibilities}
+        </Typography>
       )}
 
       {experience.achievements && (
-        <div className="mb-3">
-          <h4 className="font-medium text-gray-900 mb-1">Achievements:</h4>
-          <p className="text-gray-700">{experience.achievements}</p>
-        </div>
+        <Box sx={{ mb: 1.5 }}>
+          <Typography variant="subtitle2">Achievements:</Typography>
+          <Typography variant="body2">{experience.achievements}</Typography>
+        </Box>
       )}
 
       {/* Projects Section */}
-      <div className="mt-3 pt-3 border-t border-gray-200">
-        <button
-          onClick={() => setShowProjects(!showProjects)}
-          className="text-sm font-medium text-blue-600 hover:text-blue-800"
-        >
-          {showProjects ? 'Hide Projects' : 'Show Projects & Stories'}
-        </button>
-        {showProjects && <ProjectList jobExperienceId={experience.id} />}
-      </div>
-    </div>
+      <Divider sx={{ my: 1.5 }} />
+      <Button
+        size="small"
+        onClick={() => setShowProjects(!showProjects)}
+      >
+        {showProjects ? 'Hide Projects' : 'Show Projects & Stories'}
+      </Button>
+      {showProjects && <ProjectList jobExperienceId={experience.id} />}
+    </Box>
   );
 };

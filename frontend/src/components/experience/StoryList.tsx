@@ -2,6 +2,21 @@ import React, { useState } from 'react';
 import { useStories, useDeleteStory } from '../../hooks/useStories';
 import { StoryForm } from './StoryForm';
 import type { StoryResponse } from '../../types/story';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  CircularProgress,
+  Alert,
+  IconButton,
+  Stack,
+  Typography,
+  Divider,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface StoryListProps {
   experienceProjectId: number;
@@ -21,65 +36,74 @@ export const StoryList: React.FC<StoryListProps> = ({ experienceProjectId }) => 
     }
   };
 
-  if (isLoading) return <div className="text-sm text-gray-500">Loading stories...</div>;
-  if (error) return <div className="text-sm text-red-600">Error loading stories.</div>;
+  if (isLoading) return <CircularProgress size={20} />;
+  if (error) return <Alert severity="error">Error loading stories.</Alert>;
 
   return (
-    <div className="space-y-2">
+    <Stack spacing={1}>
       {!isAdding && !editingId && (
-        <button
-          onClick={() => setIsAdding(true)}
-          className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          + Add Story
-        </button>
+        <Box>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => setIsAdding(true)}
+          >
+            + Add Story
+          </Button>
+        </Box>
       )}
 
       {isAdding && (
-        <div className="border border-gray-200 rounded p-3 bg-gray-50">
-          <h5 className="text-sm font-semibold mb-2">Add STAR Story</h5>
-          <StoryForm
-            experienceProjectId={experienceProjectId}
-            onSuccess={() => setIsAdding(false)}
-            onCancel={() => setIsAdding(false)}
-          />
-        </div>
+        <Card variant="outlined" sx={{ bgcolor: 'grey.50' }}>
+          <CardContent>
+            <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>
+              Add STAR Story
+            </Typography>
+            <StoryForm
+              experienceProjectId={experienceProjectId}
+              onSuccess={() => setIsAdding(false)}
+              onCancel={() => setIsAdding(false)}
+            />
+          </CardContent>
+        </Card>
       )}
 
       {stories && stories.length > 0 ? (
         stories.map((story) => (
-          <div key={story.id} className="border border-gray-200 rounded p-3">
-            {editingId === story.id ? (
-              <StoryForm
-                experienceProjectId={experienceProjectId}
-                story={story}
-                onSuccess={() => setEditingId(null)}
-                onCancel={() => setEditingId(null)}
-              />
-            ) : (
-              <StoryCard
-                story={story}
-                isExpanded={expandedId === story.id}
-                onToggleExpand={() =>
-                  setExpandedId(expandedId === story.id ? null : story.id)
-                }
-                onEdit={() => {
-                  setEditingId(story.id);
-                  setIsAdding(false);
-                }}
-                onDelete={() => handleDelete(story.id)}
-              />
-            )}
-          </div>
+          <Card key={story.id} variant="outlined">
+            <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
+              {editingId === story.id ? (
+                <StoryForm
+                  experienceProjectId={experienceProjectId}
+                  story={story}
+                  onSuccess={() => setEditingId(null)}
+                  onCancel={() => setEditingId(null)}
+                />
+              ) : (
+                <StoryCard
+                  story={story}
+                  isExpanded={expandedId === story.id}
+                  onToggleExpand={() =>
+                    setExpandedId(expandedId === story.id ? null : story.id)
+                  }
+                  onEdit={() => {
+                    setEditingId(story.id);
+                    setIsAdding(false);
+                  }}
+                  onDelete={() => handleDelete(story.id)}
+                />
+              )}
+            </CardContent>
+          </Card>
         ))
       ) : (
         !isAdding && (
-          <p className="text-xs text-gray-500">
+          <Typography variant="caption" color="text.secondary">
             No stories yet. Add a STAR story to prepare for behavioral interviews.
-          </p>
+          </Typography>
         )
       )}
-    </div>
+    </Stack>
   );
 };
 
@@ -91,9 +115,6 @@ interface StoryCardProps {
   onDelete: () => void;
 }
 
-const truncate = (text: string, maxLen: number) =>
-  text.length > maxLen ? text.slice(0, maxLen) + '...' : text;
-
 const StoryCard: React.FC<StoryCardProps> = ({
   story,
   isExpanded,
@@ -102,67 +123,81 @@ const StoryCard: React.FC<StoryCardProps> = ({
   onDelete,
 }) => {
   return (
-    <div>
-      <div className="flex justify-between items-start">
-        <div className="flex-1 cursor-pointer" onClick={onToggleExpand}>
-          <h5 className="text-sm font-semibold">{story.title}</h5>
-          <div className="flex gap-2 mt-1">
-            <span className={`text-xs px-1.5 py-0.5 rounded ${
-              story.visibility === 'public'
-                ? 'bg-green-100 text-green-700'
-                : 'bg-gray-100 text-gray-600'
-            }`}>
-              {story.visibility}
-            </span>
-          </div>
+    <Box>
+      <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Box sx={{ flex: 1, cursor: 'pointer' }} onClick={onToggleExpand}>
+          <Typography variant="subtitle2" fontWeight="bold">
+            {story.title}
+          </Typography>
+          <Stack direction="row" spacing={0.5} sx={{ mt: 0.5 }}>
+            <Chip
+              label={story.visibility}
+              size="small"
+              color={story.visibility === 'public' ? 'success' : 'default'}
+            />
+          </Stack>
           {!isExpanded && (
-            <p className="text-xs text-gray-500 mt-1">
-              S: {truncate(story.situation, 80)}
-            </p>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{
+                mt: 0.5,
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '100%',
+              }}
+            >
+              S: {story.situation}
+            </Typography>
           )}
-        </div>
-        <div className="flex space-x-1 ml-2">
-          <button
-            onClick={onEdit}
-            className="px-2 py-0.5 text-xs bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-          >
-            Edit
-          </button>
-          <button
-            onClick={onDelete}
-            className="px-2 py-0.5 text-xs bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
+        </Box>
+        <Stack direction="row" spacing={0.5} sx={{ ml: 1 }}>
+          <IconButton size="small" onClick={onEdit}>
+            <EditIcon fontSize="small" />
+          </IconButton>
+          <IconButton size="small" color="error" onClick={onDelete}>
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Stack>
+      </Stack>
 
       {isExpanded && (
-        <div className="mt-2 pt-2 border-t border-gray-100 space-y-2">
-          {(['Situation', 'Task', 'Action', 'Result'] as const).map((label) => {
-            const key = label.toLowerCase() as keyof Pick<StoryResponse, 'situation' | 'task' | 'action' | 'result'>;
-            return (
-              <div key={label}>
-                <span className="text-xs font-semibold text-gray-600">{label}:</span>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">{story[key]}</p>
-              </div>
-            );
-          })}
+        <Box sx={{ mt: 1, pt: 1 }}>
+          <Divider sx={{ mb: 1 }} />
+          <Stack spacing={1}>
+            {(['Situation', 'Task', 'Action', 'Result'] as const).map((label) => {
+              const key = label.toLowerCase() as keyof Pick<StoryResponse, 'situation' | 'task' | 'action' | 'result'>;
+              return (
+                <Box key={label}>
+                  <Typography variant="subtitle2">{label}:</Typography>
+                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                    {story[key]}
+                  </Typography>
+                </Box>
+              );
+            })}
 
-          {story.metrics && Object.keys(story.metrics).length > 0 && (
-            <div>
-              <span className="text-xs font-semibold text-gray-600">Metrics:</span>
-              <div className="flex flex-wrap gap-1 mt-1">
-                {Object.entries(story.metrics).map(([key, val]) => (
-                  <span key={key} className="text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded">
-                    {key}: {String(val)}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+            {story.metrics && Object.keys(story.metrics).length > 0 && (
+              <Box>
+                <Typography variant="subtitle2">Metrics:</Typography>
+                <Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ mt: 0.5 }} useFlexGap>
+                  {Object.entries(story.metrics).map(([key, val]) => (
+                    <Chip
+                      key={key}
+                      label={`${key}: ${String(val)}`}
+                      size="small"
+                      color="secondary"
+                      variant="outlined"
+                    />
+                  ))}
+                </Stack>
+              </Box>
+            )}
+          </Stack>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };

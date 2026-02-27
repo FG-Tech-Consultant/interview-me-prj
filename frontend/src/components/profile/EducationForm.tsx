@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+import {
+  TextField,
+  Button,
+  Grid,
+  Alert,
+  Stack,
+} from '@mui/material';
 import { useCreateEducation, useUpdateEducation } from '../../hooks/useEducation';
 import type { Education, CreateEducationRequest } from '../../types/profile';
 
@@ -91,141 +98,114 @@ export const EducationForm: React.FC<EducationFormProps> = ({
   const error = createMutation.error || updateMutation.error;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="institution" className="block text-sm font-medium text-gray-700 mb-1">
-            Institution *
-          </label>
-          <input
-            type="text"
-            id="institution"
-            name="institution"
-            value={formData.institution}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+    <form onSubmit={handleSubmit}>
+      <Stack spacing={3}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Institution"
+              name="institution"
+              value={formData.institution}
+              onChange={handleChange}
+              required
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Degree"
+              name="degree"
+              value={formData.degree}
+              onChange={handleChange}
+              required
+              placeholder="e.g., Bachelor of Science"
+              size="small"
+            />
+          </Grid>
+        </Grid>
 
-        <div>
-          <label htmlFor="degree" className="block text-sm font-medium text-gray-700 mb-1">
-            Degree *
-          </label>
-          <input
-            type="text"
-            id="degree"
-            name="degree"
-            value={formData.degree}
-            onChange={handleChange}
-            required
-            placeholder="e.g., Bachelor of Science"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="fieldOfStudy" className="block text-sm font-medium text-gray-700 mb-1">
-          Field of Study
-        </label>
-        <input
-          type="text"
-          id="fieldOfStudy"
+        <TextField
+          fullWidth
+          label="Field of Study"
           name="fieldOfStudy"
           value={formData.fieldOfStudy}
           onChange={handleChange}
           placeholder="e.g., Computer Science"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          size="small"
         />
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
-            Start Date
-          </label>
-          <input
-            type="date"
-            id="startDate"
-            name="startDate"
-            value={formData.startDate}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Start Date"
+              name="startDate"
+              type="date"
+              value={formData.startDate}
+              onChange={handleChange}
+              size="small"
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="End Date *"
+              name="endDate"
+              type="date"
+              value={formData.endDate}
+              onChange={handleChange}
+              required
+              size="small"
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+        </Grid>
 
-        <div>
-          <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
-            End Date *
-          </label>
-          <input
-            type="date"
-            id="endDate"
-            name="endDate"
-            value={formData.endDate}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="gpa" className="block text-sm font-medium text-gray-700 mb-1">
-          GPA
-        </label>
-        <input
-          type="text"
-          id="gpa"
+        <TextField
+          fullWidth
+          label="GPA"
           name="gpa"
           value={formData.gpa}
           onChange={handleChange}
           placeholder="e.g., 3.8/4.0, First Class Honours"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          size="small"
         />
-      </div>
 
-      <div>
-        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-          Notes
-        </label>
-        <textarea
-          id="notes"
+        <TextField
+          fullWidth
+          label="Notes"
           name="notes"
           value={formData.notes}
           onChange={handleChange}
+          multiline
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          size="small"
         />
-      </div>
 
-      {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-red-800 text-sm">
-            Error: {error instanceof Error ? error.message : 'Failed to save'}
-          </p>
-        </div>
-      )}
-
-      <div className="flex justify-end space-x-3">
-        {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
-          >
-            Cancel
-          </button>
+        {error && (
+          <Alert severity="error">
+            {error instanceof Error ? error.message : 'Failed to save'}
+          </Alert>
         )}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {isLoading ? 'Saving...' : education ? 'Update' : 'Add'}
-        </button>
-      </div>
+
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          {onCancel && (
+            <Button variant="outlined" onClick={onCancel}>
+              Cancel
+            </Button>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : education ? 'Update' : 'Add'}
+          </Button>
+        </Stack>
+      </Stack>
     </form>
   );
 };

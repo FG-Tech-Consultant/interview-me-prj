@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Box, Grid, TextField, Button, Alert } from '@mui/material';
 import { useUpdateProfile, useCreateProfile } from '../../hooks/useProfile';
 import type { Profile, CreateProfileRequest } from '../../types/profile';
 
@@ -31,7 +32,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
     e.preventDefault();
 
     if (profile) {
-      // Update existing profile
       updateMutation.mutate({
         profileId: profile.id,
         data: {
@@ -43,7 +43,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
         },
       });
     } else {
-      // Create new profile
       const createData: CreateProfileRequest = {
         fullName: formData.fullName,
         headline: formData.headline || undefined,
@@ -59,93 +58,70 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
   const isSuccess = updateMutation.isSuccess || createMutation.isSuccess;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Basic Information */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-            Full Name *
-          </label>
-          <input
-            type="text"
+    <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
             id="fullName"
             name="fullName"
+            label="Full Name"
             value={formData.fullName}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
           />
-        </div>
-
-        <div>
-          <label htmlFor="headline" className="block text-sm font-medium text-gray-700 mb-1">
-            Headline
-          </label>
-          <input
-            type="text"
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
             id="headline"
             name="headline"
+            label="Headline"
             value={formData.headline}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
           />
-        </div>
-      </div>
+        </Grid>
+      </Grid>
 
-      <div>
-        <label htmlFor="summary" className="block text-sm font-medium text-gray-700 mb-1">
-          Summary
-        </label>
-        <textarea
-          id="summary"
-          name="summary"
-          value={formData.summary}
-          onChange={handleChange}
-          rows={4}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
+      <TextField
+        fullWidth
+        id="summary"
+        name="summary"
+        label="Summary"
+        value={formData.summary}
+        onChange={handleChange}
+        multiline
+        rows={4}
+      />
 
-      {/* Location */}
-      <div>
-        <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-          Location
-        </label>
-        <input
-          type="text"
-          id="location"
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
+      <TextField
+        fullWidth
+        id="location"
+        name="location"
+        label="Location"
+        value={formData.location}
+        onChange={handleChange}
+      />
 
-      {/* Success/Error Messages */}
       {isSuccess && (
-        <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-          <p className="text-green-800">Profile saved successfully!</p>
-        </div>
+        <Alert severity="success">Profile saved successfully!</Alert>
       )}
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-red-800">
-            Error: {error instanceof Error ? error.message : 'Failed to save profile'}
-          </p>
-        </div>
+        <Alert severity="error">
+          {error instanceof Error ? error.message : 'Failed to save profile'}
+        </Alert>
       )}
 
-      {/* Submit Button */}
-      <div className="flex justify-end">
-        <button
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
           type="submit"
+          variant="contained"
           disabled={isLoading}
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Saving...' : profile ? 'Update Profile' : 'Create Profile'}
-        </button>
-      </div>
-    </form>
+        </Button>
+      </Box>
+    </Box>
   );
 };

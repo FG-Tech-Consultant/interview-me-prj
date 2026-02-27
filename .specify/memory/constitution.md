@@ -454,6 +454,22 @@ root-project/
 
 ---
 
+### Amendment Note: Internationalization (i18n) - Planned
+
+> **Status:** Planned (see `specs/010-internationalization-i18n/spec.md`)
+>
+> The platform will adopt internationalization (i18n) as a cross-cutting concern. When implemented:
+> - Frontend MUST use `react-i18next` with namespaced JSON translation files per locale
+> - Backend validation annotations MUST use message keys (`{validation.<entity>.<field>.<rule>}`) resolved via Spring `MessageSource`
+> - Error responses MUST include machine-readable message keys alongside default English messages
+> - User locale preference MUST be persisted in the profile entity
+> - Default locale: `en`; initial additional locale: `pt-BR`
+> - User-generated content (profile data, stories) is NOT translated; only UI labels, validation messages, and system messages are translated
+>
+> This note will be promoted to a full Principle when the feature is implemented.
+
+---
+
 ## Governance
 
 ### Amendment Procedure

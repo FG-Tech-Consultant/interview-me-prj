@@ -1,74 +1,52 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  Container,
-  Box,
-  Typography,
-  Paper,
-  Button,
-  CircularProgress,
-  Alert
-} from '@mui/material';
-import { getCurrentUser, logout } from '../api/auth';
+import { Box, Grid, Typography, Skeleton } from '@mui/material';
+import { getCurrentUser } from '../api/auth';
+import StatsCards from '../components/dashboard/StatsCards';
+import ProfileCompletenessCard from '../components/dashboard/ProfileCompletenessCard';
+import QuickActionsGrid from '../components/dashboard/QuickActionsGrid';
+import RecentActivityCard from '../components/dashboard/RecentActivityCard';
+import PublicProfileCard from '../components/dashboard/PublicProfileCard';
 
 export default function DashboardPage() {
-  const { data: user, isLoading, error } = useQuery({
+  const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: getCurrentUser
+    queryFn: getCurrentUser,
   });
 
-  if (isLoading) {
-    return (
-      <Container>
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container>
-        <Box sx={{ mt: 8 }}>
-          <Alert severity="error">Failed to load user information</Alert>
-        </Box>
-      </Container>
-    );
-  }
-
   return (
-    <Container maxWidth="md">
-      <Box sx={{ mt: 8 }}>
-        <Paper elevation={3} sx={{ p: 4 }}>
-          <Typography component="h1" variant="h4" gutterBottom>
-            Welcome to Live Resume
-          </Typography>
-          <Typography variant="body1" sx={{ mt: 2 }}>
-            Email: {user?.email}
-          </Typography>
-          <Typography variant="body1" sx={{ mt: 1 }}>
-            Tenant ID: {user?.tenantId}
-          </Typography>
-          <Typography variant="body1" sx={{ mt: 1 }}>
-            User ID: {user?.id}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Account created: {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
-          </Typography>
+    <Box>
+      {/* Welcome */}
+      <Typography variant="h4" gutterBottom>
+        {isLoading ? (
+          <Skeleton width={300} />
+        ) : (
+          `Welcome back${user?.email ? `, ${user.email.split('@')[0]}` : ''}`
+        )}
+      </Typography>
 
-          <Box sx={{ mt: 4 }}>
-            <Button variant="outlined" onClick={logout}>
-              Logout
-            </Button>
-          </Box>
-
-          <Box sx={{ mt: 4 }}>
-            <Typography variant="body2" color="text.secondary">
-              This is a placeholder dashboard. Additional features will be added in future iterations.
-            </Typography>
-          </Box>
-        </Paper>
+      {/* Stats row */}
+      <Box sx={{ mb: 3 }}>
+        <StatsCards />
       </Box>
-    </Container>
+
+      {/* Middle row: completeness + public profile */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid item xs={12} md={8}>
+          <ProfileCompletenessCard />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <PublicProfileCard />
+            <RecentActivityCard />
+          </Box>
+        </Grid>
+      </Grid>
+
+      {/* Quick actions */}
+      <Typography variant="h6" gutterBottom>
+        Quick Actions
+      </Typography>
+      <QuickActionsGrid />
+    </Box>
   );
 }

@@ -3,6 +3,21 @@ import { useProjects, useDeleteProject } from '../../hooks/useProjects';
 import { ProjectForm } from './ProjectForm';
 import { StoryList } from './StoryList';
 import type { ProjectResponse } from '../../types/experienceProject';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  CircularProgress,
+  Alert,
+  IconButton,
+  Stack,
+  Typography,
+  Divider,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ProjectListProps {
   jobExperienceId: number;
@@ -22,65 +37,75 @@ export const ProjectList: React.FC<ProjectListProps> = ({ jobExperienceId }) => 
     }
   };
 
-  if (isLoading) return <div className="text-sm text-gray-500">Loading projects...</div>;
-  if (error) return <div className="text-sm text-red-600">Error loading projects.</div>;
+  if (isLoading) return <CircularProgress size={24} />;
+  if (error) return <Alert severity="error">Error loading projects.</Alert>;
 
   return (
-    <div className="space-y-3 mt-3">
+    <Stack spacing={2} sx={{ mt: 2 }}>
       {!isAdding && !editingId && (
-        <button
-          onClick={() => setIsAdding(true)}
-          className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
-        >
-          + Add Project
-        </button>
+        <Box>
+          <Button
+            variant="contained"
+            color="success"
+            size="small"
+            onClick={() => setIsAdding(true)}
+          >
+            + Add Project
+          </Button>
+        </Box>
       )}
 
       {isAdding && (
-        <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-          <h4 className="text-md font-semibold mb-3">Add New Project</h4>
-          <ProjectForm
-            jobExperienceId={jobExperienceId}
-            onSuccess={() => setIsAdding(false)}
-            onCancel={() => setIsAdding(false)}
-          />
-        </div>
+        <Card variant="outlined" sx={{ bgcolor: 'grey.50' }}>
+          <CardContent>
+            <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }}>
+              Add New Project
+            </Typography>
+            <ProjectForm
+              jobExperienceId={jobExperienceId}
+              onSuccess={() => setIsAdding(false)}
+              onCancel={() => setIsAdding(false)}
+            />
+          </CardContent>
+        </Card>
       )}
 
       {projects && projects.length > 0 ? (
         projects.map((project) => (
-          <div key={project.id} className="border border-gray-200 rounded-lg p-4">
-            {editingId === project.id ? (
-              <ProjectForm
-                jobExperienceId={jobExperienceId}
-                project={project}
-                onSuccess={() => setEditingId(null)}
-                onCancel={() => setEditingId(null)}
-              />
-            ) : (
-              <ProjectCard
-                project={project}
-                isExpanded={expandedId === project.id}
-                onToggleExpand={() =>
-                  setExpandedId(expandedId === project.id ? null : project.id)
-                }
-                onEdit={() => {
-                  setEditingId(project.id);
-                  setIsAdding(false);
-                }}
-                onDelete={() => handleDelete(project.id)}
-              />
-            )}
-          </div>
+          <Card key={project.id} variant="outlined">
+            <CardContent>
+              {editingId === project.id ? (
+                <ProjectForm
+                  jobExperienceId={jobExperienceId}
+                  project={project}
+                  onSuccess={() => setEditingId(null)}
+                  onCancel={() => setEditingId(null)}
+                />
+              ) : (
+                <ProjectCard
+                  project={project}
+                  isExpanded={expandedId === project.id}
+                  onToggleExpand={() =>
+                    setExpandedId(expandedId === project.id ? null : project.id)
+                  }
+                  onEdit={() => {
+                    setEditingId(project.id);
+                    setIsAdding(false);
+                  }}
+                  onDelete={() => handleDelete(project.id)}
+                />
+              )}
+            </CardContent>
+          </Card>
         ))
       ) : (
         !isAdding && (
-          <p className="text-sm text-gray-500">
+          <Typography variant="body2" color="text.secondary">
             No projects yet. Add your first project to document your experience.
-          </p>
+          </Typography>
         )
       )}
-    </div>
+    </Stack>
   );
 };
 
@@ -100,97 +125,104 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   onDelete,
 }) => {
   return (
-    <div>
-      <div className="flex justify-between items-start">
-        <div className="flex-1 cursor-pointer" onClick={onToggleExpand}>
-          <h4 className="text-lg font-semibold">{project.title}</h4>
-          <div className="flex flex-wrap gap-2 mt-1">
+    <Box>
+      <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Box sx={{ flex: 1, cursor: 'pointer' }} onClick={onToggleExpand}>
+          <Typography variant="h6">{project.title}</Typography>
+          <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: 0.5 }} useFlexGap>
             {project.role && (
-              <span className="text-sm text-gray-600">{project.role}</span>
+              <Typography variant="body2" color="text.secondary">
+                {project.role}
+              </Typography>
             )}
             {project.teamSize && (
-              <span className="text-sm text-gray-500">Team: {project.teamSize}</span>
+              <Typography variant="body2" color="text.secondary">
+                Team: {project.teamSize}
+              </Typography>
             )}
             {project.architectureType && (
-              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
-                {project.architectureType}
-              </span>
+              <Chip label={project.architectureType} size="small" variant="outlined" />
             )}
-            <span className={`text-xs px-2 py-0.5 rounded ${
-              project.visibility === 'public'
-                ? 'bg-green-100 text-green-700'
-                : 'bg-gray-100 text-gray-600'
-            }`}>
-              {project.visibility}
-            </span>
-            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
-              {project.storyCount} {project.storyCount === 1 ? 'story' : 'stories'}
-            </span>
-          </div>
+            <Chip
+              label={project.visibility}
+              size="small"
+              color={project.visibility === 'public' ? 'success' : 'default'}
+            />
+            <Chip
+              label={`${project.storyCount} ${project.storyCount === 1 ? 'story' : 'stories'}`}
+              size="small"
+              color="primary"
+              variant="outlined"
+            />
+          </Stack>
           {project.techStack && project.techStack.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-2">
+            <Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ mt: 1 }} useFlexGap>
               {project.techStack.map((tech) => (
-                <span
+                <Chip
                   key={tech}
-                  className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded"
-                >
-                  {tech}
-                </span>
+                  label={tech}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                />
               ))}
-            </div>
+            </Stack>
           )}
-        </div>
-        <div className="flex space-x-2 ml-3">
-          <button
-            onClick={onEdit}
-            className="px-2 py-1 text-xs bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-          >
-            Edit
-          </button>
-          <button
-            onClick={onDelete}
-            className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
+        </Box>
+        <Stack direction="row" spacing={0.5} sx={{ ml: 2 }}>
+          <IconButton size="small" onClick={onEdit}>
+            <EditIcon fontSize="small" />
+          </IconButton>
+          <IconButton size="small" color="error" onClick={onDelete}>
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Stack>
+      </Stack>
 
       {isExpanded && (
-        <div className="mt-3 pt-3 border-t border-gray-200">
+        <Box sx={{ mt: 2, pt: 2 }}>
+          <Divider sx={{ mb: 2 }} />
           {project.context && (
-            <div className="mb-2">
-              <span className="text-sm font-medium text-gray-700">Context: </span>
-              <span className="text-sm text-gray-600">{project.context}</span>
-            </div>
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="subtitle2" component="span">Context: </Typography>
+              <Typography variant="body2" component="span" color="text.secondary">
+                {project.context}
+              </Typography>
+            </Box>
           )}
           {project.outcomes && (
-            <div className="mb-2">
-              <span className="text-sm font-medium text-gray-700">Outcomes: </span>
-              <span className="text-sm text-gray-600">{project.outcomes}</span>
-            </div>
+            <Box sx={{ mb: 1 }}>
+              <Typography variant="subtitle2" component="span">Outcomes: </Typography>
+              <Typography variant="body2" component="span" color="text.secondary">
+                {project.outcomes}
+              </Typography>
+            </Box>
           )}
           {project.metrics && Object.keys(project.metrics).length > 0 && (
-            <div className="mb-3">
-              <span className="text-sm font-medium text-gray-700">Metrics: </span>
-              <div className="flex flex-wrap gap-2 mt-1">
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle2">Metrics:</Typography>
+              <Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ mt: 0.5 }} useFlexGap>
                 {Object.entries(project.metrics).map(([key, val]) => (
-                  <span key={key} className="text-xs bg-purple-50 text-purple-700 px-2 py-0.5 rounded">
-                    {key}: {String(val)}
-                  </span>
+                  <Chip
+                    key={key}
+                    label={`${key}: ${String(val)}`}
+                    size="small"
+                    color="secondary"
+                    variant="outlined"
+                  />
                 ))}
-              </div>
-            </div>
+              </Stack>
+            </Box>
           )}
 
-          <div className="mt-3">
-            <h5 className="text-sm font-semibold text-gray-700 mb-2">
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Stories ({project.storyCount})
-            </h5>
+            </Typography>
             <StoryList experienceProjectId={project.id} />
-          </div>
-        </div>
+          </Box>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };

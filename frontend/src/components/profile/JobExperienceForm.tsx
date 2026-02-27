@@ -1,4 +1,13 @@
 import React, { useState } from 'react';
+import {
+  TextField,
+  Button,
+  Grid,
+  Checkbox,
+  FormControlLabel,
+  Alert,
+  Stack,
+} from '@mui/material';
 import { useCreateJobExperience, useUpdateJobExperience } from '../../hooks/useJobExperience';
 import type { JobExperience, CreateJobExperienceRequest } from '../../types/profile';
 
@@ -44,7 +53,6 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
     e.preventDefault();
 
     if (experience) {
-      // Update existing
       updateMutation.mutate(
         {
           profileId,
@@ -69,7 +77,6 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
         }
       );
     } else {
-      // Create new
       const createData: CreateJobExperienceRequest = {
         company: formData.company,
         role: formData.role,
@@ -97,172 +104,142 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
   const error = createMutation.error || updateMutation.error;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
-            Role *
-          </label>
-          <input
-            type="text"
-            id="role"
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+    <form onSubmit={handleSubmit}>
+      <Stack spacing={3}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Company"
+              name="company"
+              value={formData.company}
+              onChange={handleChange}
+              required
+              size="small"
+            />
+          </Grid>
+        </Grid>
 
-        <div>
-          <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
-            Company *
-          </label>
-          <input
-            type="text"
-            id="company"
-            name="company"
-            value={formData.company}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-      </div>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Location"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Employment Type"
+              name="employmentType"
+              value={formData.employmentType}
+              onChange={handleChange}
+              placeholder="e.g., Full-time, Part-time, Contract"
+              size="small"
+            />
+          </Grid>
+        </Grid>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-            Location
-          </label>
-          <input
-            type="text"
-            id="location"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label="Start Date"
+              name="startDate"
+              type="date"
+              value={formData.startDate}
+              onChange={handleChange}
+              required
+              size="small"
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              label={`End Date${!formData.isCurrent ? ' *' : ''}`}
+              name="endDate"
+              type="date"
+              value={formData.endDate}
+              onChange={handleChange}
+              disabled={formData.isCurrent}
+              required={!formData.isCurrent}
+              size="small"
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+        </Grid>
 
-        <div>
-          <label htmlFor="employmentType" className="block text-sm font-medium text-gray-700 mb-1">
-            Employment Type
-          </label>
-          <input
-            type="text"
-            id="employmentType"
-            name="employmentType"
-            value={formData.employmentType}
-            onChange={handleChange}
-            placeholder="e.g., Full-time, Part-time, Contract"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
-            Start Date *
-          </label>
-          <input
-            type="date"
-            id="startDate"
-            name="startDate"
-            value={formData.startDate}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
-            End Date {!formData.isCurrent && '*'}
-          </label>
-          <input
-            type="date"
-            id="endDate"
-            name="endDate"
-            value={formData.endDate}
-            onChange={handleChange}
-            disabled={formData.isCurrent}
-            required={!formData.isCurrent}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-          />
-        </div>
-      </div>
-
-      <div className="flex items-center">
-        <input
-          type="checkbox"
-          id="isCurrent"
-          name="isCurrent"
-          checked={formData.isCurrent}
-          onChange={handleChange}
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        <FormControlLabel
+          control={
+            <Checkbox
+              name="isCurrent"
+              checked={formData.isCurrent}
+              onChange={handleChange}
+            />
+          }
+          label="I currently work here"
         />
-        <label htmlFor="isCurrent" className="ml-2 block text-sm text-gray-700">
-          I currently work here
-        </label>
-      </div>
 
-      <div>
-        <label htmlFor="responsibilities" className="block text-sm font-medium text-gray-700 mb-1">
-          Responsibilities
-        </label>
-        <textarea
-          id="responsibilities"
+        <TextField
+          fullWidth
+          label="Responsibilities"
           name="responsibilities"
           value={formData.responsibilities}
           onChange={handleChange}
+          multiline
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          size="small"
         />
-      </div>
 
-      <div>
-        <label htmlFor="achievements" className="block text-sm font-medium text-gray-700 mb-1">
-          Achievements
-        </label>
-        <textarea
-          id="achievements"
+        <TextField
+          fullWidth
+          label="Achievements"
           name="achievements"
           value={formData.achievements}
           onChange={handleChange}
+          multiline
           rows={3}
           placeholder="Key achievements in this role"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          size="small"
         />
-      </div>
 
-      {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-red-800 text-sm">
-            Error: {error instanceof Error ? error.message : 'Failed to save'}
-          </p>
-        </div>
-      )}
-
-      <div className="flex justify-end space-x-3">
-        {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
-          >
-            Cancel
-          </button>
+        {error && (
+          <Alert severity="error">
+            {error instanceof Error ? error.message : 'Failed to save'}
+          </Alert>
         )}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {isLoading ? 'Saving...' : experience ? 'Update' : 'Add'}
-        </button>
-      </div>
+
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          {onCancel && (
+            <Button variant="outlined" onClick={onCancel}>
+              Cancel
+            </Button>
+          )}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : experience ? 'Update' : 'Add'}
+          </Button>
+        </Stack>
+      </Stack>
     </form>
   );
 };

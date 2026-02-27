@@ -12,6 +12,7 @@ import { ExportsPage } from './pages/ExportsPage';
 import { LinkedInAnalyzerPage } from './pages/LinkedInAnalyzerPage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
+import AppLayout from './components/layout/AppLayout';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,54 +48,17 @@ function App() {
             <Route path="/p/:slug" element={<PublicProfilePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfileEditorPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/skills"
-              element={
-                <ProtectedRoute>
-                  <SkillsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/billing"
-              element={
-                <ProtectedRoute>
-                  <BillingPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/exports"
-              element={
-                <ProtectedRoute>
-                  <ExportsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/linkedin-analyzer"
-              element={
-                <ProtectedRoute>
-                  <LinkedInAnalyzerPage />
-                </ProtectedRoute>
-              }
-            />
+
+            {/* Authenticated routes with app layout */}
+            <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/profile" element={<ProfileEditorPage />} />
+              <Route path="/skills" element={<SkillsPage />} />
+              <Route path="/billing" element={<BillingPage />} />
+              <Route path="/exports" element={<ExportsPage />} />
+              <Route path="/linkedin-analyzer" element={<LinkedInAnalyzerPage />} />
+            </Route>
+
             <Route
               path="/"
               element={<Navigate to={token ? '/dashboard' : '/login'} replace />}

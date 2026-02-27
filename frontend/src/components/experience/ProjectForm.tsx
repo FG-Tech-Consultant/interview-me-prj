@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCreateProject, useUpdateProject } from '../../hooks/useProjects';
 import { MetricsEditor } from './MetricsEditor';
 import type { ProjectResponse, CreateProjectRequest, UpdateProjectRequest } from '../../types/experienceProject';
+import { TextField, Button, Grid, MenuItem, Box, Stack } from '@mui/material';
 
 interface ProjectFormProps {
   jobExperienceId: number;
@@ -76,120 +77,108 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Title *</label>
-        <input
-          type="text"
+    <Box component="form" onSubmit={handleSubmit}>
+      <Stack spacing={2}>
+        <TextField
+          label="Title *"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          maxLength={255}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+          fullWidth
+          size="small"
+          inputProps={{ maxLength: 255 }}
         />
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Context</label>
-        <textarea
+        <TextField
+          label="Context"
           value={context}
           onChange={(e) => setContext(e.target.value)}
-          maxLength={5000}
+          fullWidth
+          size="small"
+          multiline
           rows={3}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+          inputProps={{ maxLength: 5000 }}
           placeholder="Project background and business context..."
         />
-      </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Your Role</label>
-          <input
-            type="text"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            maxLength={255}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Team Size</label>
-          <input
-            type="number"
-            value={teamSize}
-            onChange={(e) => setTeamSize(e.target.value)}
-            min={1}
-            max={1000}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-      </div>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Your Role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              fullWidth
+              size="small"
+              inputProps={{ maxLength: 255 }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Team Size"
+              type="number"
+              value={teamSize}
+              onChange={(e) => setTeamSize(e.target.value)}
+              fullWidth
+              size="small"
+              inputProps={{ min: 1, max: 1000 }}
+            />
+          </Grid>
+        </Grid>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Tech Stack (comma-separated)</label>
-        <input
-          type="text"
+        <TextField
+          label="Tech Stack (comma-separated)"
           value={techStackInput}
           onChange={(e) => setTechStackInput(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+          fullWidth
+          size="small"
           placeholder="React, Spring Boot, PostgreSQL..."
         />
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Architecture Type</label>
-        <input
-          type="text"
+        <TextField
+          label="Architecture Type"
           value={architectureType}
           onChange={(e) => setArchitectureType(e.target.value)}
-          maxLength={100}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+          fullWidth
+          size="small"
+          inputProps={{ maxLength: 100 }}
           placeholder="Microservices, Monolith, Serverless..."
         />
-      </div>
 
-      <MetricsEditor value={metrics} onChange={setMetrics} />
+        <MetricsEditor value={metrics} onChange={setMetrics} />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Outcomes</label>
-        <textarea
+        <TextField
+          label="Outcomes"
           value={outcomes}
           onChange={(e) => setOutcomes(e.target.value)}
-          maxLength={5000}
+          fullWidth
+          size="small"
+          multiline
           rows={3}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+          inputProps={{ maxLength: 5000 }}
           placeholder="Key results and impact..."
         />
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Visibility</label>
-        <select
+        <TextField
+          label="Visibility"
+          select
           value={visibility}
           onChange={(e) => setVisibility(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+          fullWidth
+          size="small"
         >
-          <option value="private">Private</option>
-          <option value="public">Public</option>
-        </select>
-      </div>
+          <MenuItem value="private">Private</MenuItem>
+          <MenuItem value="public">Public</MenuItem>
+        </TextField>
 
-      <div className="flex space-x-3">
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-        >
-          {isLoading ? 'Saving...' : isEdit ? 'Update Project' : 'Create Project'}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
+        <Stack direction="row" spacing={2}>
+          <Button type="submit" variant="contained" disabled={isLoading}>
+            {isLoading ? 'Saving...' : isEdit ? 'Update Project' : 'Create Project'}
+          </Button>
+          <Button variant="outlined" onClick={onCancel}>
+            Cancel
+          </Button>
+        </Stack>
+      </Stack>
+    </Box>
   );
 };
