@@ -34,7 +34,7 @@ public abstract class AbstractIntegrationTest {
     static final PostgreSQLContainer<?> postgres;
 
     static {
-        postgres = new PostgreSQLContainer<>("pgvector/pgvector:pg16")
+        postgres = new PostgreSQLContainer<>("pgvector/pgvector:pg18")
                 .withDatabaseName("interviewme_test")
                 .withUsername("test")
                 .withPassword("test")
