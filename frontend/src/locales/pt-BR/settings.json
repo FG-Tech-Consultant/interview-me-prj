@@ -1,0 +1,33 @@
+{
+  "title": "Configuracoes",
+  "tabs": {
+    "account": "Conta",
+    "preferences": "Preferencias"
+  },
+  "account": {
+    "title": "Informacoes da Conta",
+    "email": "E-mail",
+    "tenantId": "ID do Inquilino",
+    "memberSince": "Membro desde",
+    "logout": "Sair",
+    "logoutDescription": "Encerrar sessao da sua conta neste dispositivo."
+  },
+  "preferences": {
+    "title": "Preferencias",
+    "language": "Idioma",
+    "languageDescription": "Escolha seu idioma preferido para a interface."
+  },
+  "dangerZone": {
+    "title": "Zona de Perigo",
+    "description": "Exclua permanentemente sua conta e todos os dados associados. Esta acao nao pode ser desfeita.",
+    "deleteAccount": "Excluir Conta",
+    "confirmTitle": "Excluir Conta Permanentemente",
+    "confirmDescription": "Isso excluira permanentemente toda a sua conta, incluindo perfil, habilidades, historias, projetos, experiencias profissionais, formacao, historico de chat, exportacoes, analises do LinkedIn, carteira de moedas e todos os outros dados. Esta acao e irreversivel.",
+    "confirmInstruction": "Digite DELETE MY ACCOUNT para confirmar:",
+    "confirmPlaceholder": "DELETE MY ACCOUNT",
+    "confirmButton": "Excluir Minha Conta Permanentemente",
+    "cancelButton": "Cancelar",
+    "deleting": "Excluindo conta...",
+    "mismatch": "O texto de confirmacao nao corresponde. Digite exatamente: DELETE MY ACCOUNT"
+  }
+}

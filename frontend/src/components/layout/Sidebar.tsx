@@ -18,6 +18,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import InboxIcon from '@mui/icons-material/Inbox';
+import SettingsIcon from '@mui/icons-material/Settings';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
@@ -38,6 +39,7 @@ const navItems: NavItem[] = [
   { labelKey: 'nav.linkedinAnalyzer', path: '/linkedin-analyzer', icon: <AssessmentIcon /> },
   { labelKey: 'nav.linkedinInbox', path: '/linkedin-inbox', icon: <InboxIcon /> },
   { labelKey: 'nav.billing', path: '/billing', icon: <AccountBalanceWalletIcon /> },
+  { labelKey: 'nav.settings', path: '/settings', icon: <SettingsIcon /> },
 ];
 
 interface SidebarProps {

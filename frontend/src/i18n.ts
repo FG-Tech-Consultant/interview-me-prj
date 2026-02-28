@@ -14,6 +14,7 @@ import chatEn from './locales/en/chat.json';
 import dashboardEn from './locales/en/dashboard.json';
 import publicProfileEn from './locales/en/public-profile.json';
 import errorsEn from './locales/en/errors.json';
+import settingsEn from './locales/en/settings.json';
 
 import commonPtBR from './locales/pt-BR/common.json';
 import authPtBR from './locales/pt-BR/auth.json';
@@ -27,6 +28,7 @@ import chatPtBR from './locales/pt-BR/chat.json';
 import dashboardPtBR from './locales/pt-BR/dashboard.json';
 import publicProfilePtBR from './locales/pt-BR/public-profile.json';
 import errorsPtBR from './locales/pt-BR/errors.json';
+import settingsPtBR from './locales/pt-BR/settings.json';
 
 const resources = {
   en: {
@@ -42,6 +44,7 @@ const resources = {
     dashboard: dashboardEn,
     'public-profile': publicProfileEn,
     errors: errorsEn,
+    settings: settingsEn,
   },
   'pt-BR': {
     common: commonPtBR,
@@ -56,6 +59,7 @@ const resources = {
     dashboard: dashboardPtBR,
     'public-profile': publicProfilePtBR,
     errors: errorsPtBR,
+    settings: settingsPtBR,
   },
 };
 
@@ -79,6 +83,7 @@ i18n
       'dashboard',
       'public-profile',
       'errors',
+      'settings',
     ],
     defaultNS: 'common',
     detection: {

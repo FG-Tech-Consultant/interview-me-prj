@@ -1,0 +1,33 @@
+{
+  "title": "Settings",
+  "tabs": {
+    "account": "Account",
+    "preferences": "Preferences"
+  },
+  "account": {
+    "title": "Account Information",
+    "email": "Email",
+    "tenantId": "Tenant ID",
+    "memberSince": "Member since",
+    "logout": "Log Out",
+    "logoutDescription": "Sign out of your account on this device."
+  },
+  "preferences": {
+    "title": "Preferences",
+    "language": "Language",
+    "languageDescription": "Choose your preferred language for the interface."
+  },
+  "dangerZone": {
+    "title": "Danger Zone",
+    "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+    "deleteAccount": "Delete Account",
+    "confirmTitle": "Delete Account Permanently",
+    "confirmDescription": "This will permanently delete your entire account including your profile, skills, stories, projects, job experiences, education, chat history, exports, LinkedIn analyses, coin wallet, and all other data. This action is irreversible.",
+    "confirmInstruction": "Type DELETE MY ACCOUNT to confirm:",
+    "confirmPlaceholder": "DELETE MY ACCOUNT",
+    "confirmButton": "Delete My Account Forever",
+    "cancelButton": "Cancel",
+    "deleting": "Deleting account...",
+    "mismatch": "Confirmation text does not match. Please type exactly: DELETE MY ACCOUNT"
+  }
+}
