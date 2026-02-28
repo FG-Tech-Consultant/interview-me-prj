@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   Chip,
-  Divider,
   Stack,
 } from '@mui/material';
 import { PublicProjectCard } from './PublicProjectCard';
@@ -23,12 +22,7 @@ export const PublicWorkTimeline: React.FC<PublicWorkTimelineProps> = ({ jobs }) 
   const { t } = useTranslation('public-profile');
 
   return (
-    <Box sx={{ mb: 4 }}>
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        {t('sections.experience')}
-      </Typography>
-      <Divider sx={{ mb: 2 }} />
-
+    <Box>
       {jobs.map((job, index) => (
         <Box key={index} sx={{ mb: 3, position: 'relative', pl: 4 }}>
           {/* Timeline connector */}

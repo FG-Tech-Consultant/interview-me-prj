@@ -16,5 +16,10 @@
   "noPublicContent": "This profile has no public content yet.",
   "chatComingSoon": "Recruiter chat coming soon!",
   "present": "Present",
-  "team": "Team: {{size}}"
+  "team": "Team: {{size}}",
+  "cta": {
+    "title": "Interview {{name}} with Career Assistant",
+    "subtitle": "Ask about experience, skills, projects, and more",
+    "button": "Start Chat"
+  }
 }

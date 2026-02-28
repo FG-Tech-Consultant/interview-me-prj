@@ -1,16 +1,20 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Fab, Tooltip } from '@mui/material';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import React, { useEffect } from 'react';
 import { ChatPanel } from './ChatPanel';
 import { useChat } from '../../hooks/useChat';
 
 interface ChatWidgetProps {
   slug: string;
   profileName: string;
+  externalOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export const ChatWidget: React.FC<ChatWidgetProps> = ({ slug, profileName }) => {
+export const ChatWidget: React.FC<ChatWidgetProps> = ({
+  slug,
+  profileName,
+  externalOpen,
+  onOpenChange,
+}) => {
   const {
     messages,
     sendMessage,
@@ -19,38 +23,29 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ slug, profileName }) => 
     isOpen,
     toggle,
   } = useChat(slug, profileName);
-  const { t } = useTranslation('chat');
+
+  // Sync external open state
+  useEffect(() => {
+    if (externalOpen && !isOpen) {
+      toggle();
+    }
+  }, [externalOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Notify parent of open state changes
+  useEffect(() => {
+    onOpenChange?.(isOpen);
+  }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!isOpen) return null;
 
   return (
-    <>
-      {isOpen && (
-        <ChatPanel
-          profileName={profileName}
-          messages={messages}
-          isLoading={isLoading}
-          quotaInfo={quotaInfo}
-          onSend={sendMessage}
-          onClose={toggle}
-        />
-      )}
-
-      {!isOpen && (
-        <Tooltip title={t('tooltip')} placement="left">
-          <Fab
-            color="primary"
-            size="medium"
-            onClick={toggle}
-            sx={{
-              position: 'fixed',
-              bottom: 24,
-              right: 24,
-              zIndex: 1000,
-            }}
-          >
-            <ChatBubbleOutlineIcon />
-          </Fab>
-        </Tooltip>
-      )}
-    </>
+    <ChatPanel
+      profileName={profileName}
+      messages={messages}
+      isLoading={isLoading}
+      quotaInfo={quotaInfo}
+      onSend={sendMessage}
+      onClose={toggle}
+    />
   );
 };

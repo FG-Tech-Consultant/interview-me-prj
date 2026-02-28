@@ -16,5 +16,10 @@
   "noPublicContent": "Este perfil ainda nao tem conteudo publico.",
   "chatComingSoon": "Chat com recrutador em breve!",
   "present": "Atual",
-  "team": "Equipe: {{size}}"
+  "team": "Equipe: {{size}}",
+  "cta": {
+    "title": "Entreviste {{name}} com o Assistente de Carreira",
+    "subtitle": "Pergunte sobre experiencia, habilidades, projetos e mais",
+    "button": "Iniciar Chat"
+  }
 }

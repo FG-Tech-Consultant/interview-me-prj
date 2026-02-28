@@ -1,9 +1,7 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
-  Divider,
   Stack,
 } from '@mui/material';
 import SchoolIcon from '@mui/icons-material/School';
@@ -19,15 +17,8 @@ const formatDate = (date: string): string => {
 };
 
 export const PublicEducationSection: React.FC<PublicEducationSectionProps> = ({ education }) => {
-  const { t } = useTranslation('public-profile');
-
   return (
-    <Box sx={{ mb: 4 }}>
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        {t('sections.education')}
-      </Typography>
-      <Divider sx={{ mb: 2 }} />
-
+    <Box>
       {education.map((edu, index) => (
         <Stack key={index} direction="row" spacing={2} sx={{ mb: 2 }}>
           <SchoolIcon color="action" sx={{ mt: 0.5 }} />

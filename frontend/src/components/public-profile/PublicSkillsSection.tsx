@@ -5,7 +5,6 @@ import {
   Typography,
   Chip,
   Rating,
-  Divider,
   Button,
   Stack,
 } from '@mui/material';
@@ -39,12 +38,7 @@ export const PublicSkillsSection: React.FC<PublicSkillsSectionProps> = ({ skills
   let visibleCount = 0;
 
   return (
-    <Box sx={{ mb: 4 }}>
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        {t('sections.skills')}
-      </Typography>
-      <Divider sx={{ mb: 2 }} />
-
+    <Box>
       {sortedCategories.map(([category, catSkills]) => {
         if (shouldTruncate && visibleCount >= MAX_VISIBLE_SKILLS) return null;
 
