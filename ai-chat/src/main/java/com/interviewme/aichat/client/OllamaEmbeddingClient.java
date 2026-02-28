@@ -3,6 +3,8 @@ package com.interviewme.aichat.client;
 import com.interviewme.aichat.config.AiProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -14,40 +16,40 @@ import java.util.Map;
 
 @Component
 @Slf4j
-@ConditionalOnExpression("'${ai.openai.api-key:}' != ''")
-public class OpenAiEmbeddingClient implements EmbeddingClient {
+@ConditionalOnExpression("'${ai.ollama.base-url:}' != ''")
+@ConditionalOnMissingBean(OpenAiEmbeddingClient.class)
+public class OllamaEmbeddingClient implements EmbeddingClient {
 
     private final AiProperties aiProperties;
     private final RestClient restClient;
 
-    public OpenAiEmbeddingClient(AiProperties aiProperties) {
+    public OllamaEmbeddingClient(AiProperties aiProperties) {
         this.aiProperties = aiProperties;
         this.restClient = RestClient.builder()
-                .baseUrl(aiProperties.getOpenai().getBaseUrl())
-                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + aiProperties.getOpenai().getApiKey())
+                .baseUrl(aiProperties.getOllama().getBaseUrl())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
-        log.info("OpenAiEmbeddingClient initialized with model={}", aiProperties.getOpenai().getEmbeddingModel());
+        log.info("OllamaEmbeddingClient initialized with base-url={} model={}",
+                aiProperties.getOllama().getBaseUrl(), aiProperties.getOllama().getEmbeddingModel());
     }
 
     @Override
     public float[] embed(String text) {
         Map<String, Object> body = Map.of(
-                "model", aiProperties.getOpenai().getEmbeddingModel(),
+                "model", aiProperties.getOllama().getEmbeddingModel(),
                 "input", text
         );
 
         @SuppressWarnings("unchecked")
         Map<String, Object> response = restClient.post()
-                .uri("/embeddings")
+                .uri("/api/embed")
                 .body(body)
                 .retrieve()
                 .body(Map.class);
 
         @SuppressWarnings("unchecked")
-        List<Map<String, Object>> data = (List<Map<String, Object>>) response.get("data");
-        @SuppressWarnings("unchecked")
-        List<Number> embedding = (List<Number>) data.get(0).get("embedding");
+        List<List<Number>> embeddings = (List<List<Number>>) response.get("embeddings");
+        List<Number> embedding = embeddings.get(0);
 
         float[] result = new float[embedding.size()];
         for (int i = 0; i < embedding.size(); i++) {
@@ -59,24 +61,22 @@ public class OpenAiEmbeddingClient implements EmbeddingClient {
     @Override
     public List<float[]> embedBatch(List<String> texts) {
         Map<String, Object> body = Map.of(
-                "model", aiProperties.getOpenai().getEmbeddingModel(),
+                "model", aiProperties.getOllama().getEmbeddingModel(),
                 "input", texts
         );
 
         @SuppressWarnings("unchecked")
         Map<String, Object> response = restClient.post()
-                .uri("/embeddings")
+                .uri("/api/embed")
                 .body(body)
                 .retrieve()
                 .body(Map.class);
 
         @SuppressWarnings("unchecked")
-        List<Map<String, Object>> data = (List<Map<String, Object>>) response.get("data");
+        List<List<Number>> embeddings = (List<List<Number>>) response.get("embeddings");
 
         List<float[]> results = new ArrayList<>();
-        for (Map<String, Object> item : data) {
-            @SuppressWarnings("unchecked")
-            List<Number> embedding = (List<Number>) item.get("embedding");
+        for (List<Number> embedding : embeddings) {
             float[] arr = new float[embedding.size()];
             for (int i = 0; i < embedding.size(); i++) {
                 arr[i] = embedding.get(i).floatValue();

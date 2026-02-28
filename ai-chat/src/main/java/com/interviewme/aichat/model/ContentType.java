@@ -4,5 +4,7 @@ public enum ContentType {
     SKILL,
     STORY,
     PROJECT,
-    JOB
+    JOB,
+    EDUCATION,
+    PROFILE_SUMMARY
 }

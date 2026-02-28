@@ -49,9 +49,13 @@ public class RagService {
                 aiProperties.getEmbedding().getSimilarityThreshold()
         );
 
-        log.info("RAG retrieval tenantId={} question='{}' resultsFound={}", tenantId,
+        String types = results.stream()
+                .map(r -> r.getContentType().name())
+                .reduce((a, b) -> a + "," + b)
+                .orElse("none");
+        log.info("RAG retrieval tenantId={} question='{}' resultsFound={} types=[{}]", tenantId,
                 question.length() > 50 ? question.substring(0, 50) + "..." : question,
-                results.size());
+                results.size(), types);
 
         if (results.isEmpty()) {
             return "No specific information available.";

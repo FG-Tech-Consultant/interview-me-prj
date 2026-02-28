@@ -6,6 +6,7 @@ import com.interviewme.common.exception.ValidationException;
 import com.interviewme.dto.education.CreateEducationRequest;
 import com.interviewme.dto.education.EducationResponse;
 import com.interviewme.dto.education.UpdateEducationRequest;
+import com.interviewme.event.ContentChangedEventListener;
 import com.interviewme.mapper.EducationMapper;
 import com.interviewme.model.Education;
 import com.interviewme.model.Profile;
@@ -29,6 +30,7 @@ public class EducationService {
 
     private final EducationRepository educationRepository;
     private final ProfileRepository profileRepository;
+    private final ContentChangedEventListener contentChangedEventListener;
 
     @Transactional(readOnly = true)
     public List<EducationResponse> getEducationsByProfileId(Long profileId) {
@@ -79,6 +81,7 @@ public class EducationService {
 
         Education savedEducation = educationRepository.save(education);
         log.info("Education record created with id: {}", savedEducation.getId());
+        triggerEmbeddingUpdate(savedEducation);
 
         return EducationMapper.toResponse(savedEducation);
     }
@@ -105,6 +108,7 @@ public class EducationService {
 
             Education updatedEducation = educationRepository.save(education);
             log.info("Education record updated successfully: {}", educationId);
+            triggerEmbeddingUpdate(updatedEducation);
 
             return EducationMapper.toResponse(updatedEducation);
         } catch (OptimisticLockingFailureException ex) {
@@ -127,6 +131,15 @@ public class EducationService {
 
         education.setDeletedAt(Instant.now());
         educationRepository.save(education);
+        triggerEmbeddingUpdate(education);
         log.info("Education record soft deleted successfully: {}", educationId);
+    }
+
+    private void triggerEmbeddingUpdate(Education education) {
+        try {
+            contentChangedEventListener.onEducationChanged(education);
+        } catch (Exception e) {
+            log.warn("Failed to update embedding for education {}: {}", education.getId(), e.getMessage());
+        }
     }
 }

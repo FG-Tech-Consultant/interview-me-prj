@@ -44,7 +44,8 @@ public class OllamaLlmClient implements LlmClient {
                 "stream", false,
                 "options", Map.of(
                         "num_predict", request.maxTokens(),
-                        "temperature", request.temperature()
+                        "temperature", request.temperature(),
+                        "num_ctx", 16384
                 )
         );
 

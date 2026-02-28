@@ -22,6 +22,20 @@ public interface ContentEmbeddingRepository extends JpaRepository<ContentEmbeddi
     void deleteByTenantIdAndContentType(Long tenantId, ContentType contentType);
 
     @Query(value = """
+        INSERT INTO content_embedding (tenant_id, content_type, content_id, content_text, embedding, created_at, updated_at)
+        VALUES (:tenantId, :contentType, :contentId, :contentText, CAST(:embedding AS vector), NOW(), NOW())
+        ON CONFLICT (tenant_id, content_type, content_id)
+        DO UPDATE SET content_text = :contentText, embedding = CAST(:embedding AS vector), updated_at = NOW()
+        """, nativeQuery = true)
+    @org.springframework.data.jpa.repository.Modifying
+    void upsertEmbedding(
+        @Param("tenantId") Long tenantId,
+        @Param("contentType") String contentType,
+        @Param("contentId") Long contentId,
+        @Param("contentText") String contentText,
+        @Param("embedding") String embedding);
+
+    @Query(value = """
         SELECT ce.* FROM content_embedding ce
         WHERE ce.tenant_id = :tenantId
           AND 1 - (ce.embedding <=> CAST(:embedding AS vector)) > :threshold

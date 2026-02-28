@@ -43,8 +43,8 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       CLAUDE_API_KEY: ${CLAUDE_API_KEY:-}
-      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
-      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-qwen2.5:7b}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://interview-me-ollama:11434}
+      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-qwen2.5:3b}
     ports:
       - "${IM_APP_PORT:-8080}:8080"
     healthcheck:
@@ -55,7 +55,6 @@ services:
       start_period: 40s
     networks:
       - app-network
-      - ollama_default
 
 volumes:
   interview-me-db_pg_data_prod:
@@ -64,5 +63,3 @@ volumes:
 networks:
   app-network:
     driver: bridge
-  ollama_default:
-    external: true

@@ -37,17 +37,7 @@ public class EmbeddingService {
         float[] embedding = embeddingClient.embed(contentText);
         String embeddingStr = floatArrayToString(embedding);
 
-        ContentEmbedding entity = embeddingRepository
-                .findByTenantIdAndContentTypeAndContentId(tenantId, type, contentId)
-                .orElse(new ContentEmbedding());
-
-        entity.setTenantId(tenantId);
-        entity.setContentType(type);
-        entity.setContentId(contentId);
-        entity.setContentText(contentText);
-        entity.setEmbedding(embeddingStr);
-
-        embeddingRepository.save(entity);
+        embeddingRepository.upsertEmbedding(tenantId, type.name(), contentId, contentText, embeddingStr);
         log.info("Embedding saved tenantId={} type={} contentId={}", tenantId, type, contentId);
     }
 

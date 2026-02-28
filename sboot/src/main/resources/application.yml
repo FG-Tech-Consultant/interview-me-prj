@@ -84,14 +84,15 @@ ai:
     base-url: https://api.anthropic.com/v1
   ollama:
     base-url: ${OLLAMA_BASE_URL:}
-    chat-model: ${OLLAMA_CHAT_MODEL:qwen2.5:7b}
+    chat-model: ${OLLAMA_CHAT_MODEL:qwen2.5:3b}
+    embedding-model: ${OLLAMA_EMBEDDING_MODEL:nomic-embed-text}
   chat:
-    max-tokens: 500
+    max-tokens: 800
     temperature: 0.3
     max-context-messages: 10
     rate-limit-per-minute: 5
     session-expiry-hours: 24
   embedding:
-    dimension: 1536
-    similarity-threshold: 0.3
-    top-k: 5
+    dimension: 768
+    similarity-threshold: 0.25
+    top-k: 10

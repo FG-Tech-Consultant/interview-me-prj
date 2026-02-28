@@ -4,6 +4,7 @@ import com.interviewme.common.exception.DuplicateProfileException;
 import com.interviewme.common.exception.OptimisticLockException;
 import com.interviewme.common.exception.ProfileNotFoundException;
 import com.interviewme.common.exception.ValidationException;
+import com.interviewme.event.ContentChangedEventListener;
 import com.interviewme.util.SlugGenerator;
 import com.interviewme.util.SlugValidator;
 import com.interviewme.billing.config.BillingProperties;
@@ -32,6 +33,7 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final CoinWalletService coinWalletService;
     private final BillingProperties billingProperties;
+    private final ContentChangedEventListener contentChangedEventListener;
 
     @Transactional(readOnly = true)
     public ProfileResponse getProfileByUserId(Long userId) {
@@ -79,6 +81,7 @@ public class ProfileService {
 
         Profile savedProfile = profileRepository.save(profile);
         log.info("Profile created with id: {}", savedProfile.getId());
+        triggerEmbeddingUpdate(savedProfile);
 
         return ProfileMapper.toResponse(savedProfile);
     }
@@ -95,6 +98,7 @@ public class ProfileService {
             ProfileMapper.updateEntity(profile, request);
             Profile updatedProfile = profileRepository.save(profile);
             log.info("Profile updated successfully: {}", profileId);
+            triggerEmbeddingUpdate(updatedProfile);
 
             return ProfileMapper.toResponse(updatedProfile);
         } catch (OptimisticLockingFailureException ex) {
@@ -113,6 +117,7 @@ public class ProfileService {
 
         profile.setDeletedAt(Instant.now());
         profileRepository.save(profile);
+        triggerEmbeddingUpdate(profile);
         log.info("Profile soft deleted successfully: {}", profileId);
     }
 
@@ -156,5 +161,13 @@ public class ProfileService {
         log.info("Slug updated successfully for profile: {}", profileId);
 
         return ProfileMapper.toResponse(updatedProfile);
+    }
+
+    private void triggerEmbeddingUpdate(Profile profile) {
+        try {
+            contentChangedEventListener.onProfileChanged(profile);
+        } catch (Exception e) {
+            log.warn("Failed to update embedding for profile {}: {}", profile.getId(), e.getMessage());
+        }
     }
 }

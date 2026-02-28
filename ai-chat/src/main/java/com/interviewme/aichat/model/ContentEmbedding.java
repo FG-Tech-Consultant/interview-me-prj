@@ -33,8 +33,8 @@ public class ContentEmbedding {
     @Column(name = "content_text", nullable = false, columnDefinition = "TEXT")
     private String contentText;
 
-    // Stored as pgvector string format "[0.1,0.2,...]" - native query handles conversion
-    @Column(name = "embedding", nullable = false, columnDefinition = "vector(1536)")
+    // Stored as pgvector format - native query handles conversion
+    @Column(name = "embedding", nullable = false, columnDefinition = "vector(768)")
     private String embedding;
 
     @Column(name = "created_at", nullable = false)

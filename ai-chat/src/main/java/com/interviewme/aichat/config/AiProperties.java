@@ -42,12 +42,13 @@ public class AiProperties {
     @Data
     public static class OllamaConfig {
         private String baseUrl;
-        private String chatModel = "qwen2.5:7b";
+        private String chatModel = "qwen2.5:3b";
+        private String embeddingModel = "nomic-embed-text";
     }
 
     @Data
     public static class ChatConfig {
-        private int maxTokens = 500;
+        private int maxTokens = 800;
         private double temperature = 0.3;
         private int maxContextMessages = 10;
         private int rateLimitPerMinute = 5;
@@ -56,8 +57,8 @@ public class AiProperties {
 
     @Data
     public static class EmbeddingConfig {
-        private int dimension = 1536;
-        private double similarityThreshold = 0.3;
-        private int topK = 5;
+        private int dimension = 768;
+        private double similarityThreshold = 0.25;
+        private int topK = 10;
     }
 }
