@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { chatApi } from '../api/chatApi';
 import type { ChatMessageDisplay, QuotaInfo } from '../types/chat';
 
@@ -15,6 +16,7 @@ interface UseChatReturn {
 }
 
 export function useChat(slug: string, profileName: string): UseChatReturn {
+  const { t } = useTranslation('chat');
   const [messages, setMessages] = useState<ChatMessageDisplay[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,13 +39,13 @@ export function useChat(slug: string, profileName: string): UseChatReturn {
         {
           id: 'greeting',
           role: 'assistant',
-          content: `Hi! I'm ${firstName}'s career assistant. Ask me anything about their experience, skills, and projects.`,
+          content: t('greeting', { name: firstName }),
           timestamp: new Date(),
           status: 'delivered',
         },
       ]);
     }
-  }, [profileName]);
+  }, [profileName, t]);
 
   const toggle = useCallback(() => {
     setIsOpen((prev) => {
@@ -102,16 +104,15 @@ export function useChat(slug: string, profileName: string): UseChatReturn {
 
         let errorMessage: string;
         if (status === 402) {
-          errorMessage = 'Chat quota reached for this month.';
+          errorMessage = t('errors.quotaReached');
         } else if (status === 429) {
-          errorMessage = 'Please wait a moment before sending another message.';
+          errorMessage = t('errors.rateLimit');
         } else if (status === 503) {
-          errorMessage =
-            "I'm having trouble responding right now. Please try again in a moment.";
+          errorMessage = t('errors.unavailable');
         } else if (status === 404) {
-          errorMessage = 'Profile not found.';
+          errorMessage = t('errors.notFound');
         } else {
-          errorMessage = data?.message || 'Something went wrong. Please try again.';
+          errorMessage = data?.message || t('errors.generic');
         }
 
         setError(errorMessage);
@@ -129,7 +130,7 @@ export function useChat(slug: string, profileName: string): UseChatReturn {
         setIsLoading(false);
       }
     },
-    [slug, sessionToken, isLoading]
+    [slug, sessionToken, isLoading, t]
   );
 
   return {

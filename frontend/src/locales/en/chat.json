@@ -7,6 +7,14 @@
   "usingCoins": "Using coins (1 coin/message)",
   "freeRemaining": "{{count}} free messages remaining this month",
   "comingSoon": "Recruiter chat coming soon!",
+  "greeting": "Hi! I'm {{name}}'s career assistant. Ask me anything about their experience, skills, and projects.",
+  "errors": {
+    "quotaReached": "Chat quota reached for this month.",
+    "rateLimit": "Please wait a moment before sending another message.",
+    "unavailable": "I'm having trouble responding right now. Please try again in a moment.",
+    "notFound": "Profile not found.",
+    "generic": "Something went wrong. Please try again."
+  },
   "time": {
     "justNow": "just now",
     "minAgo": "{{count}} min ago",

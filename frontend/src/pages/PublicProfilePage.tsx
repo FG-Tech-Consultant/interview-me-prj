@@ -17,6 +17,7 @@ import { CareerAssistantCTA } from '../components/public-profile/CareerAssistant
 import { CollapsibleSection } from '../components/public-profile/CollapsibleSection';
 import { ChatWidget } from '../components/chat/ChatWidget';
 import PoweredByFooter from '../components/common/PoweredByFooter';
+import LanguageSelector from '../components/layout/LanguageSelector';
 
 const PublicProfilePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -59,6 +60,9 @@ const PublicProfilePage: React.FC = () => {
       <PublicProfileSeo profile={profile} />
 
       <Container maxWidth="md" sx={{ py: 6 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+          <LanguageSelector />
+        </Box>
         <PublicProfileHeader profile={profile} />
 
         <CareerAssistantCTA

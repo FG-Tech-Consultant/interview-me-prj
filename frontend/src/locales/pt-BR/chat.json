@@ -7,6 +7,14 @@
   "usingCoins": "Usando moedas (1 moeda/mensagem)",
   "freeRemaining": "{{count}} mensagens gratuitas restantes este mes",
   "comingSoon": "Chat com recrutador em breve!",
+  "greeting": "Oi! Sou o assistente de carreira de {{name}}. Pergunte-me qualquer coisa sobre experiencia, habilidades e projetos.",
+  "errors": {
+    "quotaReached": "Cota de chat atingida para este mes.",
+    "rateLimit": "Aguarde um momento antes de enviar outra mensagem.",
+    "unavailable": "Estou com dificuldades para responder agora. Tente novamente em instantes.",
+    "notFound": "Perfil nao encontrado.",
+    "generic": "Algo deu errado. Tente novamente."
+  },
   "time": {
     "justNow": "agora mesmo",
     "minAgo": "{{count}} min atras",
