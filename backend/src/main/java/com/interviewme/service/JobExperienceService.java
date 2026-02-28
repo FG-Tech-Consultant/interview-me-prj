@@ -6,6 +6,7 @@ import com.interviewme.common.exception.ValidationException;
 import com.interviewme.dto.job.CreateJobExperienceRequest;
 import com.interviewme.dto.job.JobExperienceResponse;
 import com.interviewme.dto.job.UpdateJobExperienceRequest;
+import com.interviewme.event.ContentChangedEventListener;
 import com.interviewme.mapper.JobExperienceMapper;
 import com.interviewme.model.JobExperience;
 import com.interviewme.model.Profile;
@@ -29,6 +30,7 @@ public class JobExperienceService {
 
     private final JobExperienceRepository jobExperienceRepository;
     private final ProfileRepository profileRepository;
+    private final ContentChangedEventListener contentChangedEventListener;
 
     @Transactional(readOnly = true)
     public List<JobExperienceResponse> getJobExperiencesByProfileId(Long profileId) {
@@ -79,6 +81,7 @@ public class JobExperienceService {
 
         JobExperience savedExperience = jobExperienceRepository.save(experience);
         log.info("Job experience created with id: {}", savedExperience.getId());
+        triggerEmbeddingUpdate(savedExperience);
 
         return JobExperienceMapper.toResponse(savedExperience);
     }
@@ -105,6 +108,7 @@ public class JobExperienceService {
 
             JobExperience updatedExperience = jobExperienceRepository.save(experience);
             log.info("Job experience updated successfully: {}", experienceId);
+            triggerEmbeddingUpdate(updatedExperience);
 
             return JobExperienceMapper.toResponse(updatedExperience);
         } catch (OptimisticLockingFailureException ex) {
@@ -127,6 +131,15 @@ public class JobExperienceService {
 
         experience.setDeletedAt(Instant.now());
         jobExperienceRepository.save(experience);
+        triggerEmbeddingUpdate(experience);
         log.info("Job experience soft deleted successfully: {}", experienceId);
+    }
+
+    private void triggerEmbeddingUpdate(JobExperience job) {
+        try {
+            contentChangedEventListener.onJobChanged(job);
+        } catch (Exception e) {
+            log.warn("Failed to update embedding for job {}: {}", job.getId(), e.getMessage());
+        }
     }
 }

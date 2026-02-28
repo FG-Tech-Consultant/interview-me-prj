@@ -8,6 +8,7 @@ import com.interviewme.dto.experience.ProjectResponse;
 import com.interviewme.dto.experience.UpdateProjectRequest;
 import com.interviewme.model.ExperienceProject;
 import com.interviewme.model.Story;
+import com.interviewme.event.ContentChangedEventListener;
 import com.interviewme.mapper.ExperienceProjectMapper;
 import com.interviewme.repository.ExperienceProjectRepository;
 import com.interviewme.repository.ExperienceProjectSkillRepository;
@@ -35,6 +36,7 @@ public class ExperienceProjectService {
     private final StoryRepository storyRepository;
     private final StorySkillRepository storySkillRepository;
     private final JobExperienceRepository jobExperienceRepository;
+    private final ContentChangedEventListener contentChangedEventListener;
 
     @Transactional
     public ProjectResponse createProject(Long jobExperienceId, CreateProjectRequest request) {
@@ -51,6 +53,7 @@ public class ExperienceProjectService {
 
         ExperienceProject saved = projectRepository.save(project);
         log.info("Project created with id: {}", saved.getId());
+        triggerEmbeddingUpdate(saved);
 
         return ExperienceProjectMapper.toResponse(saved, 0);
     }
@@ -68,6 +71,7 @@ public class ExperienceProjectService {
             ExperienceProject updated = projectRepository.save(project);
             int storyCount = storyRepository.countByExperienceProjectIdAndDeletedAtIsNull(projectId);
             log.info("Project updated successfully: {}", projectId);
+            triggerEmbeddingUpdate(updated);
             return ExperienceProjectMapper.toResponse(updated, storyCount);
         } catch (OptimisticLockingFailureException ex) {
             log.error("Optimistic lock failure for project: {}", projectId, ex);
@@ -100,6 +104,14 @@ public class ExperienceProjectService {
         // Soft delete the project
         project.setDeletedAt(now);
         projectRepository.save(project);
+        triggerEmbeddingUpdate(project);
+        for (Story story : stories) {
+            try {
+                contentChangedEventListener.onStoryChanged(story);
+            } catch (Exception e) {
+                log.warn("Failed to update embedding for cascaded story {}: {}", story.getId(), e.getMessage());
+            }
+        }
         log.info("Project soft deleted with {} stories cascaded: {}", stories.size(), projectId);
     }
 
@@ -133,5 +145,13 @@ public class ExperienceProjectService {
 
         int storyCount = storyRepository.countByExperienceProjectIdAndDeletedAtIsNull(projectId);
         return ExperienceProjectMapper.toResponse(project, storyCount);
+    }
+
+    private void triggerEmbeddingUpdate(ExperienceProject project) {
+        try {
+            contentChangedEventListener.onProjectChanged(project);
+        } catch (Exception e) {
+            log.warn("Failed to update embedding for project {}: {}", project.getId(), e.getMessage());
+        }
     }
 }

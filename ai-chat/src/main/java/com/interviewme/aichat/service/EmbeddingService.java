@@ -4,24 +4,33 @@ import com.interviewme.aichat.client.EmbeddingClient;
 import com.interviewme.aichat.model.ContentEmbedding;
 import com.interviewme.aichat.model.ContentType;
 import com.interviewme.aichat.repository.ContentEmbeddingRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class EmbeddingService {
 
     private final EmbeddingClient embeddingClient;
     private final ContentEmbeddingRepository embeddingRepository;
 
+    public EmbeddingService(@Nullable EmbeddingClient embeddingClient,
+                            ContentEmbeddingRepository embeddingRepository) {
+        this.embeddingClient = embeddingClient;
+        this.embeddingRepository = embeddingRepository;
+        if (embeddingClient == null) {
+            log.warn("No EmbeddingClient configured - embedding generation will be skipped");
+        }
+    }
+
     @Transactional
     public void generateEmbedding(Long tenantId, ContentType type, Long contentId, String contentText) {
+        if (embeddingClient == null) {
+            log.debug("Skipping embedding generation - no EmbeddingClient configured");
+            return;
+        }
         log.info("Generating embedding tenantId={} type={} contentId={}", tenantId, type, contentId);
 
         float[] embedding = embeddingClient.embed(contentText);

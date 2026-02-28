@@ -7,6 +7,7 @@ import com.interviewme.dto.experience.CreateStoryRequest;
 import com.interviewme.dto.experience.StoryResponse;
 import com.interviewme.dto.experience.UpdateStoryRequest;
 import com.interviewme.model.Story;
+import com.interviewme.event.ContentChangedEventListener;
 import com.interviewme.mapper.StoryMapper;
 import com.interviewme.repository.ExperienceProjectRepository;
 import com.interviewme.repository.StoryRepository;
@@ -30,6 +31,7 @@ public class StoryService {
     private final StoryRepository storyRepository;
     private final StorySkillRepository storySkillRepository;
     private final ExperienceProjectRepository projectRepository;
+    private final ContentChangedEventListener contentChangedEventListener;
 
     @Transactional
     public StoryResponse createStory(Long projectId, CreateStoryRequest request) {
@@ -46,6 +48,7 @@ public class StoryService {
 
         Story saved = storyRepository.save(story);
         log.info("Story created with id: {}", saved.getId());
+        triggerEmbeddingUpdate(saved);
 
         return StoryMapper.toResponse(saved);
     }
@@ -62,6 +65,7 @@ public class StoryService {
             StoryMapper.updateEntity(story, request);
             Story updated = storyRepository.save(story);
             log.info("Story updated successfully: {}", storyId);
+            triggerEmbeddingUpdate(updated);
             return StoryMapper.toResponse(updated);
         } catch (OptimisticLockingFailureException ex) {
             log.error("Optimistic lock failure for story: {}", storyId, ex);
@@ -82,6 +86,7 @@ public class StoryService {
 
         story.setDeletedAt(Instant.now());
         storyRepository.save(story);
+        triggerEmbeddingUpdate(story);
         log.info("Story soft deleted successfully: {}", storyId);
     }
 
@@ -121,5 +126,13 @@ public class StoryService {
         return stories.stream()
             .map(StoryMapper::toResponse)
             .collect(Collectors.toList());
+    }
+
+    private void triggerEmbeddingUpdate(Story story) {
+        try {
+            contentChangedEventListener.onStoryChanged(story);
+        } catch (Exception e) {
+            log.warn("Failed to update embedding for story {}: {}", story.getId(), e.getMessage());
+        }
     }
 }

@@ -11,6 +11,7 @@ import com.interviewme.dto.skill.UserSkillDto;
 import com.interviewme.model.Skill;
 import com.interviewme.model.UserSkill;
 import com.interviewme.mapper.SkillMapper;
+import com.interviewme.event.ContentChangedEventListener;
 import com.interviewme.repository.SkillRepository;
 import com.interviewme.repository.UserSkillRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class UserSkillService {
 
     private final UserSkillRepository userSkillRepository;
     private final SkillRepository skillRepository;
+    private final ContentChangedEventListener contentChangedEventListener;
 
     @Transactional
     public UserSkillDto addSkill(Long profileId, AddUserSkillDto dto) {
@@ -86,6 +88,7 @@ public class UserSkillService {
         saved = userSkillRepository.findByIdAndTenantIdAndDeletedAtIsNull(saved.getId(), tenantId)
                 .orElse(saved);
         log.info("User skill created with id: {} for profile: {}", saved.getId(), profileId);
+        triggerEmbeddingUpdate(saved);
         return SkillMapper.toUserSkillDto(saved);
     }
 
@@ -134,6 +137,7 @@ public class UserSkillService {
 
             UserSkill updated = userSkillRepository.save(userSkill);
             log.info("User skill updated: {}", userSkillId);
+            triggerEmbeddingUpdate(updated);
             return SkillMapper.toUserSkillDto(updated);
         } catch (OptimisticLockingFailureException ex) {
             log.error("Optimistic lock failure for user skill: {}", userSkillId, ex);
@@ -151,6 +155,7 @@ public class UserSkillService {
 
         userSkill.setDeletedAt(Instant.now());
         userSkillRepository.save(userSkill);
+        triggerEmbeddingUpdate(userSkill);
         log.info("User skill soft deleted: {}", userSkillId);
     }
 
@@ -189,5 +194,13 @@ public class UserSkillService {
                 .stream()
                 .map(SkillMapper::toUserSkillDto)
                 .toList();
+    }
+
+    private void triggerEmbeddingUpdate(UserSkill skill) {
+        try {
+            contentChangedEventListener.onSkillChanged(skill);
+        } catch (Exception e) {
+            log.warn("Failed to update embedding for skill {}: {}", skill.getId(), e.getMessage());
+        }
     }
 }

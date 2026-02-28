@@ -4,15 +4,14 @@ import com.interviewme.aichat.config.AiProperties;
 import com.interviewme.aichat.client.EmbeddingClient;
 import com.interviewme.aichat.model.ContentEmbedding;
 import com.interviewme.aichat.repository.ContentEmbeddingRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class RagService {
 
@@ -20,8 +19,20 @@ public class RagService {
     private final ContentEmbeddingRepository embeddingRepository;
     private final AiProperties aiProperties;
 
+    public RagService(@Nullable EmbeddingClient embeddingClient,
+                      ContentEmbeddingRepository embeddingRepository,
+                      AiProperties aiProperties) {
+        this.embeddingClient = embeddingClient;
+        this.embeddingRepository = embeddingRepository;
+        this.aiProperties = aiProperties;
+    }
+
     @Transactional(readOnly = true)
     public String retrieveContext(Long tenantId, String question) {
+        if (embeddingClient == null) {
+            log.debug("Skipping RAG retrieval - no EmbeddingClient configured");
+            return "No specific information available.";
+        }
         float[] questionEmbedding = embeddingClient.embed(question);
         String embeddingStr = EmbeddingService.floatArrayToString(questionEmbedding);
 
