@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Container, Box, Typography, Skeleton } from '@mui/material';
 import WorkIcon from '@mui/icons-material/Work';
@@ -22,8 +22,21 @@ import LanguageSelector from '../components/layout/LanguageSelector';
 const PublicProfilePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: profile, isLoading, error } = usePublicProfile(slug || '');
-  const { t } = useTranslation('public-profile');
+  const { t, i18n } = useTranslation('public-profile');
+  const [searchParams] = useSearchParams();
   const [chatOpen, setChatOpen] = useState(false);
+
+  // Apply ?lang= URL parameter to override language
+  useEffect(() => {
+    const langParam = searchParams.get('lang');
+    if (langParam) {
+      const langMap: Record<string, string> = { pt: 'pt-BR', en: 'en', 'pt-br': 'pt-BR', 'pt-BR': 'pt-BR' };
+      const resolved = langMap[langParam] || langParam;
+      if (i18n.language !== resolved) {
+        i18n.changeLanguage(resolved);
+      }
+    }
+  }, [searchParams, i18n]);
 
   const handleChatOpen = useCallback(() => {
     setChatOpen(true);
