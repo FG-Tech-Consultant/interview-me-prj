@@ -50,6 +50,10 @@ export interface ExportCoverLetterRequest {
   market: string;
 }
 
+export interface ExportBackgroundDeckRequest {
+  templateId: number;
+}
+
 export type ExportStatusType = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
 
 export type ExportTypeValue = 'RESUME' | 'COVER_LETTER' | 'BACKGROUND_DECK';

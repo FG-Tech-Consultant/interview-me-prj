@@ -14,13 +14,14 @@ import {
   useExportHistory,
   useCreateResumeExport,
   useCreateCoverLetterExport,
+  useCreateBackgroundDeckExport,
 } from '../hooks/useExports';
 import { ExportFormDialog } from '../components/exports/ExportFormDialog';
 import { CoverLetterFormDialog } from '../components/exports/CoverLetterFormDialog';
 import { ExportProgressCard } from '../components/exports/ExportProgressCard';
 import { ExportHistoryTable } from '../components/exports/ExportHistoryTable';
 import { exportsApi } from '../api/exportsApi';
-import type { ExportResumeRequest, ExportCoverLetterRequest } from '../types/export';
+import type { ExportResumeRequest, ExportCoverLetterRequest, ExportBackgroundDeckRequest } from '../types/export';
 
 export const ExportsPage = () => {
   const [page, setPage] = useState(0);
@@ -34,6 +35,7 @@ export const ExportsPage = () => {
   const { data: history, isLoading: historyLoading } = useExportHistory(page, rowsPerPage);
   const createResumeExport = useCreateResumeExport();
   const createCoverLetterExport = useCreateCoverLetterExport();
+  const createBackgroundDeckExport = useCreateBackgroundDeckExport();
 
   const handleResumeSubmit = (request: ExportResumeRequest) => {
     createResumeExport.mutate(request, {
@@ -48,6 +50,14 @@ export const ExportsPage = () => {
     createCoverLetterExport.mutate(request, {
       onSuccess: (data) => {
         setCoverLetterFormOpen(false);
+        setActiveExportId(data.id);
+      },
+    });
+  };
+
+  const handleBackgroundDeckSubmit = (templateId: number) => {
+    createBackgroundDeckExport.mutate({ templateId }, {
+      onSuccess: (data) => {
         setActiveExportId(data.id);
       },
     });
@@ -79,6 +89,7 @@ export const ExportsPage = () => {
 
   const hasResumeTemplates = templates?.some((t) => t.type === 'RESUME') ?? false;
   const hasCoverLetterTemplates = templates?.some((t) => t.type === 'COVER_LETTER') ?? false;
+  const backgroundDeckTemplate = templates?.find((t) => t.type === 'BACKGROUND_DECK');
 
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
@@ -97,13 +108,20 @@ export const ExportsPage = () => {
           >
             New Cover Letter
           </Button>
+          <Button
+            onClick={() => backgroundDeckTemplate && handleBackgroundDeckSubmit(backgroundDeckTemplate.id)}
+            disabled={!backgroundDeckTemplate || createBackgroundDeckExport.isPending}
+          >
+            New Background Deck
+          </Button>
         </ButtonGroup>
       </Box>
 
-      {(createResumeExport.isError || createCoverLetterExport.isError) && (
+      {(createResumeExport.isError || createCoverLetterExport.isError || createBackgroundDeckExport.isError) && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {(createResumeExport.error as Error)?.message
             || (createCoverLetterExport.error as Error)?.message
+            || (createBackgroundDeckExport.error as Error)?.message
             || t('failedToCreate')}
         </Alert>
       )}

@@ -67,6 +67,23 @@ public class ExportController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
+    @PostMapping("/background-deck")
+    @Transactional
+    public ResponseEntity<ExportHistoryResponse> createBackgroundDeckExport(
+            Authentication authentication,
+            @Valid @RequestBody ExportBackgroundDeckRequest request) {
+        Long tenantId = TenantContext.getCurrentTenantId();
+        Long userId = extractUserId(authentication);
+        log.info("POST /api/exports/background-deck - tenantId: {}, userId: {}", tenantId, userId);
+
+        var profile = profileService.getProfileByUserId(userId);
+
+        ExportHistoryResponse response = exportService.createBackgroundDeckExport(
+                tenantId, profile.id(), request);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
+
     @GetMapping("/{id}/status")
     @Transactional(readOnly = true)
     public ResponseEntity<ExportStatusResponse> getExportStatus(@PathVariable Long id) {
@@ -85,8 +102,15 @@ public class ExportController {
 
         byte[] pdfBytes = exportService.downloadExport(tenantId, id);
 
-        String prefix = "COVER_LETTER".equals(exportService.getExportType(tenantId, id))
-                ? "cover-letter" : "resume";
+        String exportType = exportService.getExportType(tenantId, id);
+        String prefix;
+        if ("BACKGROUND_DECK".equals(exportType)) {
+            prefix = "background-deck";
+        } else if ("COVER_LETTER".equals(exportType)) {
+            prefix = "cover-letter";
+        } else {
+            prefix = "resume";
+        }
         String filename = prefix + "-" + LocalDate.now() + ".pdf";
 
         return ResponseEntity.ok()

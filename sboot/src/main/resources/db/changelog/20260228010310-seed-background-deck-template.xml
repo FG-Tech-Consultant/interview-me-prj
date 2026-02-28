@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260228010310-1" author="ai-rag-engineer">
+        <insert tableName="export_template">
+            <column name="name" value="Standard Background Presentation"/>
+            <column name="type" value="BACKGROUND_DECK"/>
+            <column name="description" value="Multi-slide background presentation with summary, skills, timeline, and case studies"/>
+            <column name="template_file" value="templates/exports/standard-background-deck.html"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="export_template">
+                <where>type = 'BACKGROUND_DECK' AND name = 'Standard Background Presentation'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

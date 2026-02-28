@@ -9,13 +9,12 @@ import com.interviewme.exports.model.ExportHistory;
 import com.interviewme.exports.model.ExportStatus;
 import com.interviewme.exports.model.ExportType;
 import com.interviewme.exports.repository.ExportHistoryRepository;
-import com.interviewme.model.Education;
-import com.interviewme.model.JobExperience;
-import com.interviewme.model.Profile;
+import com.interviewme.model.*;
 import com.interviewme.repository.EducationRepository;
+import com.interviewme.repository.ExperienceProjectRepository;
 import com.interviewme.repository.JobExperienceRepository;
 import com.interviewme.repository.ProfileRepository;
-import com.interviewme.model.UserSkill;
+import com.interviewme.repository.StoryRepository;
 import com.interviewme.repository.UserSkillRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +39,8 @@ public class ExportJobService {
     private final JobExperienceRepository jobExperienceRepository;
     private final EducationRepository educationRepository;
     private final UserSkillRepository userSkillRepository;
+    private final ExperienceProjectRepository experienceProjectRepository;
+    private final StoryRepository storyRepository;
     private final PdfGenerationService pdfGenerationService;
     private final FileStorageService fileStorageService;
     private final CoinWalletService coinWalletService;
@@ -70,8 +71,14 @@ public class ExportJobService {
                         export.getTemplate().getTemplateFile(), context);
 
                 // Store file
-                String filePrefix = ExportType.COVER_LETTER.name().equals(export.getType())
-                        ? "cover-letter" : "resume";
+                String filePrefix;
+                if (ExportType.BACKGROUND_DECK.name().equals(export.getType())) {
+                    filePrefix = "background-deck";
+                } else if (ExportType.COVER_LETTER.name().equals(export.getType())) {
+                    filePrefix = "cover-letter";
+                } else {
+                    filePrefix = "resume";
+                }
                 String fileName = filePrefix + "-" + export.getId() + ".pdf";
                 String fileUrl = fileStorageService.store(export.getTenantId(), fileName, pdfBytes);
 
@@ -150,6 +157,47 @@ public class ExportJobService {
             if (!jobs.isEmpty()) {
                 context.put("recentJob", jobs.get(0));
             }
+        } else if (ExportType.BACKGROUND_DECK.name().equals(export.getType())) {
+            // Background deck context
+            List<JobExperience> jobs = jobExperienceRepository
+                    .findByProfileIdAndDeletedAtIsNullOrderByStartDateDesc(profile.getId());
+            context.put("jobExperiences", jobs);
+
+            // Skills grouped by category
+            Map<String, List<Map<String, Object>>> skillsByCategory = userSkills.stream()
+                    .filter(us -> us.getSkill() != null)
+                    .collect(Collectors.groupingBy(
+                            us -> us.getSkill().getCategory() != null ? us.getSkill().getCategory() : "Other",
+                            LinkedHashMap::new,
+                            Collectors.mapping(this::toSkillMap, Collectors.toList())
+                    ));
+            context.put("skills", skillsByCategory);
+
+            // Load projects with nested stories
+            if (!jobs.isEmpty()) {
+                List<Long> jobIds = jobs.stream().map(JobExperience::getId).toList();
+                List<ExperienceProject> projects = experienceProjectRepository
+                        .findByJobExperienceIdInAndDeletedAtIsNull(jobIds);
+
+                if (!projects.isEmpty()) {
+                    List<Long> projectIds = projects.stream().map(ExperienceProject::getId).toList();
+                    List<Story> allStories = storyRepository
+                            .findByExperienceProjectIdInAndDeletedAtIsNull(projectIds);
+
+                    // Group stories by project ID
+                    Map<Long, List<Map<String, Object>>> storiesByProject = allStories.stream()
+                            .collect(Collectors.groupingBy(
+                                    Story::getExperienceProjectId,
+                                    Collectors.mapping(this::toStoryMap, Collectors.toList())
+                            ));
+
+                    // Build project maps with nested stories
+                    List<Map<String, Object>> projectMaps = projects.stream()
+                            .map(p -> toProjectMap(p, storiesByProject.getOrDefault(p.getId(), List.of())))
+                            .toList();
+                    context.put("projects", projectMaps);
+                }
+            }
         } else {
             // Resume context
             List<JobExperience> jobs = jobExperienceRepository
@@ -206,6 +254,30 @@ public class ExportJobService {
         map.put("skillName", userSkill.getSkill().getName());
         map.put("yearsOfExperience", userSkill.getYearsOfExperience());
         map.put("proficiencyDepth", userSkill.getProficiencyDepth());
+        return map;
+    }
+
+    private Map<String, Object> toProjectMap(ExperienceProject project, List<Map<String, Object>> stories) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", project.getTitle());
+        map.put("context", project.getContext());
+        map.put("role", project.getRole());
+        map.put("teamSize", project.getTeamSize());
+        map.put("techStack", project.getTechStack());
+        map.put("architectureType", project.getArchitectureType());
+        map.put("metrics", project.getMetrics());
+        map.put("outcomes", project.getOutcomes());
+        map.put("stories", stories);
+        return map;
+    }
+
+    private Map<String, Object> toStoryMap(Story story) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", story.getTitle());
+        map.put("situation", story.getSituation());
+        map.put("task", story.getTask());
+        map.put("action", story.getAction());
+        map.put("result", story.getResult());
         return map;
     }
 }

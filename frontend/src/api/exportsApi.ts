@@ -4,6 +4,7 @@ import type {
   ExportHistoryPage,
   ExportResumeRequest,
   ExportCoverLetterRequest,
+  ExportBackgroundDeckRequest,
   ExportStatus,
   ExportTemplate,
 } from '../types/export';
@@ -16,6 +17,11 @@ export const exportsApi = {
 
   createCoverLetterExport: async (request: ExportCoverLetterRequest): Promise<ExportHistory> => {
     const response = await apiClient.post<ExportHistory>('/exports/cover-letter', request);
+    return response.data;
+  },
+
+  createBackgroundDeckExport: async (request: ExportBackgroundDeckRequest): Promise<ExportHistory> => {
+    const response = await apiClient.post<ExportHistory>('/exports/background-deck', request);
     return response.data;
   },
 

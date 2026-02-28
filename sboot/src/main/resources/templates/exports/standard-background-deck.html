@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${profile.fullName} + ' - Background Presentation'">Background Presentation</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 15mm 20mm 15mm 20mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .slide {
+            page-break-after: always;
+            min-height: 170mm;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .slide:last-child {
+            page-break-after: avoid;
+        }
+
+        /* ===== Slide Header Bar ===== */
+        .slide-header {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 12px 20px;
+            margin: -15mm -20mm 20px -20mm;
+            padding-left: 20mm;
+            padding-right: 20mm;
+        }
+
+        .slide-header h2 {
+            font-size: 16pt;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== Title Slide ===== */
+        .title-slide {
+            text-align: center;
+            display: block;
+            padding-top: 40mm;
+        }
+
+        .title-slide h1 {
+            font-size: 28pt;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .title-slide .headline {
+            font-size: 16pt;
+            color: #555;
+            margin-bottom: 16px;
+        }
+
+        .title-slide .summary {
+            font-size: 11pt;
+            color: #666;
+            max-width: 80%;
+            margin: 0 auto 20px auto;
+            text-align: center;
+        }
+
+        .title-slide .meta {
+            font-size: 10pt;
+            color: #888;
+            margin-top: 16px;
+        }
+
+        .title-slide .meta span {
+            margin: 0 8px;
+        }
+
+        .title-slide .links {
+            margin-top: 12px;
+            font-size: 10pt;
+            color: #2980b9;
+        }
+
+        .title-slide .links a {
+            color: #2980b9;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        /* ===== Skills Slide ===== */
+        .skill-grid {
+            display: block;
+        }
+
+        .skill-category {
+            margin-bottom: 14px;
+            page-break-inside: avoid;
+        }
+
+        .skill-category-name {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #2c3e50;
+            border-bottom: 1px solid #ecf0f1;
+            padding-bottom: 3px;
+            margin-bottom: 6px;
+        }
+
+        .skill-items {
+            font-size: 10pt;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .skill-item {
+            display: inline-block;
+            background-color: #f0f4f8;
+            border-radius: 4px;
+            padding: 2px 8px;
+            margin: 2px 4px 2px 0;
+            font-size: 9.5pt;
+        }
+
+        .skill-years {
+            color: #888;
+            font-size: 8.5pt;
+        }
+
+        .proficiency-bar {
+            display: inline-block;
+            width: 40px;
+            height: 6px;
+            background-color: #ecf0f1;
+            border-radius: 3px;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+
+        .proficiency-fill {
+            display: block;
+            height: 100%;
+            background-color: #2980b9;
+            border-radius: 3px;
+        }
+
+        /* ===== Timeline Slide ===== */
+        .timeline-entry {
+            margin-bottom: 14px;
+            padding-left: 16px;
+            border-left: 3px solid #2c3e50;
+            page-break-inside: avoid;
+        }
+
+        .timeline-role {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .timeline-company {
+            font-size: 11pt;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .timeline-meta {
+            font-size: 9pt;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .timeline-description {
+            font-size: 9.5pt;
+            color: #444;
+        }
+
+        /* ===== Case Study Slides ===== */
+        .case-study {
+            margin-bottom: 20px;
+        }
+
+        .case-study-title {
+            font-size: 14pt;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .case-study-meta {
+            font-size: 9pt;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .case-study-context {
+            font-size: 10pt;
+            color: #555;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .tech-stack {
+            margin-bottom: 8px;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background-color: #e8f4fd;
+            color: #2980b9;
+            border-radius: 3px;
+            padding: 1px 6px;
+            font-size: 8.5pt;
+            margin: 1px 2px;
+        }
+
+        .metrics-box {
+            background-color: #f9f9f9;
+            border-left: 3px solid #27ae60;
+            padding: 6px 10px;
+            margin-bottom: 10px;
+            font-size: 9.5pt;
+        }
+
+        .star-section {
+            margin-bottom: 6px;
+        }
+
+        .star-label {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 9.5pt;
+            display: inline;
+        }
+
+        .star-text {
+            font-size: 9.5pt;
+            color: #444;
+            display: inline;
+        }
+
+        /* ===== Contact Slide ===== */
+        .contact-slide {
+            text-align: center;
+            padding-top: 50mm;
+        }
+
+        .contact-slide h2 {
+            font-size: 22pt;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            font-size: 12pt;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .contact-links {
+            margin-top: 16px;
+            font-size: 11pt;
+        }
+
+        .contact-links a {
+            color: #2980b9;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        /* ===== Footer ===== */
+        .slide-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            font-size: 8pt;
+            color: #bbb;
+            text-align: center;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== SLIDE 1: Title / Summary ===== -->
+<div class="slide">
+    <div class="title-slide">
+        <h1 th:text="${profile.fullName}">John Doe</h1>
+        <div class="headline" th:text="${profile.headline}">Senior Software Engineer</div>
+
+        <div class="summary" th:if="${profile.summary != null and !profile.summary.isEmpty()}"
+             th:text="${profile.summary}">
+            Experienced engineer specializing in distributed systems...
+        </div>
+
+        <div class="meta">
+            <span th:if="${profile.location}" th:text="${profile.location}">Berlin, Germany</span>
+        </div>
+
+        <div class="links" th:if="${profile.professionalLinks != null and !profile.professionalLinks.isEmpty()}">
+            <span th:each="link : ${profile.professionalLinks}">
+                <a th:href="${link.value}" th:text="${link.key}">LinkedIn</a>
+            </span>
+        </div>
+    </div>
+    <div class="slide-footer">
+        <span th:text="${profile.fullName}">Name</span>
+        <span> | Background Presentation | Generated </span>
+        <span th:text="${generatedDate}">2026-02-28</span>
+    </div>
+</div>
+
+<!-- ===== SLIDE 2: Skills Overview ===== -->
+<div class="slide" th:if="${skills != null and !skills.isEmpty()}">
+    <div class="slide-header">
+        <h2>Skills Overview</h2>
+    </div>
+
+    <div class="skill-grid">
+        <div class="skill-category" th:each="entry : ${skills}">
+            <div class="skill-category-name" th:text="${entry.key}">Languages</div>
+            <div class="skill-items">
+                <span class="skill-item" th:each="skill : ${entry.value}">
+                    <span th:text="${skill.skillName}">Java</span>
+                    <span class="skill-years"
+                          th:if="${skill.yearsOfExperience != null and skill.yearsOfExperience > 0}"
+                          th:text="'(' + ${skill.yearsOfExperience} + 'y)'"></span>
+                    <span class="proficiency-bar" th:if="${skill.proficiencyDepth != null}">
+                        <span class="proficiency-fill"
+                              th:style="'width: ' + ${skill.proficiencyDepth * 20} + '%'"></span>
+                    </span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span th:text="${profile.fullName}">Name</span>
+        <span> | Skills Overview</span>
+    </div>
+</div>
+
+<!-- ===== SLIDE 3: Professional Timeline ===== -->
+<div class="slide" th:if="${jobExperiences != null and !jobExperiences.isEmpty()}">
+    <div class="slide-header">
+        <h2>Professional Timeline</h2>
+    </div>
+
+    <div th:each="job : ${jobExperiences}">
+        <div class="timeline-entry">
+            <span class="timeline-role" th:text="${job.role}">Software Engineer</span>
+            <span> at </span>
+            <span class="timeline-company" th:text="${job.company}">Acme Corp</span>
+            <div class="timeline-meta">
+                <span th:text="${job.startDate}">Jan 2020</span>
+                <span> - </span>
+                <span th:if="${job.isCurrent}">Present</span>
+                <span th:unless="${job.isCurrent}" th:text="${job.endDate}">Dec 2023</span>
+                <span th:if="${job.location}"> | </span>
+                <span th:if="${job.location}" th:text="${job.location}">Berlin</span>
+                <span th:if="${job.employmentType}"> | </span>
+                <span th:if="${job.employmentType}" th:text="${job.employmentType}">Full-time</span>
+            </div>
+            <div class="timeline-description" th:if="${job.achievements != null and !job.achievements.isEmpty()}"
+                 th:text="${job.achievements}">
+                Key achievements...
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span th:text="${profile.fullName}">Name</span>
+        <span> | Professional Timeline</span>
+    </div>
+</div>
+
+<!-- ===== SLIDE 4+: Case Studies (Projects + Stories) ===== -->
+<div class="slide" th:each="project : ${projects}">
+    <div class="slide-header">
+        <h2 th:text="'Case Study: ' + ${project.title}">Case Study: Payment Gateway</h2>
+    </div>
+
+    <div class="case-study">
+        <div class="case-study-meta">
+            <span th:if="${project.role}" th:text="'Role: ' + ${project.role}">Role: Tech Lead</span>
+            <span th:if="${project.teamSize}"> | Team size: </span>
+            <span th:if="${project.teamSize}" th:text="${project.teamSize}">8</span>
+            <span th:if="${project.architectureType}"> | </span>
+            <span th:if="${project.architectureType}" th:text="${project.architectureType}">Microservices</span>
+        </div>
+
+        <div class="case-study-context" th:if="${project.context != null and !project.context.isEmpty()}"
+             th:text="${project.context}">
+            Built a high-scale payment processing gateway...
+        </div>
+
+        <div class="tech-stack" th:if="${project.techStack != null and !project.techStack.isEmpty()}">
+            <span class="tech-tag" th:each="tech : ${project.techStack}" th:text="${tech}">Java</span>
+        </div>
+
+        <div class="metrics-box" th:if="${project.metrics != null and !project.metrics.isEmpty()}">
+            <span th:each="metric, iterStat : ${project.metrics}">
+                <strong th:text="${metric.key}">TPS</strong>:
+                <span th:text="${metric.value}">50,000</span>
+                <span th:unless="${iterStat.last}"> | </span>
+            </span>
+        </div>
+
+        <div th:if="${project.outcomes != null and !project.outcomes.isEmpty()}"
+             style="margin-bottom: 10px;">
+            <strong style="font-size: 10pt; color: #2c3e50;">Outcomes:</strong>
+            <span style="font-size: 9.5pt; color: #444;" th:text="${project.outcomes}">
+                Reduced processing time by 60%...
+            </span>
+        </div>
+
+        <!-- Stories for this project -->
+        <div th:if="${project.stories != null and !project.stories.isEmpty()}">
+            <div th:each="story : ${project.stories}" style="margin-bottom: 10px; padding-top: 6px; border-top: 1px solid #ecf0f1;">
+                <div style="font-weight: bold; font-size: 10.5pt; color: #2c3e50; margin-bottom: 4px;"
+                     th:text="${story.title}">Story Title</div>
+
+                <div class="star-section">
+                    <span class="star-label">Situation: </span>
+                    <span class="star-text" th:text="${story.situation}">Context of the challenge...</span>
+                </div>
+                <div class="star-section">
+                    <span class="star-label">Task: </span>
+                    <span class="star-text" th:text="${story.task}">What needed to be done...</span>
+                </div>
+                <div class="star-section">
+                    <span class="star-label">Action: </span>
+                    <span class="star-text" th:text="${story.action}">Steps taken...</span>
+                </div>
+                <div class="star-section">
+                    <span class="star-label">Result: </span>
+                    <span class="star-text" th:text="${story.result}">Outcomes achieved...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span th:text="${profile.fullName}">Name</span>
+        <span> | Case Study</span>
+    </div>
+</div>
+
+<!-- ===== FINAL SLIDE: Contact ===== -->
+<div class="slide">
+    <div class="contact-slide">
+        <h2>Thank You</h2>
+        <div class="contact-info" th:text="${profile.fullName}">John Doe</div>
+        <div class="contact-info" th:text="${profile.headline}">Senior Software Engineer</div>
+        <div class="contact-info" th:if="${profile.location}" th:text="${profile.location}">Berlin, Germany</div>
+
+        <div class="contact-links"
+             th:if="${profile.professionalLinks != null and !profile.professionalLinks.isEmpty()}">
+            <a th:each="link : ${profile.professionalLinks}"
+               th:href="${link.value}"
+               th:text="${link.key} + ': ' + ${link.value}">LinkedIn: https://linkedin.com/in/...</a>
+        </div>
+    </div>
+    <div class="slide-footer">
+        <span>Generated on </span>
+        <span th:text="${generatedDate}">2026-02-28</span>
+        <span> | Powered by Interview Me</span>
+    </div>
+</div>
+
+</body>
+</html>
