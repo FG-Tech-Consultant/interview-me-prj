@@ -74,7 +74,7 @@ public class EducationService {
         }
 
         Education education = EducationMapper.toEntity(request);
-        education.setProfile(profile);
+        education.setProfileId(profile.getId());
         education.setTenantId(tenantId);
 
         Education savedEducation = educationRepository.save(education);

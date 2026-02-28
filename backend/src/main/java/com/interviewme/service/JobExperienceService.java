@@ -76,7 +76,7 @@ public class JobExperienceService {
         }
 
         JobExperience experience = JobExperienceMapper.toEntity(request);
-        experience.setProfile(profile);
+        experience.setProfileId(profile.getId());
         experience.setTenantId(tenantId);
 
         JobExperience savedExperience = jobExperienceRepository.save(experience);
