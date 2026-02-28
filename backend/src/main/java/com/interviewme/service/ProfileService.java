@@ -69,10 +69,10 @@ public class ProfileService {
         profile.setUserId(userId);
         profile.setTenantId(tenantId);
 
-        // Auto-generate unique slug from full name
+        // Auto-generate unique slug from full name (global check bypasses tenant filter)
         String slug = SlugGenerator.generateUniqueSlug(
             request.fullName(),
-            profileRepository::existsBySlug
+            profileRepository::existsBySlugGlobally
         );
         profile.setSlug(slug);
         log.info("Auto-generated slug: {} for userId: {}", slug, userId);
@@ -136,7 +136,7 @@ public class ProfileService {
             throw new ValidationException("slug", "This slug is reserved and cannot be used");
         }
 
-        if (profileRepository.existsBySlug(normalized)) {
+        if (profileRepository.existsBySlugGlobally(normalized)) {
             throw new DuplicateProfileException("Slug '" + normalized + "' is already in use");
         }
 

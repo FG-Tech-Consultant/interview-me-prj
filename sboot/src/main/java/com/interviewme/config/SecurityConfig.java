@@ -34,6 +34,7 @@ public class SecurityConfig {
                         // API endpoints that require authentication
                         .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/internal/test/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         // Everything else (static resources, SPA routes) is public
                         .anyRequest().permitAll()

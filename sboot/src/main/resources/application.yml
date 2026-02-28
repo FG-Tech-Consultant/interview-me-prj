@@ -54,6 +54,10 @@ billing:
     max-attempts: 3
     backoff-ms: 100
 
+test:
+  cleanup:
+    api-key: ${TEST_CLEANUP_API_KEY:}
+
 exports:
   storage-path: ./exports
   retry:

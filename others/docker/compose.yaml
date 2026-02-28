@@ -39,6 +39,7 @@ services:
       - OPENAI_API_KEY=${IM_OPENAI_API_KEY:-}
       - GEMINI_API_KEY=${IM_GEMINI_API_KEY:-}
       - CLAUDE_API_KEY=${IM_CLAUDE_API_KEY:-}
+      - TEST_CLEANUP_API_KEY=${IM_TEST_CLEANUP_API_KEY:-test-cleanup-secret-key-dev}
     ports:
       - "${IM_APP_PORT:-8080}:8080"
 

@@ -117,7 +117,7 @@ public class PublicProfileService {
             return new SlugCheckResponse(normalized, false, Collections.emptyList(), changeCost);
         }
 
-        boolean taken = profileRepository.existsBySlug(normalized);
+        boolean taken = profileRepository.existsBySlugGlobally(normalized);
         if (taken) {
             List<String> suggestions = generateSuggestions(normalized);
             return new SlugCheckResponse(normalized, false, suggestions, changeCost);
@@ -308,7 +308,7 @@ public class PublicProfileService {
         List<String> suggestions = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
             String candidate = slug + "-" + i;
-            if (!profileRepository.existsBySlug(candidate) && SlugValidator.isValidSlug(candidate)) {
+            if (!profileRepository.existsBySlugGlobally(candidate) && SlugValidator.isValidSlug(candidate)) {
                 suggestions.add(candidate);
             }
         }

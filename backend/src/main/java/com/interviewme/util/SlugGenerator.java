@@ -50,7 +50,8 @@ public final class SlugGenerator {
         }
 
         for (int i = 1; i <= 100; i++) {
-            String candidate = baseSlug + "-" + i;
+            String suffix = String.format("%02d", i);
+            String candidate = baseSlug + suffix;
             if (candidate.length() <= MAX_LENGTH && !existsChecker.apply(candidate) && !SlugValidator.isReservedSlug(candidate)) {
                 return candidate;
             }

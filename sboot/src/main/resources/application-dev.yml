@@ -7,6 +7,10 @@ spring:
   jpa:
     show-sql: true
 
+test:
+  cleanup:
+    api-key: test-cleanup-secret-key-dev
+
 logging:
   level:
     com.interviewme: DEBUG

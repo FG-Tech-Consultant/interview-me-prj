@@ -22,5 +22,12 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     Optional<Profile> findBySlugAndDeletedAtIsNull(String slug);
 
-    boolean existsBySlug(String slug);
+    boolean existsBySlugAndDeletedAtIsNull(String slug);
+
+    /**
+     * Check slug existence globally (across all tenants) using native query
+     * to bypass the Hibernate tenant filter. Slugs must be globally unique.
+     */
+    @Query(value = "SELECT EXISTS(SELECT 1 FROM profile WHERE slug = :slug AND deleted_at IS NULL)", nativeQuery = true)
+    boolean existsBySlugGlobally(@Param("slug") String slug);
 }

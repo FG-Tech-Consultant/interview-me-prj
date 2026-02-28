@@ -45,3 +45,5 @@ databaseChangeLog:
       file: db/changelog/20260224190300-create-content-embedding-table.xml
   - include:
       file: db/changelog/20260227235333-add-slug-change-count-to-profile.xml
+  - include:
+      file: db/changelog/20260228001600-make-slug-index-partial.xml

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260228001600-1" author="interview-me">
+        <!-- Drop the old full unique index on slug -->
+        <dropIndex tableName="profile" indexName="idx_profile_slug"/>
+
+        <!-- Create partial unique index: only enforce uniqueness for non-deleted profiles -->
+        <sql>
+            CREATE UNIQUE INDEX idx_profile_slug ON profile (slug) WHERE deleted_at IS NULL;
+        </sql>
+
+        <rollback>
+            <sql>DROP INDEX IF EXISTS idx_profile_slug;</sql>
+            <createIndex tableName="profile" indexName="idx_profile_slug" unique="true">
+                <column name="slug"/>
+            </createIndex>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
