@@ -1,0 +1,188 @@
+\PassOptionsToPackage{dvipsnames}{xcolor}
+
+%\documentclass[10pt,a4paper,ragged2e,withhyper]{altacv}
+\documentclass[10pt,a4paper,normalphoto]{altacv}
+
+\geometry{left=1.25cm,right=1.25cm,top=1.5cm,bottom=1.5cm,columnsep=1.2cm}
+
+\usepackage{paracol}
+\usepackage{hyperref}
+
+\ifxetexorluatex
+  \setmainfont{Roboto Slab}
+  \setsansfont{Lato}
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+	\usepackage[rm]{roboto}
+  \usepackage[defaultsans]{lato}
+  \renewcommand{\familydefault}{\sfdefault}
+\fi
+
+
+
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+\definecolor{DarkPastelRed}{HTML}{3775cc}
+\definecolor{PastelRed}{HTML}{5a7ed1}
+\definecolor{GoldenEarth}{HTML}{E7D192}
+\colorlet{name}{black}
+\colorlet{tagline}{PastelRed}
+\colorlet{heading}{DarkPastelRed}
+\colorlet{headingrule}{GoldenEarth}
+\colorlet{subheading}{PastelRed}
+\colorlet{accent}{PastelRed}
+\colorlet{emphasis}{SlateGrey}
+\colorlet{body}{LightGrey}
+\usepackage{hyperref}
+
+\renewcommand{\namefont}{\Huge\rmfamily\bfseries}
+\renewcommand{\personalinfofont}{\footnotesize}
+\renewcommand{\cvsectionfont}{\LARGE\rmfamily\bfseries}
+\renewcommand{\cvsubsectionfont}{\large\bfseries}
+
+
+\renewcommand{\itemmarker}{{\small\textbullet}}
+\renewcommand{\ratingmarker}{\faCircle}
+
+\addbibresource{sample.bib}
+
+\begin{document}
+\name{FERNANDO GOMES}
+\tagline{Tech Manager --- Tech Lead --- Open to Remote Work}
+
+\personalinfo{%
+    \linkedin{linkedin.com/in/fhgomes}
+    \email{tech.fernando.gomes@gmail.com}
+    \phone {+55 44 999098287}
+}
+\makecvheader
+\columnratio{0.6}
+
+\begin{paracol}{2}
+\cvsection{Work Experience}
+
+\cvevent{Senior Software Engineer III}{Rocket Financial Inc}{May 2022 -- Jul 2024}{Remote, Canada}
+\begin{itemize}
+\item Delivered high-performance, scalable microservices for a Banking-as-a-Service (BaaS) platform, utilizing a modern tech stack including Spring, Kafka, Kubernetes, and AWS.   
+\item Demonstrated versatility and leadership by owning and delivering features across a wide range of platform domains. Led the design and architecture of numerous implementations. 
+\item Recognized for my technical expertise and communication skills by being selected to join the platform release team and interviewer team.
+\item[--]{\footnotesize \textbf{Technologies:} Scrum, Java 17+, Spring 3+, Kafka, SQS, Docker, Kubernetes, AWS Cloud, Bitbucket, Kibana, Grafana, ArgoCD, PostgreSQL, Solid}
+\end{itemize}
+\divider
+
+
+\cvevent{CTO and Principal Software Engineer}{PlayMatch/PlayEscolar}{May 2021 -- Jul 2022}{Remote, Brazil}
+\begin{itemize}
+\item Spearheaded the development of an educational gaming platform, building a talented team and leveraging technologies like Java, React, and Kubernetes. Agile methodologies and microservices enabled us to deliver efficiently and keep pace with startup growth. 
+\item Oversaw all technology aspects, including architecture, hiring, and process definition. From leading code reviews to defining strategic direction, fostered a culture of results and delivery, ensuring our technology foundation supported the company's ambitious goals.
+
+\item[--]{\footnotesize \textbf{Technologies:} Scrum, Kanban, Lean, Jenkins, Maven, SonarQube, Java 11-15, Spring Boot, Junit, AWS, Terraform, Serverless, CloudFlare, Docker, Kubernetes, Fluentd, ELK, Open Search, NewRelic, React Js, Redux, Node.js, Webpack}
+\end{itemize}
+\divider
+
+\cvevent{Tech Lead and Senior Software Engineer III} {PagSeguro/PagBank}{Mar 2020 -- Marc 2021}{Remote, Brazil}
+\begin{itemize}
+\item Led a development squad as a technical leader, driving a product lifecycle approach from architectural design and technical definition to implementation and maintenance. Tackled both business demands and technical challenges, particularly during the monolith migration.
+
+\item Successfully managed two key projects. One, built on the microservices architecture, required performance for high traffic volumes. The other, initial migration phase, involved planning and executing the strangler pattern for a smooth transition. Reorganized the entire CI/CD cycle using our Jenkins environment in both projects.
+
+\item[--]{\footnotesize \textbf{Technologies:} Scrum, Kanban, Java 8-11, Kotlin, Spring, Spring Batch, Docker, Apache Mesos, AWS, Kubernetes, Flyway, Oracle, RabbitMQ, Kafka, JS, ReactJs, Docker, Swagger}
+\end{itemize}
+
+\newpage
+\cvevent{Tech Lead and Senior Java Architect} {DB1 Global Software}{Jan 2014 -- Mar 2020}{Remote, Brazil}
+\begin{itemize}
+\item Led a team of 5-10 developers as an architect and technical leader, delivering customer-centric solutions through innovative, high-tech projects. Expertise spanned Java, Microservices architecture, DevOps, AngularJS, JavaScript, and test-driven development (TDD/BDD). Actively utilized Docker for containerization.
+
+\item Architected and led the development of ANYMARKET and KONCILI, market-leading e-commerce hubs connecting businesses to Brazilian marketplaces. 
+
+
+\item[--]{\footnotesize \textbf{Technologies:} Scrum, Kanban, Lean, Java 7-11, Kotlin, Spring boot, Oracle, Docker, Kubernetes, Redis, MongoDB, Openshift, AWS, Liquibase/Flyway, AngularJS, Javascript, Typescript, CSS, Jenkins, JBOSS, Undertown}
+\end{itemize}
+
+\divider
+\cvevent{Development Team Manager and Java developer} {Digitaldoc}{Jan 2010 -- Jan 2014}{Paraná, Brazil}
+\begin{itemize}
+\item Within the core business of Document Management, thrived in a dual role managing the development team and being a being a principal engineer. This encompassed knowledge management, interdepartmental integration, and prioritizing tasks effectively. Leveraging agile methodologies and the certified MPSBR, I spearheaded the analysis, development, and maintenance of Java-based applications.
+
+\item Beyond leadership, I actively contributed as a Principal Developer. This involved building new solutions, integrating existing ones and maintaining 4 products. 
+
+
+\item[--]{\footnotesize \textbf{Technologies:} Scrum, Kanban, Lean, Java 6-7, Spring, PostgreSQL, MySQL, Oracle, GWT,  Redis, MongoDB, AWS, Javascript, Css, Jenkins, Jetty, Tomcat, Git, SVN}
+\end{itemize}
+
+
+\newpage
+
+
+\nocite{*}
+
+
+%% Switch to the right column. This will now automatically move to the second
+%% page if the content is too long.
+\switchcolumn
+
+\cvsection{Skills}
+
+\cvtag{Scrum}
+\cvtag{Kanban}
+\cvtag{Lean}
+\cvtag{Java}
+\cvtag{Kotlin}
+\cvtag{Spring Boot}
+\cvtag{Microservices}
+\cvtag{Kubernetes}
+\cvtag{Kafka}
+\cvtag{SQS}
+\cvtag{RabbitMQ}
+\cvtag{SQL}
+\cvtag{NoSQL}
+\cvtag{Prometheus}
+\cvtag{Grafana}
+\cvtag{Splunk}
+\cvtag{gRPC}
+\cvtag{AWS}
+\cvtag{GCP}
+\cvtag{Serverless Computing}
+\cvtag{JavaScript}
+\cvtag{ReactJS}
+\cvtag{Jenkins}
+
+\medskip
+
+\cvsection{Projects}
+\cvachievement{\faChartBar}{\href{https://anymarket.com.br}{ANYMARKET}}{Architected and led the development of ANYMARKET, market-leading ERP and e-commerce hub connecting businesses to Brazilian and International marketplaces.}
+
+\divider
+
+\cvachievement{\faChartBar}{\href{https://www.koncili.com}{KONCILI}}{Architected and led the development of KONCILI, market-leading fee reconciliation system for Brazilian and International marketplaces.}
+
+% \divider
+
+% \cvachievement{\faServer}{\href{https://medium.com/reverse-engineering/dc-control-a-robust-low-cost-snmp-agent-for-data-centers-f4a3d7149389}{DC Control}}{An open-source environment control system for data centers.}
+\medskip
+
+\cvsection{Education}
+
+\cvevent{BSc. in Analysis and Development of Information Systems}{UTFPR - Federal Technology University of Paraná, Brazil}{2011}{Brazil}
+
+\divider
+
+\cvsection{About me}
+
+\newcommand{\icontext}[1]{% Define a macro with argument #1 for text
+  \Large\color{accent} {\faPlane}#1
+}
+
+{\Large\color{accent} {\faPlane} } World traveler 
+{\Large\color{accent} {\faCat}  } Cat Lover
+\newline
+\newline
+{\Large\color{accent} {\faLaptop} } Technology   
+{\Large\color{accent} {\faGamepad} } Online Games 
+
+\end{paracol}
+
+\end{document}

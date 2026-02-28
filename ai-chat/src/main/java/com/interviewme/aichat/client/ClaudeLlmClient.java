@@ -58,7 +58,7 @@ public class ClaudeLlmClient implements LlmClient {
 
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> contentBlocks = (List<Map<String, Object>>) response.get("content");
-        String text = (String) contentBlocks.get(0).get("text");
+        String text = (String) contentBlocks.getFirst().get("text");
 
         @SuppressWarnings("unchecked")
         Map<String, Object> usage = (Map<String, Object>) response.get("usage");
