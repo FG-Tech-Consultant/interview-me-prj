@@ -82,6 +82,9 @@ ai:
     api-key: ${CLAUDE_API_KEY:}
     chat-model: claude-sonnet-4-6
     base-url: https://api.anthropic.com/v1
+  ollama:
+    base-url: ${OLLAMA_BASE_URL:}
+    chat-model: ${OLLAMA_CHAT_MODEL:qwen2.5:7b}
   chat:
     max-tokens: 500
     temperature: 0.3

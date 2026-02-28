@@ -13,6 +13,7 @@ public class AiProperties {
     private OpenAiConfig openai = new OpenAiConfig();
     private GeminiConfig gemini = new GeminiConfig();
     private ClaudeConfig claude = new ClaudeConfig();
+    private OllamaConfig ollama = new OllamaConfig();
     private ChatConfig chat = new ChatConfig();
     private EmbeddingConfig embedding = new EmbeddingConfig();
 
@@ -36,6 +37,12 @@ public class AiProperties {
         private String apiKey;
         private String chatModel = "claude-sonnet-4-6";
         private String baseUrl = "https://api.anthropic.com/v1";
+    }
+
+    @Data
+    public static class OllamaConfig {
+        private String baseUrl;
+        private String chatModel = "qwen2.5:7b";
     }
 
     @Data

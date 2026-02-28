@@ -122,7 +122,7 @@ This constitution establishes the foundational principles, architectural decisio
 **Rationale:** Backend-controlled AI ensures security (API keys never exposed), cost control (usage limits per tenant), and flexibility (provider switching). Centralizing prompts enables versioning and A/B testing.
 
 **Application:**
-- Define `LlmClient` interface with implementations: `OpenAiLlmClient`, `GeminiLlmClient`, `ClaudeLlmClient`
+- Define `LlmClient` interface with implementations: `OpenAiLlmClient`, `GeminiLlmClient`, `ClaudeLlmClient`, `OllamaLlmClient`
 - Store API keys encrypted in database or environment variables
 - Use `LlmRouterService` to select provider/model based on action type and tenant settings
 - Implement prompt templates in dedicated services (e.g., `RecruiterChatService`, `ExportPromptService`, `LinkedInAnalysisService`)
@@ -130,6 +130,18 @@ This constitution establishes the foundational principles, architectural decisio
 - Enforce coin-based usage limits for paid features
 - Use RAG with pgvector for context retrieval (skills, stories, experiences)
 - Cache LLM responses where appropriate (e.g., LinkedIn profile analysis)
+
+**Local Model Routing (Ollama):**
+- All local features use a single model via Ollama: `qwen2.5:7b`
+- No complex routing logic needed — one model handles all features:
+  - Recruiter Chat (RAG), Resume/Cover Letter export, Background Presentation export,
+    LinkedIn Score Analyzer, Story Builder (STAR format), LinkedIn Inbox Drafts
+- Ollama runs externally (not inside Docker Compose):
+  - From host (Spring Boot outside Docker): `http://localhost:11434`
+  - From Docker container (app container): `http://host.docker.internal:11434`
+  - Disk usage: ~32GB for models, RAM: ~9-10GB when running a 14B model, auto-unloads when idle
+- Default provider for dev profile: `ollama`
+- Cloud providers (OpenAI, Claude, Gemini) remain available for production or per-tenant override
 
 ---
 

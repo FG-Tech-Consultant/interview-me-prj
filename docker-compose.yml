@@ -39,10 +39,12 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
       JWT_SECRET: ${JWT_SECRET:-your-256-bit-secret-must-be-at-least-32-characters-long-for-HS256}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
-      AI_DEFAULT_PROVIDER: ${AI_DEFAULT_PROVIDER:-openai}
+      AI_DEFAULT_PROVIDER: ${AI_DEFAULT_PROVIDER:-ollama}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       CLAUDE_API_KEY: ${CLAUDE_API_KEY:-}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
+      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-qwen2.5:7b}
     ports:
       - "${IM_APP_PORT:-8080}:8080"
     healthcheck:
@@ -53,6 +55,7 @@ services:
       start_period: 40s
     networks:
       - app-network
+      - ollama_default
 
 volumes:
   interview-me-db_pg_data_prod:
@@ -61,3 +64,5 @@ volumes:
 networks:
   app-network:
     driver: bridge
+  ollama_default:
+    external: true
