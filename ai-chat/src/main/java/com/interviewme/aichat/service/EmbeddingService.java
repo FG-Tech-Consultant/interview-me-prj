@@ -7,6 +7,7 @@ import com.interviewme.aichat.repository.ContentEmbeddingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -25,7 +26,7 @@ public class EmbeddingService {
         }
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void generateEmbedding(Long tenantId, ContentType type, Long contentId, String contentText) {
         if (embeddingClient == null) {
             log.debug("Skipping embedding generation - no EmbeddingClient configured");
@@ -50,7 +51,7 @@ public class EmbeddingService {
         log.info("Embedding saved tenantId={} type={} contentId={}", tenantId, type, contentId);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteEmbedding(Long tenantId, ContentType type, Long contentId) {
         log.info("Deleting embedding tenantId={} type={} contentId={}", tenantId, type, contentId);
         embeddingRepository.deleteByTenantIdAndContentTypeAndContentId(tenantId, type, contentId);

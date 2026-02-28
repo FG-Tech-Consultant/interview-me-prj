@@ -28,7 +28,7 @@ public class BillingController {
     private final FreeTierService freeTierService;
 
     @GetMapping("/wallet")
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<WalletResponse> getWallet() {
         Long tenantId = TenantContext.getCurrentTenantId();
         log.info("GET /api/billing/wallet - tenantId: {}", tenantId);

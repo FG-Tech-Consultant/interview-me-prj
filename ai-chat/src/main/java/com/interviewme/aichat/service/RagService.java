@@ -33,7 +33,13 @@ public class RagService {
             log.debug("Skipping RAG retrieval - no EmbeddingClient configured");
             return "No specific information available.";
         }
-        float[] questionEmbedding = embeddingClient.embed(question);
+        float[] questionEmbedding;
+        try {
+            questionEmbedding = embeddingClient.embed(question);
+        } catch (Exception e) {
+            log.warn("Embedding generation failed for RAG, returning no context: {}", e.getMessage());
+            return "No specific information available.";
+        }
         String embeddingStr = EmbeddingService.floatArrayToString(questionEmbedding);
 
         List<ContentEmbedding> results = embeddingRepository.findTopKBySimilarity(

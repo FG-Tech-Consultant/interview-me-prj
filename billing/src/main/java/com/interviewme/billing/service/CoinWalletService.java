@@ -18,6 +18,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
@@ -33,7 +34,7 @@ public class CoinWalletService {
     private final BillingProperties billingProperties;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public WalletResponse getWallet(Long tenantId) {
         log.debug("Getting wallet for tenantId: {}", tenantId);
         CoinWallet wallet = getOrCreateWallet(tenantId);
@@ -149,7 +150,7 @@ public class CoinWalletService {
         return saved;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CoinWallet getOrCreateWallet(Long tenantId) {
         return walletRepository.findByTenantId(tenantId)
                 .orElseGet(() -> {
