@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, Button, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 export const PublicProfileNotFound: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('public-profile');
 
   return (
     <Container maxWidth="sm">
@@ -20,14 +22,13 @@ export const PublicProfileNotFound: React.FC = () => {
           404
         </Typography>
         <Typography variant="h5" gutterBottom>
-          Profile not found
+          {t('notFound.title')}
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-          The profile you are looking for does not exist or may have been removed.
-          Please check the URL and try again.
+          {t('notFound.message')}
         </Typography>
         <Button variant="contained" onClick={() => navigate('/')}>
-          Go to Homepage
+          {t('notFound.goHome')}
         </Button>
       </Box>
     </Container>

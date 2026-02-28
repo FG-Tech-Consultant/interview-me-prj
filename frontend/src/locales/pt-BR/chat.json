@@ -1,0 +1,15 @@
+{
+  "tooltip": "Conversar com assistente de carreira",
+  "careerAssistant": "Assistente de Carreira de {{name}}",
+  "placeholder": "Faca uma pergunta...",
+  "placeholderDefault": "Digite uma mensagem...",
+  "unavailable": "Chat indisponivel",
+  "usingCoins": "Usando moedas (1 moeda/mensagem)",
+  "freeRemaining": "{{count}} mensagens gratuitas restantes este mes",
+  "comingSoon": "Chat com recrutador em breve!",
+  "time": {
+    "justNow": "agora mesmo",
+    "minAgo": "{{count}} min atras",
+    "hoursAgo": "{{count}}h atras"
+  }
+}

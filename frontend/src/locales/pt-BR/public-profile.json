@@ -1,0 +1,22 @@
+{
+  "notFound": {
+    "title": "Perfil nao encontrado",
+    "message": "O perfil que voce esta procurando nao existe ou pode ter sido removido. Verifique a URL e tente novamente.",
+    "goHome": "Ir para a Pagina Inicial"
+  },
+  "sections": {
+    "about": "Sobre",
+    "skills": "Habilidades",
+    "experience": "Experiencia",
+    "education": "Formacao"
+  },
+  "showAll": "Mostrar todas as {{count}} habilidades",
+  "showLess": "Mostrar menos",
+  "current": "Atual",
+  "noPublicContent": "Este perfil ainda nao tem conteudo publico.",
+  "poweredBy": "Desenvolvido por",
+  "interviewMe": "Interview Me",
+  "chatComingSoon": "Chat com recrutador em breve!",
+  "present": "Atual",
+  "team": "Equipe: {{size}}"
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Grid, TextField, Button, Alert } from '@mui/material';
 import { useUpdateProfile, useCreateProfile } from '../../hooks/useProfile';
 import type { Profile, CreateProfileRequest } from '../../types/profile';
@@ -14,6 +15,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
     summary: profile?.summary || '',
     location: profile?.location || '',
   });
+  const { t } = useTranslation('profile');
 
   const updateMutation = useUpdateProfile();
   const createMutation = useCreateProfile();
@@ -65,7 +67,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
             fullWidth
             id="fullName"
             name="fullName"
-            label="Full Name"
+            label={t('form.fullName')}
             value={formData.fullName}
             onChange={handleChange}
             required
@@ -76,7 +78,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
             fullWidth
             id="headline"
             name="headline"
-            label="Headline"
+            label={t('form.headline')}
             value={formData.headline}
             onChange={handleChange}
           />
@@ -87,7 +89,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
         fullWidth
         id="summary"
         name="summary"
-        label="Summary"
+        label={t('form.summary')}
         value={formData.summary}
         onChange={handleChange}
         multiline
@@ -98,18 +100,18 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
         fullWidth
         id="location"
         name="location"
-        label="Location"
+        label={t('form.location')}
         value={formData.location}
         onChange={handleChange}
       />
 
       {isSuccess && (
-        <Alert severity="success">Profile saved successfully!</Alert>
+        <Alert severity="success">{t('form.saveSuccess')}</Alert>
       )}
 
       {error && (
         <Alert severity="error">
-          {error instanceof Error ? error.message : 'Failed to save profile'}
+          {error instanceof Error ? error.message : t('form.failedToSave')}
         </Alert>
       )}
 
@@ -119,7 +121,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({ profile }) => {
           variant="contained"
           disabled={isLoading}
         >
-          {isLoading ? 'Saving...' : profile ? 'Update Profile' : 'Create Profile'}
+          {isLoading ? t('common:status.saving') : profile ? t('form.updateButton') : t('form.createButton')}
         </Button>
       </Box>
     </Box>

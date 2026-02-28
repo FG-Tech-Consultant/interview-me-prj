@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Container,
   Box,
@@ -29,6 +30,7 @@ import type { UserSkillDto, AddUserSkillRequest, UpdateUserSkillRequest } from '
 export const SkillsPage: React.FC = () => {
   const { data: profile, isLoading: profileLoading } = useCurrentProfile();
   const { data: skillsGrouped, isLoading: skillsLoading, error } = useUserSkills(profile?.id);
+  const { t } = useTranslation('skills');
 
   const addSkill = useAddUserSkill();
   const updateSkill = useUpdateUserSkill(profile?.id);
@@ -46,13 +48,11 @@ export const SkillsPage: React.FC = () => {
   });
   const [filters, setFilters] = useState<SkillFilterValues>(defaultFilters);
 
-  // Flatten all skills for filtering
   const allSkills = useMemo(() => {
     if (!skillsGrouped) return [];
     return Object.values(skillsGrouped).flat();
   }, [skillsGrouped]);
 
-  // Apply filters
   const filteredGrouped = useMemo(() => {
     if (!skillsGrouped) return {};
 
@@ -100,14 +100,14 @@ export const SkillsPage: React.FC = () => {
     try {
       if (formMode === 'add' && profile) {
         await addSkill.mutateAsync({ profileId: profile.id, data: data as AddUserSkillRequest });
-        setSnackbar({ open: true, message: 'Skill added successfully', severity: 'success' });
+        setSnackbar({ open: true, message: t('addedSuccess'), severity: 'success' });
       } else if (formMode === 'edit' && editingSkill) {
         await updateSkill.mutateAsync({ id: editingSkill.id, data: data as UpdateUserSkillRequest });
-        setSnackbar({ open: true, message: 'Skill updated successfully', severity: 'success' });
+        setSnackbar({ open: true, message: t('updatedSuccess'), severity: 'success' });
       }
       setFormOpen(false);
     } catch (err: any) {
-      const message = err?.response?.data?.message || 'An error occurred';
+      const message = err?.response?.data?.message || t('common:status.error');
       setSnackbar({ open: true, message, severity: 'error' });
     }
   };
@@ -116,9 +116,9 @@ export const SkillsPage: React.FC = () => {
     if (!deletingSkill) return;
     try {
       await deleteSkill.mutateAsync(deletingSkill.id);
-      setSnackbar({ open: true, message: 'Skill removed from profile', severity: 'success' });
+      setSnackbar({ open: true, message: t('removedSuccess'), severity: 'success' });
     } catch (err: any) {
-      const message = err?.response?.data?.message || 'An error occurred';
+      const message = err?.response?.data?.message || t('common:status.error');
       setSnackbar({ open: true, message, severity: 'error' });
     }
     setDeleteDialogOpen(false);
@@ -139,7 +139,7 @@ export const SkillsPage: React.FC = () => {
     return (
       <Container>
         <Box sx={{ mt: 8 }}>
-          <Alert severity="info">Create a profile first to manage your skills.</Alert>
+          <Alert severity="info">{t('createProfileFirst')}</Alert>
         </Box>
       </Container>
     );
@@ -149,7 +149,7 @@ export const SkillsPage: React.FC = () => {
     return (
       <Container>
         <Box sx={{ mt: 8 }}>
-          <Alert severity="error">Failed to load skills.</Alert>
+          <Alert severity="error">{t('failedToLoad')}</Alert>
         </Box>
       </Container>
     );
@@ -159,9 +159,9 @@ export const SkillsPage: React.FC = () => {
     <Container maxWidth="lg">
       <Box sx={{ mt: 4, mb: 4 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h4">Skills</Typography>
+          <Typography variant="h4">{t('title')}</Typography>
           <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddClick}>
-            Add Skill
+            {t('addSkill')}
           </Button>
         </Box>
 
@@ -175,13 +175,13 @@ export const SkillsPage: React.FC = () => {
         {allSkills.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 8 }}>
             <Typography variant="h6" color="text.secondary" gutterBottom>
-              No skills added yet
+              {t('noSkills')}
             </Typography>
             <Typography variant="body2" color="text.secondary" mb={2}>
-              Add your first skill to showcase your expertise.
+              {t('noSkillsDescription')}
             </Typography>
             <Button variant="outlined" startIcon={<AddIcon />} onClick={handleAddClick}>
-              Add Your First Skill
+              {t('addFirstSkill')}
             </Button>
           </Box>
         ) : (
@@ -217,17 +217,16 @@ export const SkillsPage: React.FC = () => {
       />
 
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-        <DialogTitle>Remove Skill</DialogTitle>
+        <DialogTitle>{t('removeDialog.title')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Remove '{deletingSkill?.skill?.name}' from your profile? This will hide it from all
-            exports and recruiter chat.
+            {t('removeDialog.message', { name: deletingSkill?.skill?.name })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={() => setDeleteDialogOpen(false)}>{t('common:buttons.cancel')}</Button>
           <Button onClick={handleDeleteConfirm} color="error" variant="contained">
-            Remove
+            {t('common:buttons.remove')}
           </Button>
         </DialogActions>
       </Dialog>

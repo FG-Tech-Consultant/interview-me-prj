@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -33,13 +34,14 @@ export const CoverLetterFormDialog = ({
   templates,
   isSubmitting,
 }: CoverLetterFormDialogProps) => {
-  const coverLetterTemplates = templates.filter((t) => t.type === 'COVER_LETTER');
+  const coverLetterTemplates = templates.filter((tmpl) => tmpl.type === 'COVER_LETTER');
   const [templateId, setTemplateId] = useState<number>(coverLetterTemplates[0]?.id || 0);
   const [targetCompany, setTargetCompany] = useState('');
   const [targetRole, setTargetRole] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [market, setMarket] = useState('US');
   const [showConfirm, setShowConfirm] = useState(false);
+  const { t } = useTranslation('exports');
 
   const { data: wallet } = useWallet();
   const { data: costs } = useFeatureCosts();
@@ -82,21 +84,21 @@ export const CoverLetterFormDialog = ({
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>New Cover Letter</DialogTitle>
+      <DialogTitle>{t('coverLetter.title')}</DialogTitle>
       <DialogContent>
         {!showConfirm ? (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
             {coverLetterTemplates.length > 1 && (
               <FormControl fullWidth>
-                <InputLabel>Template</InputLabel>
+                <InputLabel>{t('coverLetter.template')}</InputLabel>
                 <Select
                   value={templateId}
-                  label="Template"
+                  label={t('coverLetter.template')}
                   onChange={(e) => setTemplateId(e.target.value as number)}
                 >
-                  {coverLetterTemplates.map((t) => (
-                    <MenuItem key={t.id} value={t.id}>
-                      {t.name}
+                  {coverLetterTemplates.map((tmpl) => (
+                    <MenuItem key={tmpl.id} value={tmpl.id}>
+                      {tmpl.name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -104,41 +106,41 @@ export const CoverLetterFormDialog = ({
             )}
 
             <TextField
-              label="Target Company"
+              label={t('coverLetter.targetCompany')}
               value={targetCompany}
               onChange={(e) => setTargetCompany(e.target.value)}
               required
               fullWidth
               inputProps={{ maxLength: 200 }}
-              placeholder="e.g., Google, Stripe, Spotify"
+              placeholder={t('coverLetter.targetCompanyPlaceholder')}
             />
 
             <TextField
-              label="Target Role"
+              label={t('coverLetter.targetRole')}
               value={targetRole}
               onChange={(e) => setTargetRole(e.target.value)}
               required
               fullWidth
               inputProps={{ maxLength: 200 }}
-              placeholder="e.g., Senior Backend Engineer"
+              placeholder={t('coverLetter.targetRolePlaceholder')}
             />
 
             <TextField
-              label="Job Description (optional)"
+              label={t('coverLetter.jobDescription')}
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               fullWidth
               multiline
               rows={4}
               inputProps={{ maxLength: 5000 }}
-              placeholder="Paste the job description here to tailor the cover letter..."
+              placeholder={t('coverLetter.jobDescriptionPlaceholder')}
             />
 
             <FormControl fullWidth>
-              <InputLabel>Market</InputLabel>
+              <InputLabel>{t('coverLetter.market')}</InputLabel>
               <Select
                 value={market}
-                label="Market"
+                label={t('coverLetter.market')}
                 onChange={(e) => setMarket(e.target.value)}
               >
                 {MARKETS.map((m) => (
@@ -151,31 +153,31 @@ export const CoverLetterFormDialog = ({
           </Box>
         ) : (
           <Box sx={{ mt: 1 }}>
-            <Typography variant="body1" gutterBottom>
-              This will cost <strong>{exportCost} coins</strong>.
+            <Typography variant="body1" gutterBottom fontWeight="bold">
+              {t('form.costMessage', { cost: exportCost })}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Current balance: {balance} coins
+              {t('form.currentBalance', { balance })}
             </Typography>
             {!hasEnoughCoins && (
               <Alert severity="error" sx={{ mt: 2 }}>
-                Insufficient coins. You need {exportCost - balance} more coins.
+                {t('form.insufficientCoins', { amount: exportCost - balance })}
               </Alert>
             )}
           </Box>
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose}>{t('common:buttons.cancel')}</Button>
         {showConfirm ? (
           <>
-            <Button onClick={() => setShowConfirm(false)}>Back</Button>
+            <Button onClick={() => setShowConfirm(false)}>{t('common:buttons.back')}</Button>
             <Button
               variant="contained"
               onClick={handleSubmit}
               disabled={!hasEnoughCoins || isSubmitting}
             >
-              {isSubmitting ? 'Generating...' : 'Confirm & Generate'}
+              {isSubmitting ? t('form.generating') : t('form.confirmGenerate')}
             </Button>
           </>
         ) : (
@@ -184,7 +186,7 @@ export const CoverLetterFormDialog = ({
             onClick={handleSubmit}
             disabled={!isValid}
           >
-            Next
+            {t('common:buttons.next')}
           </Button>
         )}
       </DialogActions>

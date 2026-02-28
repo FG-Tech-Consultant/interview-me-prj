@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -47,6 +48,7 @@ export const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
   const [tags, setTags] = useState<string[]>([]);
   const [isPublic, setIsPublic] = useState(false);
   const [skillError, setSkillError] = useState<string | null>(null);
+  const { t } = useTranslation('skills');
 
   useEffect(() => {
     if (mode === 'edit' && skill) {
@@ -72,7 +74,7 @@ export const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
   const handleSubmit = () => {
     if (mode === 'add') {
       if (!selectedSkill) {
-        setSkillError('Please select a skill');
+        setSkillError(t('form.pleaseSelectSkill'));
         return;
       }
       const data: AddUserSkillRequest = {
@@ -105,7 +107,7 @@ export const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{mode === 'add' ? 'Add Skill' : 'Edit Skill'}</DialogTitle>
+      <DialogTitle>{mode === 'add' ? t('form.addTitle') : t('form.editTitle')}</DialogTitle>
       <DialogContent>
         <Box display="flex" flexDirection="column" gap={2} mt={1}>
           {mode === 'add' ? (
@@ -119,7 +121,7 @@ export const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
             />
           ) : (
             <TextField
-              label="Skill"
+              label={t('form.skill')}
               value={skill?.skill?.name || ''}
               disabled
               fullWidth
@@ -127,7 +129,7 @@ export const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
           )}
 
           <TextField
-            label="Years of Experience"
+            label={t('form.yearsOfExperience')}
             type="number"
             value={yearsOfExperience}
             onChange={(e) => setYearsOfExperience(Math.max(0, Math.min(70, parseInt(e.target.value) || 0)))}
@@ -137,7 +139,7 @@ export const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
 
           <Box>
             <Typography gutterBottom>
-              Proficiency: {PROFICIENCY_LABELS[proficiencyDepth]}
+              {t('form.proficiency')}: {PROFICIENCY_LABELS[proficiencyDepth]}
             </Typography>
             <Slider
               value={proficiencyDepth}
@@ -151,7 +153,7 @@ export const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
           </Box>
 
           <TextField
-            label="Last Used"
+            label={t('form.lastUsed')}
             type="date"
             value={lastUsedDate}
             onChange={(e) => setLastUsedDate(e.target.value)}
@@ -161,15 +163,15 @@ export const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
           />
 
           <FormControl fullWidth>
-            <InputLabel>Confidence Level</InputLabel>
+            <InputLabel>{t('form.confidenceLevel')}</InputLabel>
             <Select
               value={confidenceLevel}
-              label="Confidence Level"
+              label={t('form.confidenceLevel')}
               onChange={(e) => setConfidenceLevel(e.target.value)}
             >
-              <MenuItem value="LOW">Low</MenuItem>
-              <MenuItem value="MEDIUM">Medium</MenuItem>
-              <MenuItem value="HIGH">High</MenuItem>
+              <MenuItem value="LOW">{t('form.confidenceLow')}</MenuItem>
+              <MenuItem value="MEDIUM">{t('form.confidenceMedium')}</MenuItem>
+              <MenuItem value="HIGH">{t('form.confidenceHigh')}</MenuItem>
             </Select>
           </FormControl>
 
@@ -192,9 +194,9 @@ export const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Tags"
-                placeholder="Press Enter to add tags"
-                helperText={`${tags.length}/20 tags`}
+                label={t('form.tags')}
+                placeholder={t('form.tagsPlaceholder')}
+                helperText={t('form.tagsCount', { count: tags.length })}
               />
             )}
           />
@@ -203,14 +205,14 @@ export const SkillFormDialog: React.FC<SkillFormDialogProps> = ({
             control={
               <Switch checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} />
             }
-            label={isPublic ? 'Public (visible to recruiters)' : 'Private (only you can see)'}
+            label={isPublic ? t('form.visibilityPublic') : t('form.visibilityPrivate')}
           />
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t('common:buttons.cancel')}</Button>
         <Button onClick={handleSubmit} variant="contained" disabled={isLoading}>
-          {isLoading ? 'Saving...' : mode === 'add' ? 'Add Skill' : 'Save Changes'}
+          {isLoading ? t('common:status.saving') : mode === 'add' ? t('form.addTitle') : t('form.saveChanges')}
         </Button>
       </DialogActions>
     </Dialog>

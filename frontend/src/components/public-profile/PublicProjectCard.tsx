@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
@@ -13,6 +14,8 @@ interface PublicProjectCardProps {
 }
 
 export const PublicProjectCard: React.FC<PublicProjectCardProps> = ({ project }) => {
+  const { t } = useTranslation('public-profile');
+
   return (
     <Box sx={{ ml: 2, mt: 1, mb: 2, pl: 2, borderLeft: '2px solid #e0e0e0' }}>
       <Typography variant="subtitle1" fontWeight="bold">
@@ -23,7 +26,7 @@ export const PublicProjectCard: React.FC<PublicProjectCardProps> = ({ project })
         <Typography variant="body2" color="text.secondary">
           {project.role && `${project.role}`}
           {project.role && project.teamSize && ' | '}
-          {project.teamSize && `Team: ${project.teamSize}`}
+          {project.teamSize && t('team', { size: project.teamSize })}
         </Typography>
       )}
 

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Fab, Snackbar, Tooltip } from '@mui/material';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 export const ChatboxPlaceholder: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation('public-profile');
 
   return (
     <>
-      <Tooltip title="Recruiter chat coming soon!" placement="left">
+      <Tooltip title={t('chatComingSoon')} placement="left">
         <Fab
           color="primary"
           size="medium"
@@ -26,7 +28,7 @@ export const ChatboxPlaceholder: React.FC = () => {
         open={open}
         autoHideDuration={3000}
         onClose={() => setOpen(false)}
-        message="Recruiter chat coming soon!"
+        message={t('chatComingSoon')}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
     </>

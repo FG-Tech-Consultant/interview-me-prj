@@ -1,0 +1,60 @@
+{
+  "appName": "Live Resume",
+  "nav": {
+    "dashboard": "Painel",
+    "profile": "Perfil",
+    "skills": "Habilidades",
+    "exports": "Exportacoes",
+    "linkedinAnalyzer": "Analisador LinkedIn",
+    "linkedinInbox": "Caixa de Entrada LinkedIn",
+    "billing": "Faturamento",
+    "logout": "Sair"
+  },
+  "buttons": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "add": "Adicionar",
+    "close": "Fechar",
+    "confirm": "Confirmar",
+    "back": "Voltar",
+    "next": "Proximo",
+    "update": "Atualizar",
+    "remove": "Remover",
+    "dismiss": "Dispensar",
+    "clear": "Limpar",
+    "download": "Baixar",
+    "preview": "Visualizar"
+  },
+  "status": {
+    "loading": "Carregando...",
+    "saving": "Salvando...",
+    "error": "Ocorreu um erro",
+    "success": "Salvo com sucesso",
+    "noData": "Nenhum dado disponivel"
+  },
+  "confirm": {
+    "deleteJob": "Tem certeza que deseja excluir esta experiencia profissional?",
+    "deleteEducation": "Tem certeza que deseja excluir este registro de formacao?",
+    "deleteProject": "Tem certeza? Isso tambem excluira todas as historias deste projeto.",
+    "deleteStory": "Tem certeza que deseja excluir esta historia?"
+  },
+  "errors": {
+    "failedToSave": "Falha ao salvar",
+    "unknownError": "Erro desconhecido",
+    "errorLoading": "Erro ao carregar"
+  },
+  "visibility": {
+    "public": "Publico",
+    "private": "Privado"
+  },
+  "present": "Atual",
+  "na": "N/D",
+  "coins": "moedas",
+  "copied": "Copiado!",
+  "language": {
+    "en": "English",
+    "ptBR": "Portugues (Brasil)"
+  }
+}

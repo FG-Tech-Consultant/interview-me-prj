@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -31,10 +32,12 @@ const getProficiencyColor = (depth: number): string => {
 const formatLastUsed = (date: string | null): string => {
   if (!date) return 'N/A';
   const d = new Date(date);
-  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+  return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short' });
 };
 
 export const SkillCard: React.FC<SkillCardProps> = ({ skill, onEdit, onDelete }) => {
+  const { t } = useTranslation('skills');
+
   return (
     <Card variant="outlined" sx={{ mb: 1 }}>
       <CardContent sx={{ py: 1.5, px: 2, '&:last-child': { pb: 1.5 } }}>
@@ -44,7 +47,7 @@ export const SkillCard: React.FC<SkillCardProps> = ({ skill, onEdit, onDelete })
               <Typography variant="subtitle1" fontWeight="bold">
                 {skill.skill.name}
               </Typography>
-              <Tooltip title={skill.visibility === 'public' ? 'Public' : 'Private'}>
+              <Tooltip title={skill.visibility === 'public' ? t('common:visibility.public') : t('common:visibility.private')}>
                 {skill.visibility === 'public' ? (
                   <VisibilityIcon fontSize="small" color="success" />
                 ) : (
@@ -69,10 +72,10 @@ export const SkillCard: React.FC<SkillCardProps> = ({ skill, onEdit, onDelete })
                 </Box>
               </Tooltip>
               <Typography variant="body2" color="text.secondary">
-                {skill.yearsOfExperience}y exp
+                {t('card.yearsExp', { years: skill.yearsOfExperience })}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Last used: {formatLastUsed(skill.lastUsedDate)}
+                {t('card.lastUsed', { date: formatLastUsed(skill.lastUsedDate) })}
               </Typography>
               <Chip
                 label={skill.confidenceLevel}

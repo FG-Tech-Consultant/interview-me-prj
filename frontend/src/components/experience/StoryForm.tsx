@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCreateStory, useUpdateStory } from '../../hooks/useStories';
 import { MetricsEditor } from './MetricsEditor';
 import type { StoryResponse, CreateStoryRequest, UpdateStoryRequest } from '../../types/story';
@@ -11,12 +12,7 @@ interface StoryFormProps {
   onCancel: () => void;
 }
 
-const STAR_HELPERS = {
-  situation: 'Set the scene. What was the context?',
-  task: 'What was your specific responsibility?',
-  action: 'What steps did you take?',
-  result: 'What was the outcome? Include metrics.',
-};
+const STAR_FIELDS = ['situation', 'task', 'action', 'result'] as const;
 
 export const StoryForm: React.FC<StoryFormProps> = ({
   experienceProjectId,
@@ -34,6 +30,7 @@ export const StoryForm: React.FC<StoryFormProps> = ({
     (story?.metrics as Record<string, unknown>) || {}
   );
   const [visibility, setVisibility] = useState(story?.visibility || 'private');
+  const { t } = useTranslation('experience');
 
   const createMutation = useCreateStory();
   const updateMutation = useUpdateStory();
@@ -72,61 +69,60 @@ export const StoryForm: React.FC<StoryFormProps> = ({
 
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
+  const fieldState = { situation, task, action, result };
+  const fieldSetters = { situation: setSituation, task: setTask, action: setAction, result: setResult };
+
   return (
     <Box component="form" onSubmit={handleSubmit}>
       <Stack spacing={2}>
         <TextField
-          label="Title *"
+          label={`${t('stories.title')} *`}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
           fullWidth
           size="small"
           inputProps={{ maxLength: 255 }}
-          placeholder="Brief title for this STAR story"
+          placeholder={t('stories.titlePlaceholder')}
         />
 
-        {(['situation', 'task', 'action', 'result'] as const).map((field) => {
-          const value = { situation, task, action, result }[field];
-          const setter = { situation: setSituation, task: setTask, action: setAction, result: setResult }[field];
-          return (
-            <TextField
-              key={field}
-              label={`${field.charAt(0).toUpperCase() + field.slice(1)} *`}
-              value={value}
-              onChange={(e) => setter(e.target.value)}
-              required
-              fullWidth
-              size="small"
-              multiline
-              rows={3}
-              inputProps={{ maxLength: 5000 }}
-              placeholder={STAR_HELPERS[field]}
-              helperText={`${value.length}/5000`}
-            />
-          );
-        })}
+        {STAR_FIELDS.map((field) => (
+          <TextField
+            key={field}
+            label={`${t(`stories.${field}`)} *`}
+            value={fieldState[field]}
+            onChange={(e) => fieldSetters[field](e.target.value)}
+            required
+            fullWidth
+            size="small"
+            multiline
+            rows={3}
+            inputProps={{ maxLength: 5000 }}
+            placeholder={t(`stories.${field}Helper`)}
+            helperText={`${fieldState[field].length}/5000`}
+          />
+        ))}
 
         <MetricsEditor value={metrics} onChange={setMetrics} />
 
         <TextField
-          label="Visibility"
+          label={t('stories.visibility')}
           select
           value={visibility}
           onChange={(e) => setVisibility(e.target.value)}
           fullWidth
           size="small"
         >
-          <MenuItem value="private">Private</MenuItem>
-          <MenuItem value="public">Public</MenuItem>
+          <MenuItem value="private">{t('common:visibility.private')}</MenuItem>
+          <MenuItem value="public">{t('common:visibility.public')}</MenuItem>
         </TextField>
 
         <Stack direction="row" spacing={2}>
           <Button type="submit" variant="contained" disabled={isLoading}>
-            {isLoading ? 'Saving...' : isEdit ? 'Update Story' : 'Create Story'}
+            {isLoading ? t('common:status.saving') : isEdit ? t('stories.updateButton') : t('stories.createButton')}
           </Button>
           <Button variant="outlined" onClick={onCancel}>
-            Cancel
+            {t('common:buttons.cancel')}
           </Button>
         </Stack>
       </Stack>

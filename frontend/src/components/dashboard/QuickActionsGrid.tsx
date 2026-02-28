@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Grid,
   Card,
@@ -13,8 +14,8 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useNavigate } from 'react-router-dom';
 
 interface QuickAction {
-  label: string;
-  description: string;
+  labelKey: string;
+  descriptionKey: string;
   icon: React.ReactNode;
   color: string;
   path: string;
@@ -22,36 +23,36 @@ interface QuickAction {
 
 const ACTIONS: QuickAction[] = [
   {
-    label: 'Edit Profile',
-    description: 'Manage your personal and professional info',
+    labelKey: 'actions.editProfile',
+    descriptionKey: 'actions.editProfileDesc',
     icon: <PersonIcon />,
     color: '#1976d2',
     path: '/profile',
   },
   {
-    label: 'Manage Skills',
-    description: 'Add and track your technical skills',
+    labelKey: 'actions.manageSkills',
+    descriptionKey: 'actions.manageSkillsDesc',
     icon: <PsychologyIcon />,
     color: '#7b1fa2',
     path: '/skills',
   },
   {
-    label: 'Export Resume',
-    description: 'Generate PDF or other export formats',
+    labelKey: 'actions.exportResume',
+    descriptionKey: 'actions.exportResumeDesc',
     icon: <DescriptionIcon />,
     color: '#00897b',
     path: '/exports',
   },
   {
-    label: 'LinkedIn Analyzer',
-    description: 'Get AI feedback on your LinkedIn profile',
+    labelKey: 'actions.linkedinAnalyzer',
+    descriptionKey: 'actions.linkedinAnalyzerDesc',
     icon: <AssessmentIcon />,
     color: '#e65100',
     path: '/linkedin-analyzer',
   },
   {
-    label: 'View Billing',
-    description: 'Check your coin balance and usage',
+    labelKey: 'actions.viewBilling',
+    descriptionKey: 'actions.viewBillingDesc',
     icon: <AccountBalanceWalletIcon />,
     color: '#2e7d32',
     path: '/billing',
@@ -60,6 +61,7 @@ const ACTIONS: QuickAction[] = [
 
 const QuickActionsGrid = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('dashboard');
 
   return (
     <Grid container spacing={2}>
@@ -80,10 +82,10 @@ const QuickActionsGrid = () => {
                 {action.icon}
               </Avatar>
               <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-                {action.label}
+                {t(action.labelKey)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {action.description}
+                {t(action.descriptionKey)}
               </Typography>
             </CardActionArea>
           </Card>

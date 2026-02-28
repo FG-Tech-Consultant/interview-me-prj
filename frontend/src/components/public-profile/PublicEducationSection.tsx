@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
@@ -18,10 +19,12 @@ const formatDate = (date: string): string => {
 };
 
 export const PublicEducationSection: React.FC<PublicEducationSectionProps> = ({ education }) => {
+  const { t } = useTranslation('public-profile');
+
   return (
     <Box sx={{ mb: 4 }}>
       <Typography variant="h5" fontWeight="bold" gutterBottom>
-        Education
+        {t('sections.education')}
       </Typography>
       <Divider sx={{ mb: 2 }} />
 

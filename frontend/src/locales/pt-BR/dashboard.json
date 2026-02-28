@@ -1,0 +1,48 @@
+{
+  "welcomeBack": "Bem-vindo de volta, {{name}}",
+  "welcomeBackDefault": "Bem-vindo de volta",
+  "quickActions": "Acoes Rapidas",
+  "stats": {
+    "skills": "Habilidades",
+    "jobExperiences": "Experiencias",
+    "education": "Formacao",
+    "coinBalance": "Saldo de Moedas",
+    "exports": "Exportacoes"
+  },
+  "actions": {
+    "editProfile": "Editar Perfil",
+    "editProfileDesc": "Gerencie suas informacoes pessoais e profissionais",
+    "manageSkills": "Gerenciar Habilidades",
+    "manageSkillsDesc": "Adicione e acompanhe suas habilidades tecnicas",
+    "exportResume": "Exportar Curriculo",
+    "exportResumeDesc": "Gere PDF ou outros formatos de exportacao",
+    "linkedinAnalyzer": "Analisador LinkedIn",
+    "linkedinAnalyzerDesc": "Receba feedback de IA sobre seu perfil LinkedIn",
+    "viewBilling": "Ver Faturamento",
+    "viewBillingDesc": "Verifique seu saldo de moedas e uso"
+  },
+  "completeness": {
+    "title": "Completude do Perfil",
+    "clickToAdd": "Clique para adicionar",
+    "fullName": "Nome completo",
+    "headline": "Titulo profissional",
+    "summary": "Resumo",
+    "workExperience": "Experiencia profissional",
+    "education": "Formacao",
+    "skills": "Habilidades",
+    "publicProfile": "Perfil publico"
+  },
+  "publicProfile": {
+    "title": "Perfil Publico",
+    "copyUrl": "Copiar URL",
+    "viewProfile": "Ver Perfil",
+    "setupUrl": "Configure a URL do seu perfil publico",
+    "goToProfile": "Ir para Perfil"
+  },
+  "recentActivity": {
+    "title": "Atividade Recente",
+    "noActivity": "Nenhuma atividade recente",
+    "resumeExport": "Exportacao de Curriculo",
+    "linkedinAnalysis": "Analise LinkedIn"
+  }
+}

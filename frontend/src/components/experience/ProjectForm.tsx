@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCreateProject, useUpdateProject } from '../../hooks/useProjects';
 import { MetricsEditor } from './MetricsEditor';
 import type { ProjectResponse, CreateProjectRequest, UpdateProjectRequest } from '../../types/experienceProject';
@@ -29,6 +30,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
   );
   const [outcomes, setOutcomes] = useState(project?.outcomes || '');
   const [visibility, setVisibility] = useState(project?.visibility || 'private');
+  const { t } = useTranslation('experience');
 
   const createMutation = useCreateProject();
   const updateMutation = useUpdateProject();
@@ -80,7 +82,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
     <Box component="form" onSubmit={handleSubmit}>
       <Stack spacing={2}>
         <TextField
-          label="Title *"
+          label={`${t('projects.title')} *`}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
@@ -90,7 +92,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         />
 
         <TextField
-          label="Context"
+          label={t('projects.context')}
           value={context}
           onChange={(e) => setContext(e.target.value)}
           fullWidth
@@ -98,13 +100,13 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           multiline
           rows={3}
           inputProps={{ maxLength: 5000 }}
-          placeholder="Project background and business context..."
+          placeholder={t('projects.contextPlaceholder')}
         />
 
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
-              label="Your Role"
+              label={t('projects.yourRole')}
               value={role}
               onChange={(e) => setRole(e.target.value)}
               fullWidth
@@ -114,7 +116,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              label="Team Size"
+              label={t('projects.teamSize')}
               type="number"
               value={teamSize}
               onChange={(e) => setTeamSize(e.target.value)}
@@ -126,28 +128,28 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
         </Grid>
 
         <TextField
-          label="Tech Stack (comma-separated)"
+          label={t('projects.techStack')}
           value={techStackInput}
           onChange={(e) => setTechStackInput(e.target.value)}
           fullWidth
           size="small"
-          placeholder="React, Spring Boot, PostgreSQL..."
+          placeholder={t('projects.techStackPlaceholder')}
         />
 
         <TextField
-          label="Architecture Type"
+          label={t('projects.architectureType')}
           value={architectureType}
           onChange={(e) => setArchitectureType(e.target.value)}
           fullWidth
           size="small"
           inputProps={{ maxLength: 100 }}
-          placeholder="Microservices, Monolith, Serverless..."
+          placeholder={t('projects.architecturePlaceholder')}
         />
 
         <MetricsEditor value={metrics} onChange={setMetrics} />
 
         <TextField
-          label="Outcomes"
+          label={t('projects.outcomes')}
           value={outcomes}
           onChange={(e) => setOutcomes(e.target.value)}
           fullWidth
@@ -155,27 +157,27 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
           multiline
           rows={3}
           inputProps={{ maxLength: 5000 }}
-          placeholder="Key results and impact..."
+          placeholder={t('projects.outcomesPlaceholder')}
         />
 
         <TextField
-          label="Visibility"
+          label={t('projects.visibility')}
           select
           value={visibility}
           onChange={(e) => setVisibility(e.target.value)}
           fullWidth
           size="small"
         >
-          <MenuItem value="private">Private</MenuItem>
-          <MenuItem value="public">Public</MenuItem>
+          <MenuItem value="private">{t('common:visibility.private')}</MenuItem>
+          <MenuItem value="public">{t('common:visibility.public')}</MenuItem>
         </TextField>
 
         <Stack direction="row" spacing={2}>
           <Button type="submit" variant="contained" disabled={isLoading}>
-            {isLoading ? 'Saving...' : isEdit ? 'Update Project' : 'Create Project'}
+            {isLoading ? t('common:status.saving') : isEdit ? t('projects.updateButton') : t('projects.createButton')}
           </Button>
           <Button variant="outlined" onClick={onCancel}>
-            Cancel
+            {t('common:buttons.cancel')}
           </Button>
         </Stack>
       </Stack>

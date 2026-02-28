@@ -1,0 +1,36 @@
+{
+  "title": "Faturamento",
+  "currentBalance": "Saldo Atual",
+  "coinsAmount": "{{amount}} moedas",
+  "freeTierQuotas": "Cotas do Plano Gratuito",
+  "transactionHistory": "Historico de Transacoes",
+  "failedToLoad": "Falha ao carregar informacoes de faturamento.",
+  "filterType": "Tipo",
+  "filterAll": "Todos",
+  "filterEarn": "Ganho",
+  "filterSpend": "Gasto",
+  "filterRefund": "Reembolso",
+  "filterPurchase": "Compra",
+  "noTransactions": "Nenhuma transacao ainda",
+  "tableHeaders": {
+    "date": "Data",
+    "type": "Tipo",
+    "description": "Descricao",
+    "amount": "Valor"
+  },
+  "quota": {
+    "chatMessages": "Mensagens do Chat",
+    "linkedinDrafts": "Rascunhos LinkedIn",
+    "linkedinSuggestions": "Sugestoes LinkedIn",
+    "remaining": "{{count}} restantes",
+    "quotaReached": "Cota atingida"
+  },
+  "coinConfirm": {
+    "title": "Confirmar Gasto de Moedas",
+    "feature": "Funcionalidade",
+    "cost": "Custo",
+    "currentBalanceLabel": "Saldo Atual",
+    "balanceAfter": "Saldo Depois",
+    "insufficientBalance": "Saldo insuficiente. Voce precisa de mais {{amount}} moedas."
+  }
+}

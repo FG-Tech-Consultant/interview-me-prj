@@ -9,9 +9,11 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { getCurrentUser, logout } from '../../api/auth';
 import { DRAWER_WIDTH_OPEN, DRAWER_WIDTH_COLLAPSED } from './Sidebar';
+import LanguageSelector from './LanguageSelector';
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -21,6 +23,7 @@ interface TopBarProps {
 export default function TopBar({ onMenuClick, sidebarOpen }: TopBarProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { t } = useTranslation('common');
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -53,9 +56,10 @@ export default function TopBar({ onMenuClick, sidebarOpen }: TopBarProps) {
           </IconButton>
         )}
         <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
-          Live Resume
+          {t('appName')}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <LanguageSelector />
           {user && (
             <Typography variant="body2" noWrap>
               {user.email}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Container,
   Box,
@@ -20,6 +21,7 @@ interface FieldErrors {
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [tenantName, setTenantName] = useState('');
@@ -54,12 +56,12 @@ export default function RegisterPage() {
       <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
           <Typography component="h1" variant="h4" align="center" gutterBottom>
-            Create Account
+            {t('register.title')}
           </Typography>
 
           {showGenericError && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              {(registerMutation.error as any)?.response?.data?.message || 'Registration failed'}
+              {(registerMutation.error as any)?.response?.data?.message || t('register.errorDefault')}
             </Alert>
           )}
 
@@ -69,7 +71,7 @@ export default function RegisterPage() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label={t('register.emailLabel')}
               name="email"
               autoComplete="email"
               autoFocus
@@ -88,7 +90,7 @@ export default function RegisterPage() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label={t('register.passwordLabel')}
               type="password"
               id="password"
               autoComplete="new-password"
@@ -100,14 +102,14 @@ export default function RegisterPage() {
                 }
               }}
               error={!!fieldErrors.password}
-              helperText={fieldErrors.password || 'Must be at least 8 characters'}
+              helperText={fieldErrors.password || t('register.passwordHelper')}
             />
             <TextField
               margin="normal"
               required
               fullWidth
               id="tenantName"
-              label="Organization Name"
+              label={t('register.tenantLabel')}
               name="tenantName"
               value={tenantName}
               onChange={(e) => {
@@ -117,7 +119,7 @@ export default function RegisterPage() {
                 }
               }}
               error={!!fieldErrors.tenantName}
-              helperText={fieldErrors.tenantName || 'Your organization or personal name'}
+              helperText={fieldErrors.tenantName || t('register.tenantHelper')}
             />
             <Button
               type="submit"
@@ -126,12 +128,12 @@ export default function RegisterPage() {
               sx={{ mt: 3, mb: 2 }}
               disabled={registerMutation.isPending}
             >
-              {registerMutation.isPending ? 'Creating account...' : 'Register'}
+              {registerMutation.isPending ? t('register.submitting') : t('register.submitButton')}
             </Button>
             <Box sx={{ textAlign: 'center' }}>
               <Link to="/login" style={{ textDecoration: 'none' }}>
                 <Typography variant="body2" color="primary">
-                  Already have an account? Login
+                  {t('register.hasAccount')}
                 </Typography>
               </Link>
             </Box>

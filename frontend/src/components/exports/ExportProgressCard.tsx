@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Paper,
   Typography,
@@ -16,6 +17,7 @@ interface ExportProgressCardProps {
 
 export const ExportProgressCard = ({ exportId, onComplete }: ExportProgressCardProps) => {
   const { data: status } = useExportStatus(exportId);
+  const { t } = useTranslation('exports');
 
   const handleDownload = async () => {
     try {
@@ -42,10 +44,10 @@ export const ExportProgressCard = ({ exportId, onComplete }: ExportProgressCardP
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <CircularProgress size={24} />
           <Box>
-            <Typography variant="subtitle1">Generating your resume...</Typography>
+            <Typography variant="subtitle1">{t('progress.generating')}</Typography>
             <Typography variant="body2" color="text.secondary">
-              {status.status === 'PENDING' ? 'Queued for processing' : 'Processing...'}
-              {status.retryCount > 0 && ` (attempt ${status.retryCount + 1})`}
+              {status.status === 'PENDING' ? t('progress.queued') : t('progress.processing')}
+              {status.retryCount > 0 && ` ${t('progress.attempt', { count: status.retryCount + 1 })}`}
             </Typography>
           </Box>
         </Box>
@@ -54,10 +56,10 @@ export const ExportProgressCard = ({ exportId, onComplete }: ExportProgressCardP
       {status.status === 'COMPLETED' && (
         <Box>
           <Alert severity="success" sx={{ mb: 2 }}>
-            Resume generated successfully!
+            {t('progress.success')}
           </Alert>
           <Button variant="contained" onClick={handleDownload}>
-            Download PDF
+            {t('progress.downloadPdf')}
           </Button>
         </Box>
       )}
@@ -65,13 +67,13 @@ export const ExportProgressCard = ({ exportId, onComplete }: ExportProgressCardP
       {status.status === 'FAILED' && (
         <Box>
           <Alert severity="error" sx={{ mb: 1 }}>
-            Resume export failed. Your coins have been refunded.
+            {t('progress.failed')}
           </Alert>
           <Typography variant="body2" color="text.secondary">
             {status.errorMessage}
           </Typography>
           <Button variant="outlined" onClick={onComplete} sx={{ mt: 1 }}>
-            Dismiss
+            {t('common:buttons.dismiss')}
           </Button>
         </Box>
       )}

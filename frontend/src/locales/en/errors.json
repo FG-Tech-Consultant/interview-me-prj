@@ -1,0 +1,24 @@
+{
+  "validation": {
+    "profile": {
+      "full_name": {
+        "required": "Full name is required",
+        "max_length": "Full name must not exceed {{max}} characters"
+      },
+      "headline": {
+        "required": "Headline is required",
+        "max_length": "Headline must not exceed {{max}} characters"
+      },
+      "summary": {
+        "max_length": "Summary must not exceed {{max}} characters"
+      }
+    }
+  },
+  "error": {
+    "profile": {
+      "not_found": "Profile not found"
+    },
+    "generic": "An unexpected error occurred",
+    "network": "Unable to connect to the server"
+  }
+}

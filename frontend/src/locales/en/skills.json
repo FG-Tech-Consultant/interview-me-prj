@@ -1,0 +1,55 @@
+{
+  "title": "Skills",
+  "addSkill": "Add Skill",
+  "addFirstSkill": "Add Your First Skill",
+  "noSkills": "No skills added yet",
+  "noSkillsDescription": "Add your first skill to showcase your expertise.",
+  "createProfileFirst": "Create a profile first to manage your skills.",
+  "failedToLoad": "Failed to load skills.",
+  "addedSuccess": "Skill added successfully",
+  "updatedSuccess": "Skill updated successfully",
+  "removedSuccess": "Skill removed from profile",
+  "removeDialog": {
+    "title": "Remove Skill",
+    "message": "Remove '{{name}}' from your profile? This will hide it from all exports and recruiter chat."
+  },
+  "form": {
+    "addTitle": "Add Skill",
+    "editTitle": "Edit Skill",
+    "skill": "Skill",
+    "yearsOfExperience": "Years of Experience",
+    "proficiency": "Proficiency",
+    "lastUsed": "Last Used",
+    "confidenceLevel": "Confidence Level",
+    "confidenceLow": "Low",
+    "confidenceMedium": "Medium",
+    "confidenceHigh": "High",
+    "tags": "Tags",
+    "tagsPlaceholder": "Press Enter to add tags",
+    "tagsCount": "{{count}}/20 tags",
+    "visibilityPublic": "Public (visible to recruiters)",
+    "visibilityPrivate": "Private (only you can see)",
+    "saveChanges": "Save Changes",
+    "pleaseSelectSkill": "Please select a skill"
+  },
+  "filters": {
+    "search": "Search",
+    "category": "Category",
+    "allCategories": "All Categories",
+    "visibility": "Visibility",
+    "all": "All",
+    "proficiency": "Proficiency",
+    "clearFilters": "Clear Filters",
+    "showing": "Showing {{filtered}} of {{total}} skills"
+  },
+  "card": {
+    "yearsExp": "{{years}}y exp",
+    "lastUsed": "Last used: {{date}}"
+  },
+  "selector": {
+    "label": "Search Skill",
+    "placeholder": "Type to search skills...",
+    "minChars": "Type at least 2 characters",
+    "noResults": "No skills found"
+  }
+}

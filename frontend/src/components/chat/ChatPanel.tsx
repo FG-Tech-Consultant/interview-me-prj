@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Paper,
@@ -35,6 +36,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation('chat');
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -73,7 +75,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         }}
       >
         <Typography variant="subtitle1" fontWeight={600} noWrap>
-          {profileName.split(' ')[0]}'s Career Assistant
+          {t('careerAssistant', { name: profileName.split(' ')[0] })}
         </Typography>
         <IconButton size="small" onClick={onClose} sx={{ color: 'inherit' }}>
           <CloseIcon fontSize="small" />
@@ -107,7 +109,7 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
       <ChatInput
         onSend={onSend}
         disabled={isDisabled}
-        placeholder={isDisabled ? 'Chat unavailable' : 'Ask a question...'}
+        placeholder={isDisabled ? t('unavailable') : t('placeholder')}
       />
     </Paper>
   );

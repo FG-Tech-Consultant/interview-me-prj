@@ -1,0 +1,36 @@
+{
+  "title": "Billing",
+  "currentBalance": "Current Balance",
+  "coinsAmount": "{{amount}} coins",
+  "freeTierQuotas": "Free Tier Quotas",
+  "transactionHistory": "Transaction History",
+  "failedToLoad": "Failed to load billing information.",
+  "filterType": "Type",
+  "filterAll": "All",
+  "filterEarn": "Earn",
+  "filterSpend": "Spend",
+  "filterRefund": "Refund",
+  "filterPurchase": "Purchase",
+  "noTransactions": "No transactions yet",
+  "tableHeaders": {
+    "date": "Date",
+    "type": "Type",
+    "description": "Description",
+    "amount": "Amount"
+  },
+  "quota": {
+    "chatMessages": "Chat Messages",
+    "linkedinDrafts": "LinkedIn Drafts",
+    "linkedinSuggestions": "LinkedIn Suggestions",
+    "remaining": "{{count}} remaining",
+    "quotaReached": "Quota reached"
+  },
+  "coinConfirm": {
+    "title": "Confirm Coin Spend",
+    "feature": "Feature",
+    "cost": "Cost",
+    "currentBalanceLabel": "Current Balance",
+    "balanceAfter": "Balance After",
+    "insufficientBalance": "Insufficient balance. You need {{amount}} more coins."
+  }
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
@@ -18,6 +19,7 @@ const MAX_VISIBLE_SKILLS = 15;
 
 export const PublicSkillsSection: React.FC<PublicSkillsSectionProps> = ({ skills }) => {
   const [showAll, setShowAll] = useState(false);
+  const { t } = useTranslation('public-profile');
 
   // Group skills by category
   const grouped = skills.reduce<Record<string, PublicSkillResponse[]>>((acc, skill) => {
@@ -39,7 +41,7 @@ export const PublicSkillsSection: React.FC<PublicSkillsSectionProps> = ({ skills
   return (
     <Box sx={{ mb: 4 }}>
       <Typography variant="h5" fontWeight="bold" gutterBottom>
-        Skills
+        {t('sections.skills')}
       </Typography>
       <Divider sx={{ mb: 2 }} />
 
@@ -86,7 +88,7 @@ export const PublicSkillsSection: React.FC<PublicSkillsSectionProps> = ({ skills
           onClick={() => setShowAll(!showAll)}
           sx={{ mt: 1 }}
         >
-          {showAll ? 'Show less' : `Show all ${totalSkills} skills`}
+          {showAll ? t('showLess') : t('showAll', { count: totalSkills })}
         </Button>
       )}
     </Box>

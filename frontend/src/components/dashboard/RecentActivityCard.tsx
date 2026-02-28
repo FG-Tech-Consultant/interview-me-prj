@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -34,7 +35,9 @@ function formatDate(iso: string): string {
 
 function buildActivities(
   exports: ExportHistory[] | undefined,
-  analyses: LinkedInAnalysisSummary[] | undefined
+  analyses: LinkedInAnalysisSummary[] | undefined,
+  defaultExportLabel: string,
+  defaultAnalysisLabel: string
 ): ActivityItem[] {
   const items: ActivityItem[] = [];
 
@@ -42,7 +45,7 @@ function buildActivities(
     for (const e of exports.slice(0, 3)) {
       items.push({
         type: 'export',
-        label: e.template?.name ?? 'Resume Export',
+        label: e.template?.name ?? defaultExportLabel,
         date: e.createdAt,
         extra: <ExportStatusBadge status={e.status} />,
       });
@@ -53,7 +56,7 @@ function buildActivities(
     for (const a of analyses.slice(0, 3)) {
       items.push({
         type: 'linkedin',
-        label: a.pdfFilename ?? 'LinkedIn Analysis',
+        label: a.pdfFilename ?? defaultAnalysisLabel,
         date: a.createdAt,
         extra: a.overallScore != null ? (
           <Typography variant="body2" fontWeight="bold" color="primary">
@@ -75,18 +78,21 @@ export default function RecentActivityCard() {
     profile?.id ?? null,
     0
   );
+  const { t } = useTranslation('dashboard');
 
   const isLoading = exportsLoading || analysisLoading;
   const activities = buildActivities(
     exportsData?.content,
-    analysisData?.content
+    analysisData?.content,
+    t('recentActivity.resumeExport'),
+    t('recentActivity.linkedinAnalysis')
   );
 
   return (
     <Card variant="outlined">
       <CardContent>
         <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
-          Recent Activity
+          {t('recentActivity.title')}
         </Typography>
 
         {isLoading ? (
@@ -97,7 +103,7 @@ export default function RecentActivityCard() {
           </Box>
         ) : activities.length === 0 ? (
           <Typography variant="body2" color="text.secondary">
-            No recent activity
+            {t('recentActivity.noActivity')}
           </Typography>
         ) : (
           <List dense disablePadding>

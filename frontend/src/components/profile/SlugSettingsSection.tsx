@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
@@ -31,6 +32,7 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
   const [slug, setSlug] = useState(currentSlug || '');
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { t } = useTranslation('profile');
 
   const { data: slugCheck, isLoading: isChecking } = useCheckSlug(slug);
   const updateSlug = useUpdateSlug();
@@ -78,15 +80,15 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
   };
 
   const getHelperText = () => {
-    if (!slug || slug.length < 3) return 'Minimum 3 characters';
-    if (!isValid) return 'Lowercase letters, numbers, and hyphens only. No consecutive hyphens.';
-    if (isCurrentSlug) return 'This is your current slug';
-    if (isChecking) return 'Checking availability...';
+    if (!slug || slug.length < 3) return t('slug.minChars');
+    if (!isValid) return t('slug.invalidFormat');
+    if (isCurrentSlug) return t('slug.currentSlug');
+    if (isChecking) return t('slug.checking');
     if (slugCheck && !slugCheck.available) {
       const suggestions = slugCheck.suggestions.join(', ');
-      return suggestions ? `Already taken. Try: ${suggestions}` : 'Already taken';
+      return suggestions ? t('slug.takenWithSuggestions', { suggestions }) : t('slug.taken');
     }
-    if (slugCheck?.available) return 'Available!';
+    if (slugCheck?.available) return t('slug.available');
     return '';
   };
 
@@ -102,31 +104,31 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
   return (
     <Box sx={{ mt: 4 }}>
       <Typography variant="h6" gutterBottom>
-        Public Profile
+        {t('slug.title')}
       </Typography>
 
       {currentSlug && slug !== currentSlug && slug.length > 0 && (
         <Alert severity="warning" sx={{ mb: 2 }}>
-          Changing your URL will make the old one inaccessible immediately.
+          {t('slug.changeWarning')}
         </Alert>
       )}
 
       {isChangingSlug && isFirstChange && slug.length >= 3 && (
         <Alert severity="success" sx={{ mb: 2 }}>
-          First slug change is free!
+          {t('slug.firstChangeFree')}
         </Alert>
       )}
 
       {willCostCoins && changeCost > 0 && slug.length >= 3 && (
         <Alert severity={hasEnoughCoins ? 'info' : 'error'} sx={{ mb: 2 }}>
-          Changing your slug costs {changeCost} coins. Your balance: {balance} coins.
-          {!hasEnoughCoins && ' You do not have enough coins to make this change.'}
+          {t('slug.changeCost', { cost: changeCost, balance })}
+          {!hasEnoughCoins && ` ${t('slug.notEnoughCoins')}`}
         </Alert>
       )}
 
       <TextField
         fullWidth
-        label="Profile URL Slug"
+        label={t('slug.label')}
         value={slug}
         onChange={handleSlugChange}
         helperText={getHelperText()}
@@ -135,7 +137,7 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
           startAdornment: (
             <InputAdornment position="start">
               <Typography variant="body2" color="text.secondary">
-                interviewme.app/p/
+                {t('slug.prefix')}
               </Typography>
             </InputAdornment>
           ),
@@ -152,7 +154,7 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
           onClick={handleSave}
           disabled={!canSave}
         >
-          {updateSlug.isPending ? 'Saving...' : willCostCoins ? `Save (${changeCost} coins)` : 'Save'}
+          {updateSlug.isPending ? t('common:status.saving') : willCostCoins ? t('slug.saveWithCost', { cost: changeCost }) : t('common:buttons.save')}
         </Button>
 
         {(currentSlug || saved) && (
@@ -162,9 +164,9 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
               startIcon={<OpenInNewIcon />}
               onClick={handlePreview}
             >
-              Preview
+              {t('common:buttons.preview')}
             </Button>
-            <IconButton onClick={handleCopyLink} title="Copy link">
+            <IconButton onClick={handleCopyLink} title={t('slug.copyLink')}>
               <ContentCopyIcon />
             </IconButton>
           </>
@@ -173,20 +175,20 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
 
       {saved && (
         <Alert severity="success" sx={{ mt: 2 }}>
-          Slug updated successfully! Your profile is live at: /p/{slug}
-          {willCostCoins && changeCost > 0 && ` (${changeCost} coins deducted)`}
+          {t('slug.savedSuccess', { slug })}
+          {willCostCoins && changeCost > 0 && ` ${t('slug.coinsDeducted', { cost: changeCost })}`}
         </Alert>
       )}
 
       {copied && (
         <Alert severity="info" sx={{ mt: 1 }}>
-          Link copied to clipboard!
+          {t('slug.linkCopied')}
         </Alert>
       )}
 
       {updateSlug.isError && (
         <Alert severity="error" sx={{ mt: 2 }}>
-          Failed to update slug. Please try again.
+          {t('slug.failedToUpdate')}
         </Alert>
       )}
     </Box>

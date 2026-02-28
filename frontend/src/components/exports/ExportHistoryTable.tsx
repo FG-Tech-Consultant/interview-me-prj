@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -33,11 +34,13 @@ export const ExportHistoryTable = ({
   onRowsPerPageChange,
   onDownload,
 }: ExportHistoryTableProps) => {
+  const { t } = useTranslation('exports');
+
   if (exports.length === 0 && page === 0) {
     return (
       <Paper sx={{ p: 4, textAlign: 'center' }}>
         <Typography color="text.secondary">
-          No exports yet. Generate your first resume to get started.
+          {t('noExports')}
         </Typography>
       </Paper>
     );
@@ -49,12 +52,12 @@ export const ExportHistoryTable = ({
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Template</TableCell>
-              <TableCell>Target Role</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Coins</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>{t('tableHeaders.date')}</TableCell>
+              <TableCell>{t('tableHeaders.template')}</TableCell>
+              <TableCell>{t('tableHeaders.targetRole')}</TableCell>
+              <TableCell>{t('tableHeaders.status')}</TableCell>
+              <TableCell>{t('tableHeaders.coins')}</TableCell>
+              <TableCell>{t('tableHeaders.actions')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -74,7 +77,7 @@ export const ExportHistoryTable = ({
                         color="error"
                         sx={{ display: 'block', cursor: 'help' }}
                       >
-                        hover for details
+                        {t('hoverForDetails')}
                       </Typography>
                     </Tooltip>
                   )}
@@ -83,7 +86,7 @@ export const ExportHistoryTable = ({
                   {exp.coinsSpent}
                   {exp.status === 'FAILED' && (
                     <Typography variant="caption" color="success.main" sx={{ display: 'block' }}>
-                      (refunded)
+                      {t('refunded')}
                     </Typography>
                   )}
                 </TableCell>
@@ -94,7 +97,7 @@ export const ExportHistoryTable = ({
                       variant="outlined"
                       onClick={() => onDownload(exp.id)}
                     >
-                      Download
+                      {t('common:buttons.download')}
                     </Button>
                   )}
                 </TableCell>

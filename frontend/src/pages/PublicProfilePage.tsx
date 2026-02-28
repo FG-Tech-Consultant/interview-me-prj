@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Container, Box, Typography, Skeleton, Divider, Link } from '@mui/material';
 import { usePublicProfile } from '../hooks/usePublicProfile';
 import { PublicProfileSeo } from '../components/public-profile/PublicProfileSeo';
@@ -14,6 +15,7 @@ import { ChatWidget } from '../components/chat/ChatWidget';
 const PublicProfilePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: profile, isLoading, error } = usePublicProfile(slug || '');
+  const { t } = useTranslation('public-profile');
 
   if (isLoading) {
     return (
@@ -49,7 +51,7 @@ const PublicProfilePage: React.FC = () => {
         {!hasPublicContent && (
           <Box sx={{ textAlign: 'center', py: 6 }}>
             <Typography variant="h6" color="text.secondary">
-              This profile has no public content yet.
+              {t('noPublicContent')}
             </Typography>
           </Box>
         )}
@@ -70,9 +72,9 @@ const PublicProfilePage: React.FC = () => {
         <Divider sx={{ mt: 4, mb: 2 }} />
         <Box sx={{ textAlign: 'center', py: 2 }}>
           <Typography variant="caption" color="text.secondary">
-            Powered by{' '}
+            {t('poweredBy')}{' '}
             <Link href="/" color="primary" underline="hover">
-              Interview Me
+              {t('interviewMe')}
             </Link>
           </Typography>
         </Box>

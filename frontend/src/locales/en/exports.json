@@ -1,0 +1,59 @@
+{
+  "title": "Exports",
+  "newExport": "New Resume Export",
+  "failedToCreate": "Failed to create export",
+  "exportHistory": "Export History",
+  "noExports": "No exports yet. Generate your first resume to get started.",
+  "tableHeaders": {
+    "date": "Date",
+    "template": "Template",
+    "targetRole": "Target Role",
+    "status": "Status",
+    "coins": "Coins",
+    "actions": "Actions"
+  },
+  "hoverForDetails": "hover for details",
+  "refunded": "(refunded)",
+  "form": {
+    "title": "New Resume Export",
+    "template": "Template",
+    "targetRole": "Target Role",
+    "targetRolePlaceholder": "e.g., Senior Backend Engineer",
+    "location": "Location",
+    "locationPlaceholder": "e.g., Berlin, Germany",
+    "seniorityLevel": "Seniority Level",
+    "language": "Language",
+    "costMessage": "This will cost {{cost}} coins.",
+    "currentBalance": "Current balance: {{balance}} coins",
+    "insufficientCoins": "Insufficient coins. You need {{amount}} more coins.",
+    "generating": "Generating...",
+    "confirmGenerate": "Confirm & Generate"
+  },
+  "progress": {
+    "generating": "Generating your resume...",
+    "queued": "Queued for processing",
+    "processing": "Processing...",
+    "attempt": "(attempt {{count}})",
+    "success": "Resume generated successfully!",
+    "downloadPdf": "Download PDF",
+    "failed": "Resume export failed. Your coins have been refunded."
+  },
+  "status": {
+    "pending": "Pending",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "failed": "Failed"
+  },
+  "coverLetter": {
+    "title": "New Cover Letter",
+    "template": "Template",
+    "targetCompany": "Target Company",
+    "targetCompanyPlaceholder": "e.g., Google, Stripe, Spotify",
+    "targetRole": "Target Role",
+    "targetRolePlaceholder": "e.g., Senior Backend Engineer",
+    "jobDescription": "Job Description (optional)",
+    "jobDescriptionPlaceholder": "Paste the job description here to tailor the cover letter...",
+    "market": "Market"
+  },
+  "newCoverLetter": "New Cover Letter"
+}

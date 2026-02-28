@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Container,
   Box,
@@ -14,6 +15,7 @@ import { login, LoginRequest } from '../api/auth';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -34,12 +36,12 @@ export default function LoginPage() {
       <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
           <Typography component="h1" variant="h4" align="center" gutterBottom>
-            Live Resume Login
+            {t('login.title')}
           </Typography>
 
           {loginMutation.isError && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              {(loginMutation.error as any)?.response?.data?.message || 'Invalid email or password'}
+              {(loginMutation.error as any)?.response?.data?.message || t('login.errorDefault')}
             </Alert>
           )}
 
@@ -49,7 +51,7 @@ export default function LoginPage() {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label={t('login.emailLabel')}
               name="email"
               autoComplete="email"
               autoFocus
@@ -61,7 +63,7 @@ export default function LoginPage() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label={t('login.passwordLabel')}
               type="password"
               id="password"
               autoComplete="current-password"
@@ -75,12 +77,12 @@ export default function LoginPage() {
               sx={{ mt: 3, mb: 2 }}
               disabled={loginMutation.isPending}
             >
-              {loginMutation.isPending ? 'Logging in...' : 'Login'}
+              {loginMutation.isPending ? t('login.submitting') : t('login.submitButton')}
             </Button>
             <Box sx={{ textAlign: 'center' }}>
               <Link to="/register" style={{ textDecoration: 'none' }}>
                 <Typography variant="body2" color="primary">
-                  Don't have an account? Register
+                  {t('login.noAccount')}
                 </Typography>
               </Link>
             </Box>

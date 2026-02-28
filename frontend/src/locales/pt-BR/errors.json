@@ -1,0 +1,24 @@
+{
+  "validation": {
+    "profile": {
+      "full_name": {
+        "required": "Nome completo e obrigatorio",
+        "max_length": "Nome completo nao deve exceder {{max}} caracteres"
+      },
+      "headline": {
+        "required": "Titulo profissional e obrigatorio",
+        "max_length": "Titulo profissional nao deve exceder {{max}} caracteres"
+      },
+      "summary": {
+        "max_length": "Resumo nao deve exceder {{max}} caracteres"
+      }
+    }
+  },
+  "error": {
+    "profile": {
+      "not_found": "Perfil nao encontrado"
+    },
+    "generic": "Ocorreu um erro inesperado",
+    "network": "Nao foi possivel conectar ao servidor"
+  }
+}

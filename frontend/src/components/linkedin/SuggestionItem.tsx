@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, Button, Chip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
@@ -19,6 +20,8 @@ export default function SuggestionItem({
   onApply,
   isApplying,
 }: SuggestionItemProps) {
+  const { t } = useTranslation('linkedin');
+
   return (
     <Box
       sx={{
@@ -32,7 +35,7 @@ export default function SuggestionItem({
       }}
     >
       <Chip
-        label={isFree ? 'Free' : 'Paid'}
+        label={isFree ? t('suggestion.free') : t('suggestion.paid')}
         size="small"
         color={isFree ? 'success' : 'default'}
         variant="outlined"
@@ -46,7 +49,7 @@ export default function SuggestionItem({
           {isApplied ? (
             <Chip
               icon={<CheckCircleIcon />}
-              label="Applied"
+              label={t('suggestion.applied')}
               size="small"
               color="success"
             />
@@ -57,7 +60,7 @@ export default function SuggestionItem({
               onClick={onApply}
               disabled={isApplying}
             >
-              Apply
+              {t('suggestion.apply')}
             </Button>
           )}
         </Box>

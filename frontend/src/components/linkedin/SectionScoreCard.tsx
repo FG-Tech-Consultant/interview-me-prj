@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -21,16 +22,6 @@ interface SectionScoreCardProps {
   appliedIndices: Set<number>;
 }
 
-const SECTION_LABELS: Record<string, string> = {
-  HEADLINE: 'Headline',
-  ABOUT: 'About',
-  EXPERIENCE: 'Experience',
-  EDUCATION: 'Education',
-  SKILLS: 'Skills',
-  RECOMMENDATIONS: 'Recommendations',
-  OTHER: 'Other',
-};
-
 export default function SectionScoreCard({
   section,
   coinCost,
@@ -40,7 +31,8 @@ export default function SectionScoreCard({
   isApplying,
   appliedIndices,
 }: SectionScoreCardProps) {
-  const label = SECTION_LABELS[section.sectionName] || section.sectionName;
+  const { t } = useTranslation('linkedin');
+  const label = t(`sections.${section.sectionName}`, { defaultValue: section.sectionName });
 
   return (
     <Card variant="outlined" sx={{ mb: 2 }}>
@@ -62,7 +54,7 @@ export default function SectionScoreCard({
         {section.suggestions.length > 0 && (
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
-              Suggestions
+              {t('suggestions')}
             </Typography>
             {section.suggestions.map((suggestion, index) => (
               <SuggestionItem
@@ -87,8 +79,8 @@ export default function SectionScoreCard({
           startIcon={isGenerating ? <CircularProgress size={16} /> : undefined}
         >
           {isGenerating
-            ? 'Generating...'
-            : `Get more suggestions (${coinCost} coins)`}
+            ? t('generatingSuggestions')
+            : t('getMoreSuggestions', { cost: coinCost })}
         </Button>
       </CardContent>
     </Card>

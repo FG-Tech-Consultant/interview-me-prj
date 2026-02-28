@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, TextField, IconButton, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 
@@ -11,9 +12,10 @@ interface ChatInputProps {
 export const ChatInput: React.FC<ChatInputProps> = ({
   onSend,
   disabled,
-  placeholder = 'Type a message...',
+  placeholder,
 }) => {
   const [text, setText] = useState('');
+  const { t } = useTranslation('chat');
 
   const handleSend = useCallback(() => {
     if (text.trim() && !disabled) {
@@ -40,7 +42,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           value={text}
           onChange={(e) => setText(e.target.value.slice(0, 500))}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
+          placeholder={placeholder || t('placeholderDefault')}
           disabled={disabled}
           variant="outlined"
           sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3 } }}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Container,
   Typography,
@@ -21,6 +22,7 @@ export const BillingPage = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [typeFilter, setTypeFilter] = useState<TransactionType | ''>('');
+  const { t } = useTranslation('billing');
 
   const { data: wallet, isLoading: walletLoading, error: walletError } = useWallet();
   const { data: transactions, isLoading: txLoading } = useTransactions({
@@ -42,7 +44,7 @@ export const BillingPage = () => {
   if (walletError) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Alert severity="error">Failed to load billing information.</Alert>
+        <Alert severity="error">{t('failedToLoad')}</Alert>
       </Container>
     );
   }
@@ -50,20 +52,20 @@ export const BillingPage = () => {
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Billing
+        {t('title')}
       </Typography>
 
       {/* Balance */}
       <Paper sx={{ p: 3, mb: 3 }}>
         <Typography variant="subtitle2" color="text.secondary">
-          Current Balance
+          {t('currentBalance')}
         </Typography>
-        <Typography variant="h3">{wallet?.balance ?? 0} coins</Typography>
+        <Typography variant="h3">{t('coinsAmount', { amount: wallet?.balance ?? 0 })}</Typography>
       </Paper>
 
       {/* Free Tier Quotas */}
       <Typography variant="h6" gutterBottom>
-        Free Tier Quotas
+        {t('freeTierQuotas')}
       </Typography>
       <Grid container spacing={2} sx={{ mb: 3 }}>
         {chatQuota && (
@@ -88,22 +90,22 @@ export const BillingPage = () => {
 
       {/* Transaction History */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6">Transaction History</Typography>
+        <Typography variant="h6">{t('transactionHistory')}</Typography>
         <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Type</InputLabel>
+          <InputLabel>{t('filterType')}</InputLabel>
           <Select
             value={typeFilter}
-            label="Type"
+            label={t('filterType')}
             onChange={(e) => {
               setTypeFilter(e.target.value as TransactionType | '');
               setPage(0);
             }}
           >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="EARN">Earn</MenuItem>
-            <MenuItem value="SPEND">Spend</MenuItem>
-            <MenuItem value="REFUND">Refund</MenuItem>
-            <MenuItem value="PURCHASE">Purchase</MenuItem>
+            <MenuItem value="">{t('filterAll')}</MenuItem>
+            <MenuItem value="EARN">{t('filterEarn')}</MenuItem>
+            <MenuItem value="SPEND">{t('filterSpend')}</MenuItem>
+            <MenuItem value="REFUND">{t('filterRefund')}</MenuItem>
+            <MenuItem value="PURCHASE">{t('filterPurchase')}</MenuItem>
           </Select>
         </FormControl>
       </Box>

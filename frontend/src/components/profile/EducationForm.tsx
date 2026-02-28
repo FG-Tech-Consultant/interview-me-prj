@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   TextField,
   Button,
@@ -31,6 +32,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
     gpa: education?.gpa || '',
     notes: education?.notes || '',
   });
+  const { t } = useTranslation('profile');
 
   const createMutation = useCreateEducation();
   const updateMutation = useUpdateEducation();
@@ -49,7 +51,6 @@ export const EducationForm: React.FC<EducationFormProps> = ({
     e.preventDefault();
 
     if (education) {
-      // Update existing
       updateMutation.mutate(
         {
           profileId,
@@ -72,7 +73,6 @@ export const EducationForm: React.FC<EducationFormProps> = ({
         }
       );
     } else {
-      // Create new
       const createData: CreateEducationRequest = {
         institution: formData.institution,
         degree: formData.degree,
@@ -104,7 +104,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Institution"
+              label={t('education.institution')}
               name="institution"
               value={formData.institution}
               onChange={handleChange}
@@ -115,12 +115,12 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Degree"
+              label={t('education.degree')}
               name="degree"
               value={formData.degree}
               onChange={handleChange}
               required
-              placeholder="e.g., Bachelor of Science"
+              placeholder={t('education.degreePlaceholder')}
               size="small"
             />
           </Grid>
@@ -128,11 +128,11 @@ export const EducationForm: React.FC<EducationFormProps> = ({
 
         <TextField
           fullWidth
-          label="Field of Study"
+          label={t('education.fieldOfStudy')}
           name="fieldOfStudy"
           value={formData.fieldOfStudy}
           onChange={handleChange}
-          placeholder="e.g., Computer Science"
+          placeholder={t('education.fieldOfStudyPlaceholder')}
           size="small"
         />
 
@@ -140,7 +140,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Start Date"
+              label={t('education.startDate')}
               name="startDate"
               type="date"
               value={formData.startDate}
@@ -152,7 +152,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="End Date *"
+              label={`${t('education.endDate')} *`}
               name="endDate"
               type="date"
               value={formData.endDate}
@@ -166,17 +166,17 @@ export const EducationForm: React.FC<EducationFormProps> = ({
 
         <TextField
           fullWidth
-          label="GPA"
+          label={t('education.gpa')}
           name="gpa"
           value={formData.gpa}
           onChange={handleChange}
-          placeholder="e.g., 3.8/4.0, First Class Honours"
+          placeholder={t('education.gpaPlaceholder')}
           size="small"
         />
 
         <TextField
           fullWidth
-          label="Notes"
+          label={t('education.notes')}
           name="notes"
           value={formData.notes}
           onChange={handleChange}
@@ -187,14 +187,14 @@ export const EducationForm: React.FC<EducationFormProps> = ({
 
         {error && (
           <Alert severity="error">
-            {error instanceof Error ? error.message : 'Failed to save'}
+            {error instanceof Error ? error.message : t('common:errors.failedToSave')}
           </Alert>
         )}
 
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           {onCancel && (
             <Button variant="outlined" onClick={onCancel}>
-              Cancel
+              {t('common:buttons.cancel')}
             </Button>
           )}
           <Button
@@ -202,7 +202,7 @@ export const EducationForm: React.FC<EducationFormProps> = ({
             variant="contained"
             disabled={isLoading}
           >
-            {isLoading ? 'Saving...' : education ? 'Update' : 'Add'}
+            {isLoading ? t('common:status.saving') : education ? t('common:buttons.update') : t('common:buttons.add')}
           </Button>
         </Stack>
       </Stack>

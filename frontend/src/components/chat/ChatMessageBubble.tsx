@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Paper, Typography } from '@mui/material';
 import type { ChatMessageDisplay } from '../../types/chat';
 
@@ -6,21 +7,26 @@ interface ChatMessageBubbleProps {
   message: ChatMessageDisplay;
 }
 
-function formatTimestamp(date: Date): string {
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMin = Math.floor(diffMs / 60000);
+function useFormatTimestamp() {
+  const { t } = useTranslation('chat');
 
-  if (diffMin < 1) return 'just now';
-  if (diffMin < 60) return `${diffMin} min ago`;
-  const diffHours = Math.floor(diffMin / 60);
-  if (diffHours < 24) return `${diffHours}h ago`;
-  return date.toLocaleDateString();
+  return (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+
+    if (diffMin < 1) return t('time.justNow');
+    if (diffMin < 60) return t('time.minAgo', { count: diffMin });
+    const diffHours = Math.floor(diffMin / 60);
+    if (diffHours < 24) return t('time.hoursAgo', { count: diffHours });
+    return date.toLocaleDateString();
+  };
 }
 
 export const ChatMessageBubble: React.FC<ChatMessageBubbleProps> = ({ message }) => {
   const isUser = message.role === 'user';
   const isFailed = message.status === 'failed';
+  const formatTimestamp = useFormatTimestamp();
 
   return (
     <Box

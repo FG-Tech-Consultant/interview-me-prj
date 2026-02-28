@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -12,15 +13,17 @@ interface QuotaStatusCardProps {
   limit: number;
 }
 
-const FEATURE_LABELS: Record<string, string> = {
-  CHAT_MESSAGE: 'Chat Messages',
-  LINKEDIN_DRAFT: 'LinkedIn Drafts',
-  LINKEDIN_SUGGESTION: 'LinkedIn Suggestions',
+const FEATURE_LABEL_KEYS: Record<string, string> = {
+  CHAT_MESSAGE: 'quota.chatMessages',
+  LINKEDIN_DRAFT: 'quota.linkedinDrafts',
+  LINKEDIN_SUGGESTION: 'quota.linkedinSuggestions',
 };
 
 export const QuotaStatusCard = ({ featureType, used, limit }: QuotaStatusCardProps) => {
+  const { t } = useTranslation('billing');
   const percentage = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
-  const label = FEATURE_LABELS[featureType] || featureType;
+  const labelKey = FEATURE_LABEL_KEYS[featureType];
+  const label = labelKey ? t(labelKey) : featureType;
 
   const getColor = (): 'success' | 'warning' | 'error' => {
     if (percentage >= 100) return 'error';
@@ -45,7 +48,7 @@ export const QuotaStatusCard = ({ featureType, used, limit }: QuotaStatusCardPro
           />
         </Box>
         <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-          {limit - used > 0 ? `${limit - used} remaining` : 'Quota reached'}
+          {limit - used > 0 ? t('quota.remaining', { count: limit - used }) : t('quota.quotaReached')}
         </Typography>
       </CardContent>
     </Card>

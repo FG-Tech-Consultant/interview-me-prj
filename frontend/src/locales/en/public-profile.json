@@ -1,0 +1,22 @@
+{
+  "notFound": {
+    "title": "Profile not found",
+    "message": "The profile you are looking for does not exist or may have been removed. Please check the URL and try again.",
+    "goHome": "Go to Homepage"
+  },
+  "sections": {
+    "about": "About",
+    "skills": "Skills",
+    "experience": "Experience",
+    "education": "Education"
+  },
+  "showAll": "Show all {{count}} skills",
+  "showLess": "Show less",
+  "current": "Current",
+  "noPublicContent": "This profile has no public content yet.",
+  "poweredBy": "Powered by",
+  "interviewMe": "Interview Me",
+  "chatComingSoon": "Recruiter chat coming soon!",
+  "present": "Present",
+  "team": "Team: {{size}}"
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -26,12 +27,13 @@ interface JobExperienceListProps {
 export const JobExperienceList: React.FC<JobExperienceListProps> = ({ profileId }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const { t } = useTranslation('profile');
 
   const { data: experiences, isLoading, error } = useJobExperiences(profileId);
   const deleteMutation = useDeleteJobExperience();
 
   const handleDelete = (experienceId: number) => {
-    if (window.confirm('Are you sure you want to delete this job experience?')) {
+    if (window.confirm(t('job.confirmDelete'))) {
       deleteMutation.mutate({ profileId, experienceId });
     }
   };
@@ -65,7 +67,7 @@ export const JobExperienceList: React.FC<JobExperienceListProps> = ({ profileId 
   if (error) {
     return (
       <Alert severity="error">
-        Error loading job experiences: {error instanceof Error ? error.message : 'Unknown error'}
+        {t('job.errorLoading')}: {error instanceof Error ? error.message : t('common:errors.unknownError')}
       </Alert>
     );
   }
@@ -76,7 +78,7 @@ export const JobExperienceList: React.FC<JobExperienceListProps> = ({ profileId 
       {!isAdding && !editingId && (
         <Box>
           <Button variant="contained" onClick={handleAdd}>
-            + Add Job Experience
+            {t('job.addButton')}
           </Button>
         </Box>
       )}
@@ -85,7 +87,7 @@ export const JobExperienceList: React.FC<JobExperienceListProps> = ({ profileId 
       {isAdding && (
         <Paper elevation={2} sx={{ p: 3 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Add New Job Experience
+            {t('job.addTitle')}
           </Typography>
           <JobExperienceForm
             profileId={profileId}
@@ -120,7 +122,7 @@ export const JobExperienceList: React.FC<JobExperienceListProps> = ({ profileId 
           ))
         ) : (
           <Typography color="text.secondary">
-            No job experiences added yet. Click "Add Job Experience" to get started.
+            {t('job.noExperiences')}
           </Typography>
         )}
       </Stack>
@@ -136,9 +138,10 @@ interface JobExperienceCardProps {
 
 const JobExperienceCard: React.FC<JobExperienceCardProps> = ({ experience, onEdit, onDelete }) => {
   const [showProjects, setShowProjects] = useState(false);
+  const { t } = useTranslation('profile');
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+    return new Date(date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' });
   };
 
   return (
@@ -151,7 +154,7 @@ const JobExperienceCard: React.FC<JobExperienceCardProps> = ({ experience, onEdi
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {formatDate(experience.startDate)} -{' '}
-            {experience.isCurrent ? 'Present' : experience.endDate ? formatDate(experience.endDate) : 'N/A'}
+            {experience.isCurrent ? t('common:present') : experience.endDate ? formatDate(experience.endDate) : t('common:na')}
             {experience.location && ` \u2022 ${experience.location}`}
           </Typography>
         </Box>
@@ -173,7 +176,7 @@ const JobExperienceCard: React.FC<JobExperienceCardProps> = ({ experience, onEdi
 
       {experience.achievements && (
         <Box sx={{ mb: 1.5 }}>
-          <Typography variant="subtitle2">Achievements:</Typography>
+          <Typography variant="subtitle2">{t('job.achievements')}:</Typography>
           <Typography variant="body2">{experience.achievements}</Typography>
         </Box>
       )}
@@ -184,7 +187,7 @@ const JobExperienceCard: React.FC<JobExperienceCardProps> = ({ experience, onEdi
         size="small"
         onClick={() => setShowProjects(!showProjects)}
       >
-        {showProjects ? 'Hide Projects' : 'Show Projects & Stories'}
+        {showProjects ? t('job.hideProjects') : t('job.showProjects')}
       </Button>
       {showProjects && <ProjectList jobExperienceId={experience.id} />}
     </Box>

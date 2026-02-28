@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useStories, useDeleteStory } from '../../hooks/useStories';
 import { StoryForm } from './StoryForm';
 import type { StoryResponse } from '../../types/story';
@@ -26,18 +27,19 @@ export const StoryList: React.FC<StoryListProps> = ({ experienceProjectId }) => 
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const { t } = useTranslation('experience');
 
   const { data: stories, isLoading, error } = useStories(experienceProjectId);
   const deleteMutation = useDeleteStory();
 
   const handleDelete = (storyId: number) => {
-    if (window.confirm('Are you sure you want to delete this story?')) {
+    if (window.confirm(t('common:confirm.deleteStory'))) {
       deleteMutation.mutate({ storyId, projectId: experienceProjectId });
     }
   };
 
   if (isLoading) return <CircularProgress size={20} />;
-  if (error) return <Alert severity="error">Error loading stories.</Alert>;
+  if (error) return <Alert severity="error">{t('stories.errorLoading')}</Alert>;
 
   return (
     <Stack spacing={1}>
@@ -48,7 +50,7 @@ export const StoryList: React.FC<StoryListProps> = ({ experienceProjectId }) => 
             size="small"
             onClick={() => setIsAdding(true)}
           >
-            + Add Story
+            {t('stories.addButton')}
           </Button>
         </Box>
       )}
@@ -57,7 +59,7 @@ export const StoryList: React.FC<StoryListProps> = ({ experienceProjectId }) => 
         <Card variant="outlined" sx={{ bgcolor: 'grey.50' }}>
           <CardContent>
             <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1 }}>
-              Add STAR Story
+              {t('stories.addTitle')}
             </Typography>
             <StoryForm
               experienceProjectId={experienceProjectId}
@@ -99,7 +101,7 @@ export const StoryList: React.FC<StoryListProps> = ({ experienceProjectId }) => 
       ) : (
         !isAdding && (
           <Typography variant="caption" color="text.secondary">
-            No stories yet. Add a STAR story to prepare for behavioral interviews.
+            {t('stories.noStories')}
           </Typography>
         )
       )}
@@ -122,6 +124,15 @@ const StoryCard: React.FC<StoryCardProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const { t } = useTranslation('experience');
+
+  const STAR_LABELS = {
+    situation: t('stories.situation'),
+    task: t('stories.task'),
+    action: t('stories.action'),
+    result: t('stories.result'),
+  };
+
   return (
     <Box>
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
@@ -131,7 +142,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
           </Typography>
           <Stack direction="row" spacing={0.5} sx={{ mt: 0.5 }}>
             <Chip
-              label={story.visibility}
+              label={t(`common:visibility.${story.visibility}`)}
               size="small"
               color={story.visibility === 'public' ? 'success' : 'default'}
             />
@@ -167,21 +178,18 @@ const StoryCard: React.FC<StoryCardProps> = ({
         <Box sx={{ mt: 1, pt: 1 }}>
           <Divider sx={{ mb: 1 }} />
           <Stack spacing={1}>
-            {(['Situation', 'Task', 'Action', 'Result'] as const).map((label) => {
-              const key = label.toLowerCase() as keyof Pick<StoryResponse, 'situation' | 'task' | 'action' | 'result'>;
-              return (
-                <Box key={label}>
-                  <Typography variant="subtitle2">{label}:</Typography>
-                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                    {story[key]}
-                  </Typography>
-                </Box>
-              );
-            })}
+            {(['situation', 'task', 'action', 'result'] as const).map((key) => (
+              <Box key={key}>
+                <Typography variant="subtitle2">{STAR_LABELS[key]}:</Typography>
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                  {story[key]}
+                </Typography>
+              </Box>
+            ))}
 
             {story.metrics && Object.keys(story.metrics).length > 0 && (
               <Box>
-                <Typography variant="subtitle2">Metrics:</Typography>
+                <Typography variant="subtitle2">{t('stories.metricsLabel')}:</Typography>
                 <Stack direction="row" spacing={0.5} flexWrap="wrap" sx={{ mt: 0.5 }} useFlexGap>
                   {Object.entries(story.metrics).map(([key, val]) => (
                     <Chip

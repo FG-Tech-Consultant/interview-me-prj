@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   FormControl,
@@ -42,6 +43,8 @@ export const SkillFilters: React.FC<SkillFiltersProps> = ({
   totalCount,
   filteredCount,
 }) => {
+  const { t } = useTranslation('skills');
+
   const handleClear = () => {
     onFilterChange(defaultFilters);
   };
@@ -57,7 +60,7 @@ export const SkillFilters: React.FC<SkillFiltersProps> = ({
     <Box sx={{ mb: 2, p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}>
       <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
         <TextField
-          label="Search"
+          label={t('filters.search')}
           size="small"
           value={filters.search}
           onChange={(e) => onFilterChange({ ...filters, search: e.target.value })}
@@ -65,13 +68,13 @@ export const SkillFilters: React.FC<SkillFiltersProps> = ({
         />
 
         <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Category</InputLabel>
+          <InputLabel>{t('filters.category')}</InputLabel>
           <Select
             value={filters.category}
-            label="Category"
+            label={t('filters.category')}
             onChange={(e) => onFilterChange({ ...filters, category: e.target.value })}
           >
-            <MenuItem value="">All Categories</MenuItem>
+            <MenuItem value="">{t('filters.allCategories')}</MenuItem>
             {SKILL_CATEGORIES.map((cat) => (
               <MenuItem key={cat} value={cat}>
                 {cat}
@@ -81,21 +84,21 @@ export const SkillFilters: React.FC<SkillFiltersProps> = ({
         </FormControl>
 
         <FormControl size="small" sx={{ minWidth: 120 }}>
-          <InputLabel>Visibility</InputLabel>
+          <InputLabel>{t('filters.visibility')}</InputLabel>
           <Select
             value={filters.visibility}
-            label="Visibility"
+            label={t('filters.visibility')}
             onChange={(e) => onFilterChange({ ...filters, visibility: e.target.value })}
           >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="public">Public</MenuItem>
-            <MenuItem value="private">Private</MenuItem>
+            <MenuItem value="all">{t('filters.all')}</MenuItem>
+            <MenuItem value="public">{t('common:visibility.public')}</MenuItem>
+            <MenuItem value="private">{t('common:visibility.private')}</MenuItem>
           </Select>
         </FormControl>
 
         <Box sx={{ minWidth: 180 }}>
           <Typography variant="caption" color="text.secondary">
-            Proficiency: {filters.minProficiency}-{filters.maxProficiency}
+            {t('filters.proficiency')}: {filters.minProficiency}-{filters.maxProficiency}
           </Typography>
           <Slider
             value={[filters.minProficiency, filters.maxProficiency]}
@@ -113,12 +116,12 @@ export const SkillFilters: React.FC<SkillFiltersProps> = ({
 
         {hasActiveFilters && (
           <Button size="small" onClick={handleClear}>
-            Clear Filters
+            {t('filters.clearFilters')}
           </Button>
         )}
 
         <Chip
-          label={`Showing ${filteredCount} of ${totalCount} skills`}
+          label={t('filters.showing', { filtered: filteredCount, total: totalCount })}
           size="small"
           variant="outlined"
         />

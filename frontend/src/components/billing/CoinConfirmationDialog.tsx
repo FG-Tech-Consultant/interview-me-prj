@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -26,41 +27,42 @@ export const CoinConfirmationDialog = ({
   cost,
   currentBalance,
 }: CoinConfirmationDialogProps) => {
+  const { t } = useTranslation('billing');
   const balanceAfter = currentBalance - cost;
   const insufficientBalance = currentBalance < cost;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>Confirm Coin Spend</DialogTitle>
+      <DialogTitle>{t('coinConfirm.title')}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mt: 1 }}>
           <Typography>
-            <strong>Feature:</strong> {featureName}
+            <strong>{t('coinConfirm.feature')}:</strong> {featureName}
           </Typography>
           <Typography>
-            <strong>Cost:</strong> {cost} coins
+            <strong>{t('coinConfirm.cost')}:</strong> {t('coinsAmount', { amount: cost })}
           </Typography>
           <Typography>
-            <strong>Current Balance:</strong> {currentBalance} coins
+            <strong>{t('coinConfirm.currentBalanceLabel')}:</strong> {t('coinsAmount', { amount: currentBalance })}
           </Typography>
           <Typography>
-            <strong>Balance After:</strong> {balanceAfter} coins
+            <strong>{t('coinConfirm.balanceAfter')}:</strong> {t('coinsAmount', { amount: balanceAfter })}
           </Typography>
           {insufficientBalance && (
             <Alert severity="error">
-              Insufficient balance. You need {cost - currentBalance} more coins.
+              {t('coinConfirm.insufficientBalance', { amount: cost - currentBalance })}
             </Alert>
           )}
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>{t('common:buttons.cancel')}</Button>
         <Button
           onClick={onConfirm}
           variant="contained"
           disabled={insufficientBalance}
         >
-          Confirm
+          {t('common:buttons.confirm')}
         </Button>
       </DialogActions>
     </Dialog>

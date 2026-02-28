@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography, Skeleton } from '@mui/material';
 import { getCurrentUser } from '../api/auth';
 import StatsCards from '../components/dashboard/StatsCards';
@@ -12,6 +13,7 @@ export default function DashboardPage() {
     queryKey: ['currentUser'],
     queryFn: getCurrentUser,
   });
+  const { t } = useTranslation('dashboard');
 
   return (
     <Box>
@@ -20,7 +22,9 @@ export default function DashboardPage() {
         {isLoading ? (
           <Skeleton width={300} />
         ) : (
-          `Welcome back${user?.email ? `, ${user.email.split('@')[0]}` : ''}`
+          user?.email
+            ? t('welcomeBack', { name: user.email.split('@')[0] })
+            : t('welcomeBackDefault')
         )}
       </Typography>
 
@@ -44,7 +48,7 @@ export default function DashboardPage() {
 
       {/* Quick actions */}
       <Typography variant="h6" gutterBottom>
-        Quick Actions
+        {t('quickActions')}
       </Typography>
       <QuickActionsGrid />
     </Box>

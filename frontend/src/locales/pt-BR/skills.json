@@ -1,0 +1,55 @@
+{
+  "title": "Habilidades",
+  "addSkill": "Adicionar Habilidade",
+  "addFirstSkill": "Adicionar Primeira Habilidade",
+  "noSkills": "Nenhuma habilidade adicionada ainda",
+  "noSkillsDescription": "Adicione sua primeira habilidade para mostrar sua experiencia.",
+  "createProfileFirst": "Crie um perfil primeiro para gerenciar suas habilidades.",
+  "failedToLoad": "Falha ao carregar habilidades.",
+  "addedSuccess": "Habilidade adicionada com sucesso",
+  "updatedSuccess": "Habilidade atualizada com sucesso",
+  "removedSuccess": "Habilidade removida do perfil",
+  "removeDialog": {
+    "title": "Remover Habilidade",
+    "message": "Remover '{{name}}' do seu perfil? Isso ocultara a habilidade de todas as exportacoes e do chat com recrutadores."
+  },
+  "form": {
+    "addTitle": "Adicionar Habilidade",
+    "editTitle": "Editar Habilidade",
+    "skill": "Habilidade",
+    "yearsOfExperience": "Anos de Experiencia",
+    "proficiency": "Proficiencia",
+    "lastUsed": "Ultimo Uso",
+    "confidenceLevel": "Nivel de Confianca",
+    "confidenceLow": "Baixo",
+    "confidenceMedium": "Medio",
+    "confidenceHigh": "Alto",
+    "tags": "Tags",
+    "tagsPlaceholder": "Pressione Enter para adicionar tags",
+    "tagsCount": "{{count}}/20 tags",
+    "visibilityPublic": "Publico (visivel para recrutadores)",
+    "visibilityPrivate": "Privado (somente voce pode ver)",
+    "saveChanges": "Salvar Alteracoes",
+    "pleaseSelectSkill": "Selecione uma habilidade"
+  },
+  "filters": {
+    "search": "Buscar",
+    "category": "Categoria",
+    "allCategories": "Todas as Categorias",
+    "visibility": "Visibilidade",
+    "all": "Todos",
+    "proficiency": "Proficiencia",
+    "clearFilters": "Limpar Filtros",
+    "showing": "Mostrando {{filtered}} de {{total}} habilidades"
+  },
+  "card": {
+    "yearsExp": "{{years}}a exp",
+    "lastUsed": "Ultimo uso: {{date}}"
+  },
+  "selector": {
+    "label": "Buscar Habilidade",
+    "placeholder": "Digite para buscar habilidades...",
+    "minChars": "Digite pelo menos 2 caracteres",
+    "noResults": "Nenhuma habilidade encontrada"
+  }
+}

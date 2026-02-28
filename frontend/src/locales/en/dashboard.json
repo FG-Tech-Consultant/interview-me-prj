@@ -1,0 +1,48 @@
+{
+  "welcomeBack": "Welcome back, {{name}}",
+  "welcomeBackDefault": "Welcome back",
+  "quickActions": "Quick Actions",
+  "stats": {
+    "skills": "Skills",
+    "jobExperiences": "Job Experiences",
+    "education": "Education",
+    "coinBalance": "Coin Balance",
+    "exports": "Exports"
+  },
+  "actions": {
+    "editProfile": "Edit Profile",
+    "editProfileDesc": "Manage your personal and professional info",
+    "manageSkills": "Manage Skills",
+    "manageSkillsDesc": "Add and track your technical skills",
+    "exportResume": "Export Resume",
+    "exportResumeDesc": "Generate PDF or other export formats",
+    "linkedinAnalyzer": "LinkedIn Analyzer",
+    "linkedinAnalyzerDesc": "Get AI feedback on your LinkedIn profile",
+    "viewBilling": "View Billing",
+    "viewBillingDesc": "Check your coin balance and usage"
+  },
+  "completeness": {
+    "title": "Profile Completeness",
+    "clickToAdd": "Click to add",
+    "fullName": "Full name",
+    "headline": "Headline",
+    "summary": "Summary",
+    "workExperience": "Work experience",
+    "education": "Education",
+    "skills": "Skills",
+    "publicProfile": "Public profile"
+  },
+  "publicProfile": {
+    "title": "Public Profile",
+    "copyUrl": "Copy URL",
+    "viewProfile": "View Profile",
+    "setupUrl": "Set up your public profile URL",
+    "goToProfile": "Go to Profile"
+  },
+  "recentActivity": {
+    "title": "Recent Activity",
+    "noActivity": "No recent activity",
+    "resumeExport": "Resume Export",
+    "linkedinAnalysis": "LinkedIn Analysis"
+  }
+}

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Card,
@@ -18,7 +19,7 @@ import { useCurrentProfile } from '../../hooks/useProfile';
 import { useUserSkills } from '../../hooks/useSkills';
 
 interface CompletionItem {
-  label: string;
+  labelKey: string;
   completed: boolean;
   path: string;
 }
@@ -27,47 +28,20 @@ const ProfileCompletenessCard = () => {
   const navigate = useNavigate();
   const { data: profile, isLoading: profileLoading } = useCurrentProfile();
   const { data: skills, isLoading: skillsLoading } = useUserSkills(profile?.id);
+  const { t } = useTranslation('dashboard');
 
   const isLoading = profileLoading || skillsLoading;
 
   const items = useMemo<CompletionItem[]>(() => {
     if (!profile) return [];
     return [
-      {
-        label: 'Full name',
-        completed: !!profile.fullName?.trim(),
-        path: '/profile',
-      },
-      {
-        label: 'Headline',
-        completed: !!profile.headline?.trim(),
-        path: '/profile',
-      },
-      {
-        label: 'Summary',
-        completed: !!profile.summary?.trim(),
-        path: '/profile',
-      },
-      {
-        label: 'Work experience',
-        completed: profile.jobs?.length > 0,
-        path: '/profile',
-      },
-      {
-        label: 'Education',
-        completed: profile.education?.length > 0,
-        path: '/profile',
-      },
-      {
-        label: 'Skills',
-        completed: !!skills && Object.values(skills).some((arr) => arr.length > 0),
-        path: '/skills',
-      },
-      {
-        label: 'Public profile',
-        completed: !!profile.slug?.trim(),
-        path: '/profile',
-      },
+      { labelKey: 'completeness.fullName', completed: !!profile.fullName?.trim(), path: '/profile' },
+      { labelKey: 'completeness.headline', completed: !!profile.headline?.trim(), path: '/profile' },
+      { labelKey: 'completeness.summary', completed: !!profile.summary?.trim(), path: '/profile' },
+      { labelKey: 'completeness.workExperience', completed: profile.jobs?.length > 0, path: '/profile' },
+      { labelKey: 'completeness.education', completed: profile.education?.length > 0, path: '/profile' },
+      { labelKey: 'completeness.skills', completed: !!skills && Object.values(skills).some((arr) => arr.length > 0), path: '/skills' },
+      { labelKey: 'completeness.publicProfile', completed: !!profile.slug?.trim(), path: '/profile' },
     ];
   }, [profile, skills]);
 
@@ -96,7 +70,7 @@ const ProfileCompletenessCard = () => {
     <Card>
       <CardContent>
         <Typography variant="h6" gutterBottom>
-          Profile Completeness
+          {t('completeness.title')}
         </Typography>
 
         <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
@@ -130,20 +104,20 @@ const ProfileCompletenessCard = () => {
         <List disablePadding dense>
           {items.map((item) =>
             item.completed ? (
-              <ListItemButton key={item.label} disabled sx={{ opacity: 1 }}>
+              <ListItemButton key={item.labelKey} disabled sx={{ opacity: 1 }}>
                 <ListItemIcon sx={{ minWidth: 36 }}>
                   <CheckCircleIcon color="success" fontSize="small" />
                 </ListItemIcon>
-                <ListItemText primary={item.label} />
+                <ListItemText primary={t(item.labelKey)} />
               </ListItemButton>
             ) : (
-              <ListItemButton key={item.label} onClick={() => navigate(item.path)}>
+              <ListItemButton key={item.labelKey} onClick={() => navigate(item.path)}>
                 <ListItemIcon sx={{ minWidth: 36 }}>
                   <RadioButtonUncheckedIcon color="disabled" fontSize="small" />
                 </ListItemIcon>
                 <ListItemText
-                  primary={item.label}
-                  secondary="Click to add"
+                  primary={t(item.labelKey)}
+                  secondary={t('completeness.clickToAdd')}
                   secondaryTypographyProps={{ variant: 'caption' }}
                 />
               </ListItemButton>

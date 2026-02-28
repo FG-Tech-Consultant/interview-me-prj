@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Tabs,
@@ -17,6 +18,7 @@ import { SlugSettingsSection } from '../components/profile/SlugSettingsSection';
 export const ProfileEditorPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const { data: profile, isLoading, error } = useCurrentProfile();
+  const { t } = useTranslation('profile');
 
   if (isLoading) {
     return (
@@ -30,7 +32,7 @@ export const ProfileEditorPage: React.FC = () => {
     return (
       <Box sx={{ mt: 4 }}>
         <Alert severity="error">
-          Error loading profile: {error instanceof Error ? error.message : 'Unknown error'}
+          {t('errorLoading')}: {error instanceof Error ? error.message : t('common:errors.unknownError', 'Unknown error')}
         </Alert>
       </Box>
     );
@@ -41,7 +43,7 @@ export const ProfileEditorPage: React.FC = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Career Profile Editor
+        {t('title')}
       </Typography>
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
@@ -51,10 +53,10 @@ export const ProfileEditorPage: React.FC = () => {
           variant="scrollable"
           scrollButtons="auto"
         >
-          <Tab label="Profile Information" />
-          <Tab label="Work Experience" disabled={!hasProfile} />
-          <Tab label="Education" disabled={!hasProfile} />
-          <Tab label="Public Profile" disabled={!hasProfile} />
+          <Tab label={t('tabs.profileInfo')} />
+          <Tab label={t('tabs.workExperience')} disabled={!hasProfile} />
+          <Tab label={t('tabs.education')} disabled={!hasProfile} />
+          <Tab label={t('tabs.publicProfile')} disabled={!hasProfile} />
         </Tabs>
       </Box>
 
@@ -62,11 +64,11 @@ export const ProfileEditorPage: React.FC = () => {
         {activeTab === 0 && (
           <Box>
             <Typography variant="h6" gutterBottom>
-              Profile Information
+              {t('tabs.profileInfo')}
             </Typography>
             {!hasProfile && (
               <Alert severity="info" sx={{ mb: 3 }}>
-                Create your profile to get started. You can add work experience, education, and set up your public profile after.
+                {t('createPrompt')}
               </Alert>
             )}
             <ProfileForm profile={profile} />
@@ -76,7 +78,7 @@ export const ProfileEditorPage: React.FC = () => {
         {activeTab === 1 && profile && (
           <Box>
             <Typography variant="h6" gutterBottom>
-              Work Experience
+              {t('job.title')}
             </Typography>
             <JobExperienceList profileId={profile.id} />
           </Box>
@@ -85,7 +87,7 @@ export const ProfileEditorPage: React.FC = () => {
         {activeTab === 2 && profile && (
           <Box>
             <Typography variant="h6" gutterBottom>
-              Education
+              {t('education.title')}
             </Typography>
             <EducationList profileId={profile.id} />
           </Box>
@@ -94,7 +96,7 @@ export const ProfileEditorPage: React.FC = () => {
         {activeTab === 3 && profile && (
           <Box>
             <Typography variant="h6" gutterBottom>
-              Public Profile Settings
+              {t('publicProfileSettings')}
             </Typography>
             <SlugSettingsSection profileId={profile.id} currentSlug={profile.slug ?? null} slugChangeCount={profile.slugChangeCount ?? 0} />
           </Box>

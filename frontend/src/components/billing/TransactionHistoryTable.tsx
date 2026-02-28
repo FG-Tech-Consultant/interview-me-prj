@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -29,15 +30,17 @@ export const TransactionHistoryTable = ({
   onPageChange,
   onRowsPerPageChange,
 }: TransactionHistoryTableProps) => {
+  const { t } = useTranslation('billing');
+
   return (
     <TableContainer component={Paper} variant="outlined">
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell align="right">Amount</TableCell>
+            <TableCell>{t('tableHeaders.date')}</TableCell>
+            <TableCell>{t('tableHeaders.type')}</TableCell>
+            <TableCell>{t('tableHeaders.description')}</TableCell>
+            <TableCell align="right">{t('tableHeaders.amount')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -45,7 +48,7 @@ export const TransactionHistoryTable = ({
             <TableRow>
               <TableCell colSpan={4} align="center">
                 <Typography variant="body2" color="text.secondary" sx={{ py: 2 }}>
-                  No transactions yet
+                  {t('noTransactions')}
                 </Typography>
               </TableCell>
             </TableRow>

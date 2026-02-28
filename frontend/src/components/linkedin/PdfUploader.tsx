@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -24,14 +25,15 @@ export default function PdfUploader({ onUpload, isLoading, error }: PdfUploaderP
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation('linkedin');
 
   const validateFile = (file: File): boolean => {
     if (!file.name.toLowerCase().endsWith('.pdf')) {
-      setValidationError('Only PDF files are accepted');
+      setValidationError(t('uploader.onlyPdf'));
       return false;
     }
     if (file.size > MAX_SIZE_BYTES) {
-      setValidationError(`File exceeds maximum size of ${MAX_SIZE_MB}MB`);
+      setValidationError(t('uploader.fileTooLarge', { size: MAX_SIZE_MB }));
       return false;
     }
     setValidationError(null);
@@ -100,10 +102,10 @@ export default function PdfUploader({ onUpload, isLoading, error }: PdfUploaderP
         <Box sx={{ py: 3 }}>
           <CloudUploadIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
           <Typography variant="h6" color="text.secondary">
-            Drop your LinkedIn PDF here
+            {t('uploader.dropHere')}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            or click to browse (max {MAX_SIZE_MB}MB)
+            {t('uploader.orBrowse', { size: MAX_SIZE_MB })}
           </Typography>
         </Box>
       ) : (
@@ -120,7 +122,7 @@ export default function PdfUploader({ onUpload, isLoading, error }: PdfUploaderP
               disabled={isLoading}
               startIcon={isLoading ? <CircularProgress size={20} /> : undefined}
             >
-              {isLoading ? 'Analyzing...' : 'Analyze Profile'}
+              {isLoading ? t('uploader.analyzingButton') : t('uploader.analyzeProfile')}
             </Button>
             <Button
               variant="outlined"
@@ -130,7 +132,7 @@ export default function PdfUploader({ onUpload, isLoading, error }: PdfUploaderP
               }}
               disabled={isLoading}
             >
-              Clear
+              {t('common:buttons.clear')}
             </Button>
           </Box>
         </Box>

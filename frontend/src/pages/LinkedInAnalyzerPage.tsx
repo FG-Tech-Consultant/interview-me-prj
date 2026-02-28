@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Container,
   Box,
@@ -26,6 +27,7 @@ export function LinkedInAnalyzerPage() {
   const [appliedSuggestions, setAppliedSuggestions] = useState<
     Record<string, Set<number>>
   >({});
+  const { t } = useTranslation('linkedin');
 
   const { data: profile } = useCurrentProfile();
   const profileId = profile?.id ?? null;
@@ -101,11 +103,10 @@ export function LinkedInAnalyzerPage() {
     <Container maxWidth="md">
       <Box sx={{ mt: 4, mb: 4 }}>
         <Typography variant="h4" gutterBottom>
-          LinkedIn Profile Analyzer
+          {t('title')}
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-          Upload your LinkedIn PDF export to get an AI-powered analysis with
-          scores and improvement suggestions for each section.
+          {t('description')}
         </Typography>
 
         {/* Upload Section */}
@@ -116,7 +117,7 @@ export function LinkedInAnalyzerPage() {
             error={
               uploadMutation.error
                 ? (uploadMutation.error as Error).message ||
-                  'Upload failed. Please try again.'
+                  t('uploadFailed')
                 : null
             }
           />
@@ -126,9 +127,9 @@ export function LinkedInAnalyzerPage() {
         {isProcessing && (
           <Paper elevation={2} sx={{ p: 4, mt: 3, textAlign: 'center' }}>
             <CircularProgress size={48} sx={{ mb: 2 }} />
-            <Typography variant="h6">Analyzing your profile...</Typography>
+            <Typography variant="h6">{t('analyzing')}</Typography>
             <Typography variant="body2" color="text.secondary">
-              This usually takes 15-45 seconds. Please wait.
+              {t('analyzingWait')}
             </Typography>
           </Paper>
         )}
@@ -136,10 +137,9 @@ export function LinkedInAnalyzerPage() {
         {/* Error Display */}
         {analysis?.status === 'FAILED' && (
           <Alert severity="error" sx={{ mt: 3 }}>
-            <Typography variant="subtitle2">Analysis Failed</Typography>
+            <Typography variant="subtitle2">{t('analysisFailed')}</Typography>
             <Typography variant="body2">
-              {analysis.errorMessage ||
-                'An error occurred during analysis. Please try again.'}
+              {analysis.errorMessage || t('analysisFailedDefault')}
             </Typography>
           </Alert>
         )}
@@ -150,7 +150,7 @@ export function LinkedInAnalyzerPage() {
             {/* Overall Score */}
             <Paper elevation={2} sx={{ p: 3, mb: 3, textAlign: 'center' }}>
               <Typography variant="h6" sx={{ mb: 2 }}>
-                Overall Profile Score
+                {t('overallScore')}
               </Typography>
               <ScoreGauge score={analysis.overallScore ?? 0} size="large" />
               <Typography
@@ -158,25 +158,25 @@ export function LinkedInAnalyzerPage() {
                 color="text.secondary"
                 sx={{ mt: 1 }}
               >
-                out of 100
+                {t('outOf100')}
               </Typography>
               {analysis.pdfFilename && (
                 <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1 }}>
-                  Analyzed: {analysis.pdfFilename}
+                  {t('analyzed', { filename: analysis.pdfFilename })}
                 </Typography>
               )}
             </Paper>
 
             {/* Section Scores */}
             <Typography variant="h6" sx={{ mb: 2 }}>
-              Section Breakdown
+              {t('sectionBreakdown')}
             </Typography>
             {analysis.sections.map((section) => (
               <SectionScoreCard
                 key={section.id}
                 section={section}
                 analysisId={analysis.id}
-                coinCost={6} // 3 suggestions * 2 coins each
+                coinCost={6}
                 onGenerateMore={handleGenerateMore}
                 onApply={handleApply}
                 isGenerating={

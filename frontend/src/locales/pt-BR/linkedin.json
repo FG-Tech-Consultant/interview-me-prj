@@ -1,0 +1,50 @@
+{
+  "title": "Analisador de Perfil LinkedIn",
+  "description": "Envie seu PDF exportado do LinkedIn para obter uma analise com IA, com notas e sugestoes de melhoria para cada secao.",
+  "uploadFailed": "Falha no envio. Tente novamente.",
+  "analyzing": "Analisando seu perfil...",
+  "analyzingWait": "Isso geralmente leva de 15 a 45 segundos. Aguarde.",
+  "analysisFailed": "Analise Falhou",
+  "analysisFailedDefault": "Ocorreu um erro durante a analise. Tente novamente.",
+  "overallScore": "Pontuacao Geral do Perfil",
+  "outOf100": "de 100",
+  "analyzed": "Analisado: {{filename}}",
+  "sectionBreakdown": "Detalhamento por Secao",
+  "suggestions": "Sugestoes",
+  "getMoreSuggestions": "Obter mais sugestoes ({{cost}} moedas)",
+  "generatingSuggestions": "Gerando...",
+  "uploader": {
+    "dropHere": "Solte seu PDF do LinkedIn aqui",
+    "orBrowse": "ou clique para selecionar (max {{size}}MB)",
+    "onlyPdf": "Apenas arquivos PDF sao aceitos",
+    "fileTooLarge": "Arquivo excede o tamanho maximo de {{size}}MB",
+    "analyzeProfile": "Analisar Perfil",
+    "analyzingButton": "Analisando..."
+  },
+  "suggestion": {
+    "free": "Gratis",
+    "paid": "Pago",
+    "applied": "Aplicado",
+    "apply": "Aplicar"
+  },
+  "sections": {
+    "HEADLINE": "Titulo",
+    "ABOUT": "Sobre",
+    "EXPERIENCE": "Experiencia",
+    "EDUCATION": "Formacao",
+    "SKILLS": "Habilidades",
+    "RECOMMENDATIONS": "Recomendacoes",
+    "OTHER": "Outros"
+  },
+  "history": {
+    "title": "Historico de Analises",
+    "newAnalysis": "Nova Analise",
+    "noHistory": "Nenhum historico de analise ainda. Envie um PDF do LinkedIn para comecar.",
+    "date": "Data",
+    "file": "Arquivo",
+    "score": "Nota",
+    "trend": "Tendencia",
+    "status": "Status",
+    "actions": "Acoes"
+  }
+}

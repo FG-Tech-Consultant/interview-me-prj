@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Stack, Typography, IconButton, TextField, Button, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -12,6 +13,7 @@ export const MetricsEditor: React.FC<MetricsEditorProps> = ({ value, onChange })
   const entries = Object.entries(metrics);
   const [newKey, setNewKey] = useState('');
   const [newValue, setNewValue] = useState('');
+  const { t } = useTranslation('experience');
 
   const handleAdd = () => {
     if (!newKey.trim()) return;
@@ -30,7 +32,7 @@ export const MetricsEditor: React.FC<MetricsEditorProps> = ({ value, onChange })
   return (
     <Box>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        Metrics
+        {t('metrics.title')}
       </Typography>
 
       <Stack spacing={1}>
@@ -51,20 +53,20 @@ export const MetricsEditor: React.FC<MetricsEditorProps> = ({ value, onChange })
         <Stack direction="row" spacing={1} alignItems="center">
           <TextField
             size="small"
-            placeholder="Key (e.g. TPS)"
+            placeholder={t('metrics.keyPlaceholder')}
             value={newKey}
             onChange={(e) => setNewKey(e.target.value)}
             sx={{ flex: 1 }}
           />
           <TextField
             size="small"
-            placeholder="Value (e.g. 15000)"
+            placeholder={t('metrics.valuePlaceholder')}
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
             sx={{ flex: 1 }}
           />
           <Button variant="outlined" size="small" onClick={handleAdd}>
-            Add
+            {t('common:buttons.add')}
           </Button>
         </Stack>
       </Stack>

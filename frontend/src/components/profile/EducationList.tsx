@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Button,
   IconButton,
@@ -24,12 +25,13 @@ interface EducationListProps {
 export const EducationList: React.FC<EducationListProps> = ({ profileId }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const { t } = useTranslation('profile');
 
   const { data: educations, isLoading, error } = useEducations(profileId);
   const deleteMutation = useDeleteEducation();
 
   const handleDelete = (educationId: number) => {
-    if (window.confirm('Are you sure you want to delete this education record?')) {
+    if (window.confirm(t('education.confirmDelete'))) {
       deleteMutation.mutate({ profileId, educationId });
     }
   };
@@ -59,27 +61,25 @@ export const EducationList: React.FC<EducationListProps> = ({ profileId }) => {
   if (error) {
     return (
       <Alert severity="error">
-        Error loading education: {error instanceof Error ? error.message : 'Unknown error'}
+        {t('education.errorLoading')}: {error instanceof Error ? error.message : t('common:errors.unknownError')}
       </Alert>
     );
   }
 
   return (
     <Stack spacing={3}>
-      {/* Add Button */}
       {!isAdding && !editingId && (
         <Box>
           <Button variant="contained" onClick={handleAdd}>
-            + Add Education
+            {t('education.addButton')}
           </Button>
         </Box>
       )}
 
-      {/* Add Form */}
       {isAdding && (
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Add New Education
+            {t('education.addTitle')}
           </Typography>
           <EducationForm
             profileId={profileId}
@@ -89,7 +89,6 @@ export const EducationList: React.FC<EducationListProps> = ({ profileId }) => {
         </Paper>
       )}
 
-      {/* Education List */}
       <Stack spacing={2}>
         {educations && educations.length > 0 ? (
           educations.map((education) => (
@@ -114,7 +113,7 @@ export const EducationList: React.FC<EducationListProps> = ({ profileId }) => {
           ))
         ) : (
           <Typography color="text.secondary">
-            No education records added yet. Click "Add Education" to get started.
+            {t('education.noRecords')}
           </Typography>
         )}
       </Stack>
@@ -129,8 +128,10 @@ interface EducationCardProps {
 }
 
 const EducationCard: React.FC<EducationCardProps> = ({ education, onEdit, onDelete }) => {
+  const { t } = useTranslation('profile');
+
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+    return new Date(date).toLocaleDateString(undefined, { year: 'numeric', month: 'short' });
   };
 
   return (
@@ -145,7 +146,7 @@ const EducationCard: React.FC<EducationCardProps> = ({ education, onEdit, onDele
             </Typography>
           )}
           <Typography variant="caption" color="text.secondary">
-            {education.startDate ? formatDate(education.startDate) : ''} - {education.endDate ? formatDate(education.endDate) : 'N/A'}
+            {education.startDate ? formatDate(education.startDate) : ''} - {education.endDate ? formatDate(education.endDate) : t('common:na')}
           </Typography>
         </Box>
         <Stack direction="row" spacing={1}>
@@ -160,7 +161,7 @@ const EducationCard: React.FC<EducationCardProps> = ({ education, onEdit, onDele
 
       {education.gpa && (
         <Typography variant="body2" sx={{ mb: 1 }}>
-          <strong>GPA:</strong> {education.gpa}
+          <strong>{t('education.gpa')}:</strong> {education.gpa}
         </Typography>
       )}
 

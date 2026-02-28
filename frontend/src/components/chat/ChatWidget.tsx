@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Fab, Tooltip } from '@mui/material';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { ChatPanel } from './ChatPanel';
@@ -18,6 +19,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ slug, profileName }) => 
     isOpen,
     toggle,
   } = useChat(slug, profileName);
+  const { t } = useTranslation('chat');
 
   return (
     <>
@@ -33,7 +35,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ slug, profileName }) => 
       )}
 
       {!isOpen && (
-        <Tooltip title="Chat with career assistant" placement="left">
+        <Tooltip title={t('tooltip')} placement="left">
           <Fab
             color="primary"
             size="medium"

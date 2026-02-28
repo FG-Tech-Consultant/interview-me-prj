@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Autocomplete, TextField, Typography, Box } from '@mui/material';
 import { useSkillCatalogSearch } from '../../hooks/useSkillCatalog';
 import type { SkillDto } from '../../types/skill';
@@ -12,6 +13,7 @@ interface SkillSelectorProps {
 export const SkillSelector: React.FC<SkillSelectorProps> = ({ value, onChange, error }) => {
   const [inputValue, setInputValue] = useState('');
   const { data: options = [], isLoading } = useSkillCatalogSearch(inputValue);
+  const { t } = useTranslation('skills');
 
   return (
     <Autocomplete
@@ -23,7 +25,7 @@ export const SkillSelector: React.FC<SkillSelectorProps> = ({ value, onChange, e
       getOptionLabel={(option) => option.name}
       isOptionEqualToValue={(option, val) => option.id === val.id}
       loading={isLoading}
-      noOptionsText={inputValue.length < 2 ? 'Type at least 2 characters' : 'No skills found'}
+      noOptionsText={inputValue.length < 2 ? t('selector.minChars') : t('selector.noResults')}
       renderOption={(props, option) => (
         <Box component="li" {...props} key={option.id}>
           <Box>
@@ -37,8 +39,8 @@ export const SkillSelector: React.FC<SkillSelectorProps> = ({ value, onChange, e
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Search Skill"
-          placeholder="Type to search skills..."
+          label={t('selector.label')}
+          placeholder={t('selector.placeholder')}
           error={!!error}
           helperText={error}
           fullWidth

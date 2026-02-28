@@ -1,11 +1,12 @@
+import { useTranslation } from 'react-i18next';
 import { Chip } from '@mui/material';
 import type { TransactionType } from '../../types/billing';
 
-const TYPE_CONFIG: Record<TransactionType, { label: string; color: 'success' | 'error' | 'info' | 'secondary' }> = {
-  EARN: { label: 'Earn', color: 'success' },
-  SPEND: { label: 'Spend', color: 'error' },
-  REFUND: { label: 'Refund', color: 'info' },
-  PURCHASE: { label: 'Purchase', color: 'secondary' },
+const TYPE_CONFIG: Record<TransactionType, { labelKey: string; color: 'success' | 'error' | 'info' | 'secondary' }> = {
+  EARN: { labelKey: 'filterEarn', color: 'success' },
+  SPEND: { labelKey: 'filterSpend', color: 'error' },
+  REFUND: { labelKey: 'filterRefund', color: 'info' },
+  PURCHASE: { labelKey: 'filterPurchase', color: 'secondary' },
 };
 
 interface TransactionTypeBadgeProps {
@@ -13,6 +14,7 @@ interface TransactionTypeBadgeProps {
 }
 
 export const TransactionTypeBadge = ({ type }: TransactionTypeBadgeProps) => {
-  const config = TYPE_CONFIG[type] || { label: type, color: 'default' as const };
-  return <Chip label={config.label} color={config.color} size="small" />;
+  const { t } = useTranslation('billing');
+  const config = TYPE_CONFIG[type] || { labelKey: type, color: 'default' as const };
+  return <Chip label={t(config.labelKey)} color={config.color} size="small" />;
 };

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -39,6 +40,7 @@ export const ExportFormDialog = ({
   const [seniority, setSeniority] = useState('Senior');
   const [language, setLanguage] = useState('en');
   const [showConfirm, setShowConfirm] = useState(false);
+  const { t } = useTranslation('exports');
 
   const { data: wallet } = useWallet();
   const { data: costs } = useFeatureCosts();
@@ -81,49 +83,49 @@ export const ExportFormDialog = ({
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>New Resume Export</DialogTitle>
+      <DialogTitle>{t('form.title')}</DialogTitle>
       <DialogContent>
         {!showConfirm ? (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
             <FormControl fullWidth>
-              <InputLabel>Template</InputLabel>
+              <InputLabel>{t('form.template')}</InputLabel>
               <Select
                 value={templateId}
-                label="Template"
+                label={t('form.template')}
                 onChange={(e) => setTemplateId(e.target.value as number)}
               >
-                {templates.map((t) => (
-                  <MenuItem key={t.id} value={t.id}>
-                    {t.name}
+                {templates.map((tmpl) => (
+                  <MenuItem key={tmpl.id} value={tmpl.id}>
+                    {tmpl.name}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
 
             <TextField
-              label="Target Role"
+              label={t('form.targetRole')}
               value={targetRole}
               onChange={(e) => setTargetRole(e.target.value)}
               required
               fullWidth
               inputProps={{ maxLength: 200 }}
-              placeholder="e.g., Senior Backend Engineer"
+              placeholder={t('form.targetRolePlaceholder')}
             />
 
             <TextField
-              label="Location"
+              label={t('form.location')}
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               fullWidth
               inputProps={{ maxLength: 200 }}
-              placeholder="e.g., Berlin, Germany"
+              placeholder={t('form.locationPlaceholder')}
             />
 
             <FormControl fullWidth>
-              <InputLabel>Seniority Level</InputLabel>
+              <InputLabel>{t('form.seniorityLevel')}</InputLabel>
               <Select
                 value={seniority}
-                label="Seniority Level"
+                label={t('form.seniorityLevel')}
                 onChange={(e) => setSeniority(e.target.value)}
               >
                 {SENIORITY_LEVELS.map((level) => (
@@ -135,10 +137,10 @@ export const ExportFormDialog = ({
             </FormControl>
 
             <FormControl fullWidth>
-              <InputLabel>Language</InputLabel>
+              <InputLabel>{t('form.language')}</InputLabel>
               <Select
                 value={language}
-                label="Language"
+                label={t('form.language')}
                 onChange={(e) => setLanguage(e.target.value)}
               >
                 {LANGUAGES.map((lang) => (
@@ -151,31 +153,31 @@ export const ExportFormDialog = ({
           </Box>
         ) : (
           <Box sx={{ mt: 1 }}>
-            <Typography variant="body1" gutterBottom>
-              This will cost <strong>{exportCost} coins</strong>.
+            <Typography variant="body1" gutterBottom fontWeight="bold">
+              {t('form.costMessage', { cost: exportCost })}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Current balance: {balance} coins
+              {t('form.currentBalance', { balance })}
             </Typography>
             {!hasEnoughCoins && (
               <Alert severity="error" sx={{ mt: 2 }}>
-                Insufficient coins. You need {exportCost - balance} more coins.
+                {t('form.insufficientCoins', { amount: exportCost - balance })}
               </Alert>
             )}
           </Box>
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose}>{t('common:buttons.cancel')}</Button>
         {showConfirm ? (
           <>
-            <Button onClick={() => setShowConfirm(false)}>Back</Button>
+            <Button onClick={() => setShowConfirm(false)}>{t('common:buttons.back')}</Button>
             <Button
               variant="contained"
               onClick={handleSubmit}
               disabled={!hasEnoughCoins || isSubmitting}
             >
-              {isSubmitting ? 'Generating...' : 'Confirm & Generate'}
+              {isSubmitting ? t('form.generating') : t('form.confirmGenerate')}
             </Button>
           </>
         ) : (
@@ -184,7 +186,7 @@ export const ExportFormDialog = ({
             onClick={handleSubmit}
             disabled={!isValid}
           >
-            Next
+            {t('common:buttons.next')}
           </Button>
         )}
       </DialogActions>

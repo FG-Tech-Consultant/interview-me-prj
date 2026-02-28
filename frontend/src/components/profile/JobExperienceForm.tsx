@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   TextField,
   Button,
@@ -35,6 +36,7 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
     responsibilities: experience?.responsibilities || '',
     achievements: experience?.achievements || '',
   });
+  const { t } = useTranslation('profile');
 
   const createMutation = useCreateJobExperience();
   const updateMutation = useUpdateJobExperience();
@@ -110,7 +112,7 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Role"
+              label={t('job.role')}
               name="role"
               value={formData.role}
               onChange={handleChange}
@@ -121,7 +123,7 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Company"
+              label={t('job.company')}
               name="company"
               value={formData.company}
               onChange={handleChange}
@@ -135,7 +137,7 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Location"
+              label={t('job.location')}
               name="location"
               value={formData.location}
               onChange={handleChange}
@@ -145,11 +147,11 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Employment Type"
+              label={t('job.employmentType')}
               name="employmentType"
               value={formData.employmentType}
               onChange={handleChange}
-              placeholder="e.g., Full-time, Part-time, Contract"
+              placeholder={t('job.employmentTypePlaceholder')}
               size="small"
             />
           </Grid>
@@ -159,7 +161,7 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label="Start Date"
+              label={t('job.startDate')}
               name="startDate"
               type="date"
               value={formData.startDate}
@@ -172,7 +174,7 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
           <Grid item xs={12} md={6}>
             <TextField
               fullWidth
-              label={`End Date${!formData.isCurrent ? ' *' : ''}`}
+              label={`${t('job.endDate')}${!formData.isCurrent ? ' *' : ''}`}
               name="endDate"
               type="date"
               value={formData.endDate}
@@ -193,12 +195,12 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
               onChange={handleChange}
             />
           }
-          label="I currently work here"
+          label={t('job.isCurrent')}
         />
 
         <TextField
           fullWidth
-          label="Responsibilities"
+          label={t('job.responsibilities')}
           name="responsibilities"
           value={formData.responsibilities}
           onChange={handleChange}
@@ -209,26 +211,26 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
 
         <TextField
           fullWidth
-          label="Achievements"
+          label={t('job.achievements')}
           name="achievements"
           value={formData.achievements}
           onChange={handleChange}
           multiline
           rows={3}
-          placeholder="Key achievements in this role"
+          placeholder={t('job.achievementsPlaceholder')}
           size="small"
         />
 
         {error && (
           <Alert severity="error">
-            {error instanceof Error ? error.message : 'Failed to save'}
+            {error instanceof Error ? error.message : t('common:errors.failedToSave')}
           </Alert>
         )}
 
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           {onCancel && (
             <Button variant="outlined" onClick={onCancel}>
-              Cancel
+              {t('common:buttons.cancel')}
             </Button>
           )}
           <Button
@@ -236,7 +238,7 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
             variant="contained"
             disabled={isLoading}
           >
-            {isLoading ? 'Saving...' : experience ? 'Update' : 'Add'}
+            {isLoading ? t('common:status.saving') : experience ? t('common:buttons.update') : t('common:buttons.add')}
           </Button>
         </Stack>
       </Stack>

@@ -1,0 +1,50 @@
+{
+  "title": "LinkedIn Profile Analyzer",
+  "description": "Upload your LinkedIn PDF export to get an AI-powered analysis with scores and improvement suggestions for each section.",
+  "uploadFailed": "Upload failed. Please try again.",
+  "analyzing": "Analyzing your profile...",
+  "analyzingWait": "This usually takes 15-45 seconds. Please wait.",
+  "analysisFailed": "Analysis Failed",
+  "analysisFailedDefault": "An error occurred during analysis. Please try again.",
+  "overallScore": "Overall Profile Score",
+  "outOf100": "out of 100",
+  "analyzed": "Analyzed: {{filename}}",
+  "sectionBreakdown": "Section Breakdown",
+  "suggestions": "Suggestions",
+  "getMoreSuggestions": "Get more suggestions ({{cost}} coins)",
+  "generatingSuggestions": "Generating...",
+  "uploader": {
+    "dropHere": "Drop your LinkedIn PDF here",
+    "orBrowse": "or click to browse (max {{size}}MB)",
+    "onlyPdf": "Only PDF files are accepted",
+    "fileTooLarge": "File exceeds maximum size of {{size}}MB",
+    "analyzeProfile": "Analyze Profile",
+    "analyzingButton": "Analyzing..."
+  },
+  "suggestion": {
+    "free": "Free",
+    "paid": "Paid",
+    "applied": "Applied",
+    "apply": "Apply"
+  },
+  "sections": {
+    "HEADLINE": "Headline",
+    "ABOUT": "About",
+    "EXPERIENCE": "Experience",
+    "EDUCATION": "Education",
+    "SKILLS": "Skills",
+    "RECOMMENDATIONS": "Recommendations",
+    "OTHER": "Other"
+  },
+  "history": {
+    "title": "Analysis History",
+    "newAnalysis": "New Analysis",
+    "noHistory": "No analysis history yet. Upload a LinkedIn PDF to get started.",
+    "date": "Date",
+    "file": "File",
+    "score": "Score",
+    "trend": "Trend",
+    "status": "Status",
+    "actions": "Actions"
+  }
+}

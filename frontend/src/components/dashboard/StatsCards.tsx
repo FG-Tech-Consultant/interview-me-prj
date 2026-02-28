@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -58,6 +59,7 @@ function countSkills(data: UserSkillsGrouped | undefined): number {
 export default function StatsCards() {
   const { data: profile } = useCurrentProfile();
   const profileId = profile?.id;
+  const { t } = useTranslation('dashboard');
 
   const { data: skillsData, isLoading: skillsLoading } = useUserSkills(profileId);
   const { data: jobsData, isLoading: jobsLoading } = useJobExperiences(profileId ?? 0);
@@ -69,31 +71,31 @@ export default function StatsCards() {
     {
       icon: <PsychologyIcon sx={{ fontSize: 40, color: '#9c27b0' }} />,
       value: countSkills(skillsData),
-      label: 'Skills',
+      label: t('stats.skills'),
       loading: skillsLoading,
     },
     {
       icon: <WorkIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
       value: jobsData?.length ?? 0,
-      label: 'Job Experiences',
+      label: t('stats.jobExperiences'),
       loading: jobsLoading,
     },
     {
       icon: <SchoolIcon sx={{ fontSize: 40, color: '#2e7d32' }} />,
       value: eduData?.length ?? 0,
-      label: 'Education',
+      label: t('stats.education'),
       loading: eduLoading,
     },
     {
       icon: <AccountBalanceWalletIcon sx={{ fontSize: 40, color: '#f9a825' }} />,
       value: walletData?.balance ?? 0,
-      label: 'Coin Balance',
+      label: t('stats.coinBalance'),
       loading: walletLoading,
     },
     {
       icon: <DescriptionIcon sx={{ fontSize: 40, color: '#00897b' }} />,
       value: exportsData?.totalElements ?? 0,
-      label: 'Exports',
+      label: t('stats.exports'),
       loading: exportsLoading,
     },
   ];

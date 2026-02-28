@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -52,11 +53,13 @@ export default function AnalysisHistory({
   onViewDetails,
   onNewAnalysis,
 }: AnalysisHistoryProps) {
+  const { t } = useTranslation('linkedin');
+
   if (analyses.length === 0) {
     return (
       <Box sx={{ textAlign: 'center', py: 3 }}>
         <Typography variant="body2" color="text.secondary">
-          No analysis history yet. Upload a LinkedIn PDF to get started.
+          {t('history.noHistory')}
         </Typography>
       </Box>
     );
@@ -65,9 +68,9 @@ export default function AnalysisHistory({
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6">Analysis History</Typography>
+        <Typography variant="h6">{t('history.title')}</Typography>
         <Button variant="outlined" size="small" onClick={onNewAnalysis}>
-          New Analysis
+          {t('history.newAnalysis')}
         </Button>
       </Box>
 
@@ -75,12 +78,12 @@ export default function AnalysisHistory({
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>File</TableCell>
-              <TableCell align="center">Score</TableCell>
-              <TableCell align="center">Trend</TableCell>
-              <TableCell align="center">Status</TableCell>
-              <TableCell align="center">Actions</TableCell>
+              <TableCell>{t('history.date')}</TableCell>
+              <TableCell>{t('history.file')}</TableCell>
+              <TableCell align="center">{t('history.score')}</TableCell>
+              <TableCell align="center">{t('history.trend')}</TableCell>
+              <TableCell align="center">{t('history.status')}</TableCell>
+              <TableCell align="center">{t('history.actions')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

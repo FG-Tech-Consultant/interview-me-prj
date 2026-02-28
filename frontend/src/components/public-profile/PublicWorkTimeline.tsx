@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Typography,
@@ -19,10 +20,12 @@ const formatDate = (date: string): string => {
 };
 
 export const PublicWorkTimeline: React.FC<PublicWorkTimelineProps> = ({ jobs }) => {
+  const { t } = useTranslation('public-profile');
+
   return (
     <Box sx={{ mb: 4 }}>
       <Typography variant="h5" fontWeight="bold" gutterBottom>
-        Experience
+        {t('sections.experience')}
       </Typography>
       <Divider sx={{ mb: 2 }} />
 
@@ -58,7 +61,7 @@ export const PublicWorkTimeline: React.FC<PublicWorkTimelineProps> = ({ jobs }) 
               {job.company}
             </Typography>
             {job.isCurrent && (
-              <Chip label="Current" size="small" color="primary" />
+              <Chip label={t('current')} size="small" color="primary" />
             )}
           </Stack>
 
@@ -67,7 +70,7 @@ export const PublicWorkTimeline: React.FC<PublicWorkTimelineProps> = ({ jobs }) 
           </Typography>
 
           <Typography variant="body2" color="text.secondary">
-            {formatDate(job.startDate)} - {job.endDate ? formatDate(job.endDate) : 'Present'}
+            {formatDate(job.startDate)} - {job.endDate ? formatDate(job.endDate) : t('present')}
             {job.location && ` | ${job.location}`}
             {job.employmentType && ` | ${job.employmentType}`}
           </Typography>

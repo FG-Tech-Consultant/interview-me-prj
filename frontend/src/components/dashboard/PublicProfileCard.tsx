@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -20,6 +21,7 @@ const PublicProfileCard = () => {
   const { data: profile, isLoading } = useCurrentProfile();
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const { t } = useTranslation('dashboard');
 
   if (isLoading) {
     return (
@@ -49,7 +51,7 @@ const PublicProfileCard = () => {
         <Box display="flex" alignItems="center" gap={1} mb={1}>
           <LinkIcon color="action" fontSize="small" />
           <Typography variant="subtitle1" fontWeight="bold">
-            Public Profile
+            {t('publicProfile.title')}
           </Typography>
         </Box>
 
@@ -73,7 +75,7 @@ const PublicProfileCard = () => {
               >
                 {publicUrl}
               </Typography>
-              <Tooltip title="Copy URL">
+              <Tooltip title={t('publicProfile.copyUrl')}>
                 <IconButton size="small" onClick={handleCopy}>
                   <ContentCopyIcon fontSize="small" />
                 </IconButton>
@@ -88,17 +90,17 @@ const PublicProfileCard = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                View Profile
+                {t('publicProfile.viewProfile')}
               </Button>
             </Box>
           </>
         ) : (
           <>
             <Typography variant="body2" color="text.secondary" mb={1.5}>
-              Set up your public profile URL
+              {t('publicProfile.setupUrl')}
             </Typography>
             <Button size="small" variant="outlined" onClick={() => navigate('/profile')}>
-              Go to Profile
+              {t('publicProfile.goToProfile')}
             </Button>
           </>
         )}
@@ -108,7 +110,7 @@ const PublicProfileCard = () => {
         open={snackbarOpen}
         autoHideDuration={2000}
         onClose={() => setSnackbarOpen(false)}
-        message="Copied!"
+        message={t('common:copied')}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
     </Card>
