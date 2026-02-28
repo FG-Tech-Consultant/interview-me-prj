@@ -1,7 +1,6 @@
 package com.interviewme.integration;
 
 import com.interviewme.common.dto.ai.LlmClient;
-import com.interviewme.common.dto.ai.LlmRequest;
 import com.interviewme.common.dto.ai.LlmResponse;
 import com.interviewme.common.util.TenantContext;
 import jakarta.persistence.EntityManager;
@@ -27,20 +26,21 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(classes = AbstractIntegrationTest.TestApplication.class)
-@Testcontainers
 @ActiveProfiles("integration")
 public abstract class AbstractIntegrationTest {
 
-    @Container
-    static final PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>("pgvector/pgvector:pg16")
-                    .withDatabaseName("interviewme_test")
-                    .withUsername("test")
-                    .withPassword("test");
+    static final PostgreSQLContainer<?> postgres;
+
+    static {
+        postgres = new PostgreSQLContainer<>("pgvector/pgvector:pg16")
+                .withDatabaseName("interviewme_test")
+                .withUsername("test")
+                .withPassword("test")
+                .withInitScript("init-pgvector.sql");
+        postgres.start();
+    }
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
