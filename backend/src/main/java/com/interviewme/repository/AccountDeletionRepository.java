@@ -51,6 +51,10 @@ public interface AccountDeletionRepository extends JpaRepository<Tenant, Long> {
     int deleteChatSessionsByTenantId(@Param("tenantId") Long tenantId);
 
     @Modifying
+    @Query(value = "DELETE FROM linkedin_draft WHERE tenant_id = :tenantId", nativeQuery = true)
+    int deleteLinkedInDraftsByTenantId(@Param("tenantId") Long tenantId);
+
+    @Modifying
     @Query(value = "DELETE FROM linkedin_section_score WHERE tenant_id = :tenantId", nativeQuery = true)
     int deleteLinkedInSectionScoresByTenantId(@Param("tenantId") Long tenantId);
 

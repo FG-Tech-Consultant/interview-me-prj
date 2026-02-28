@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Drawer,
   List,
@@ -16,19 +17,27 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import DescriptionIcon from '@mui/icons-material/Description';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import InboxIcon from '@mui/icons-material/Inbox';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 const DRAWER_WIDTH_OPEN = 240;
 const DRAWER_WIDTH_COLLAPSED = 72;
 
-const navItems = [
-  { label: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
-  { label: 'Profile', path: '/profile', icon: <PersonIcon /> },
-  { label: 'Skills', path: '/skills', icon: <PsychologyIcon /> },
-  { label: 'Exports', path: '/exports', icon: <DescriptionIcon /> },
-  { label: 'LinkedIn Analyzer', path: '/linkedin-analyzer', icon: <AssessmentIcon /> },
-  { label: 'Billing', path: '/billing', icon: <AccountBalanceWalletIcon /> },
+interface NavItem {
+  labelKey: string;
+  path: string;
+  icon: React.ReactNode;
+}
+
+const navItems: NavItem[] = [
+  { labelKey: 'nav.dashboard', path: '/dashboard', icon: <DashboardIcon /> },
+  { labelKey: 'nav.profile', path: '/profile', icon: <PersonIcon /> },
+  { labelKey: 'nav.skills', path: '/skills', icon: <PsychologyIcon /> },
+  { labelKey: 'nav.exports', path: '/exports', icon: <DescriptionIcon /> },
+  { labelKey: 'nav.linkedinAnalyzer', path: '/linkedin-analyzer', icon: <AssessmentIcon /> },
+  { labelKey: 'nav.linkedinInbox', path: '/linkedin-inbox', icon: <InboxIcon /> },
+  { labelKey: 'nav.billing', path: '/billing', icon: <AccountBalanceWalletIcon /> },
 ];
 
 interface SidebarProps {
@@ -43,6 +52,7 @@ export default function Sidebar({ open, onToggle, mobileOpen, onMobileClose }: S
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { t } = useTranslation('common');
 
   const drawerWidth = open ? DRAWER_WIDTH_OPEN : DRAWER_WIDTH_COLLAPSED;
 
@@ -77,7 +87,7 @@ export default function Sidebar({ open, onToggle, mobileOpen, onMobileClose }: S
               >
                 {item.icon}
               </ListItemIcon>
-              {(open || isMobile) && <ListItemText primary={item.label} />}
+              {(open || isMobile) && <ListItemText primary={t(item.labelKey)} />}
             </ListItemButton>
           ))}
         </List>

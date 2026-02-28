@@ -21,7 +21,7 @@ import { CoverLetterFormDialog } from '../components/exports/CoverLetterFormDial
 import { ExportProgressCard } from '../components/exports/ExportProgressCard';
 import { ExportHistoryTable } from '../components/exports/ExportHistoryTable';
 import { exportsApi } from '../api/exportsApi';
-import type { ExportResumeRequest, ExportCoverLetterRequest, ExportBackgroundDeckRequest } from '../types/export';
+import type { ExportResumeRequest, ExportCoverLetterRequest } from '../types/export';
 
 export const ExportsPage = () => {
   const [page, setPage] = useState(0);

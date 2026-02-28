@@ -53,3 +53,5 @@ databaseChangeLog:
       file: db/changelog/20260228005848-seed-cover-letter-template.xml
   - include:
       file: db/changelog/20260228010310-seed-background-deck-template.xml
+  - include:
+      file: db/changelog/20260228010734-create-linkedin-draft-table.xml

@@ -37,6 +37,7 @@ public class AccountDeletionService {
         counts.put("experienceProjects", deletionRepository.deleteExperienceProjectsByTenantId(tenantId));
         counts.put("chatMessages", deletionRepository.deleteChatMessagesByTenantId(tenantId));
         counts.put("chatSessions", deletionRepository.deleteChatSessionsByTenantId(tenantId));
+        counts.put("linkedInDrafts", deletionRepository.deleteLinkedInDraftsByTenantId(tenantId));
         counts.put("linkedInSectionScores", deletionRepository.deleteLinkedInSectionScoresByTenantId(tenantId));
         counts.put("linkedInAnalyses", deletionRepository.deleteLinkedInAnalysesByTenantId(tenantId));
         counts.put("exportHistories", deletionRepository.deleteExportHistoriesByTenantId(tenantId));
