@@ -47,4 +47,19 @@ public interface ContentEmbeddingRepository extends JpaRepository<ContentEmbeddi
         @Param("embedding") String embedding,
         @Param("topK") int topK,
         @Param("threshold") double threshold);
+
+    @Query(value = """
+        SELECT ce.* FROM content_embedding ce
+        WHERE ce.tenant_id = :tenantId
+          AND ce.content_type = :contentType
+          AND 1 - (ce.embedding <=> CAST(:embedding AS vector)) > :threshold
+        ORDER BY ce.embedding <=> CAST(:embedding AS vector)
+        LIMIT :topK
+        """, nativeQuery = true)
+    List<ContentEmbedding> findTopKBySimilarityAndType(
+        @Param("tenantId") Long tenantId,
+        @Param("embedding") String embedding,
+        @Param("contentType") String contentType,
+        @Param("topK") int topK,
+        @Param("threshold") double threshold);
 }

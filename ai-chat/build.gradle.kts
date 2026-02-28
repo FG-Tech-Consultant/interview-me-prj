@@ -35,6 +35,10 @@ dependencies {
     // Hypersistence Utils for JSONB/pgvector support
     implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.7.0")
 
+    // LangChain4j for query routing and embeddings
+    implementation("dev.langchain4j:langchain4j:1.11.0")
+    implementation("dev.langchain4j:langchain4j-ollama:1.11.0")
+
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 }
