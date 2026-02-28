@@ -125,7 +125,7 @@ class ProfileLifecycleIntegrationTest extends AbstractIntegrationTest {
 
         var skills = userSkillRepository.findByProfileIdAndDeletedAtIsNullOrderBySkill_CategoryAscSkill_NameAsc(profileId);
         assertThat(skills).hasSize(1);
-        assertThat(skills.get(0).getSkill().getName()).isEqualTo("Java");
+        assertThat(skills.get(0).getSkillId()).isEqualTo(javaSkill.getId());
 
         // 6. Verify profile retrieval
         ProfileResponse retrieved = profileService.getProfileByUserId(userId);

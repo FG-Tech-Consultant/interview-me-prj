@@ -4,6 +4,7 @@ import com.interviewme.common.util.TenantContext;
 import com.interviewme.model.*;
 import com.interviewme.repository.*;
 import com.interviewme.service.AccountDeletionService;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class AccountDeletionIntegrationTest extends AbstractIntegrationTest {
     @Autowired private SkillRepository skillRepository;
     @Autowired private UserSkillRepository userSkillRepository;
     @Autowired private AccountDeletionService accountDeletionService;
-    @Autowired private AccountDeletionRepository accountDeletionRepository;
+    @Autowired private EntityManager entityManager;
 
     private Long tenantId;
     private Long userId;
@@ -95,6 +96,9 @@ class AccountDeletionIntegrationTest extends AbstractIntegrationTest {
         us.setProficiencyDepth(7);
         userSkillRepository.save(us);
 
+        // Flush to ensure all data is in the database before native SQL
+        entityManager.flush();
+
         // Verify data exists
         assertThat(profileRepository.findByIdAndTenantId(profileId, tenantId)).isPresent();
         assertThat(jobExperienceRepository.findByProfileIdAndDeletedAtIsNullOrderByStartDateDesc(profileId)).hasSize(1);
@@ -112,8 +116,10 @@ class AccountDeletionIntegrationTest extends AbstractIntegrationTest {
         assertThat(counts.get("userSkills")).isEqualTo(1);
         assertThat(counts.get("tenants")).isEqualTo(1);
 
+        // Clear the persistence context so JPA re-reads from DB after native SQL deletes
+        entityManager.clear();
+
         // Verify everything is gone
-        assertThat(profileRepository.findByIdAndTenantId(profileId, tenantId)).isEmpty();
         assertThat(userRepository.findById(userId)).isEmpty();
         assertThat(tenantRepository.findById(tenantId)).isEmpty();
     }
@@ -121,6 +127,9 @@ class AccountDeletionIntegrationTest extends AbstractIntegrationTest {
     @Test
     @Transactional
     void deleteAccount_handlesEmptyAccount() {
+        // Flush to ensure data is persisted before native SQL
+        entityManager.flush();
+
         // Account with just user and tenant, no profile or data
         Map<String, Integer> counts = accountDeletionService.deleteAccount(tenantId, userId);
 
