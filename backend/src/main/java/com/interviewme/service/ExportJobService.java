@@ -7,6 +7,7 @@ import com.interviewme.exports.service.PdfGenerationService;
 import com.interviewme.exports.event.ExportCompletedEvent;
 import com.interviewme.exports.model.ExportHistory;
 import com.interviewme.exports.model.ExportStatus;
+import com.interviewme.exports.model.ExportType;
 import com.interviewme.exports.repository.ExportHistoryRepository;
 import com.interviewme.model.Education;
 import com.interviewme.model.JobExperience;
@@ -61,42 +62,17 @@ public class ExportJobService {
                 Profile profile = profileRepository.findById(export.getProfileId())
                         .orElseThrow(() -> new RuntimeException("Profile not found: " + export.getProfileId()));
 
-                List<JobExperience> jobs = jobExperienceRepository
-                        .findByProfileIdAndDeletedAtIsNullOrderByStartDateDesc(profile.getId());
-
-                List<Education> educationList = educationRepository
-                        .findByProfileIdAndDeletedAtIsNullOrderByEndDateDesc(profile.getId());
-
-                List<UserSkill> userSkills = userSkillRepository
-                        .findByProfileIdAndDeletedAtIsNullOrderBySkill_CategoryAscSkill_NameAsc(profile.getId());
-
-                // Group skills by category
-                Map<String, List<Map<String, Object>>> skillsByCategory = userSkills.stream()
-                        .filter(us -> us.getSkill() != null)
-                        .collect(Collectors.groupingBy(
-                                us -> us.getSkill().getCategory() != null ? us.getSkill().getCategory() : "Other",
-                                LinkedHashMap::new,
-                                Collectors.mapping(this::toSkillMap, Collectors.toList())
-                        ));
-
-                // Build template context
-                Map<String, Object> context = new HashMap<>();
-                context.put("profile", profile);
-                context.put("jobExperiences", jobs);
-                context.put("education", educationList);
-                context.put("skills", skillsByCategory);
-                context.put("targetRole", export.getParameters().get("targetRole"));
-                context.put("location", export.getParameters().get("location"));
-                context.put("seniority", export.getParameters().get("seniority"));
-                context.put("language", export.getParameters().get("language"));
-                context.put("generatedDate", LocalDate.now().toString());
+                // Build type-specific template context
+                Map<String, Object> context = buildTemplateContext(export, profile);
 
                 // Generate PDF
                 byte[] pdfBytes = pdfGenerationService.generatePdf(
                         export.getTemplate().getTemplateFile(), context);
 
                 // Store file
-                String fileName = "resume-" + export.getId() + ".pdf";
+                String filePrefix = ExportType.COVER_LETTER.name().equals(export.getType())
+                        ? "cover-letter" : "resume";
+                String fileName = filePrefix + "-" + export.getId() + ".pdf";
                 String fileUrl = fileStorageService.store(export.getTenantId(), fileName, pdfBytes);
 
                 // Update success
@@ -140,6 +116,65 @@ public class ExportJobService {
                 }
             }
         }
+    }
+
+    private Map<String, Object> buildTemplateContext(ExportHistory export, Profile profile) {
+        Map<String, Object> context = new HashMap<>();
+        context.put("profile", profile);
+        context.put("generatedDate", LocalDate.now().toString());
+
+        List<UserSkill> userSkills = userSkillRepository
+                .findByProfileIdAndDeletedAtIsNullOrderBySkill_CategoryAscSkill_NameAsc(profile.getId());
+
+        if (ExportType.COVER_LETTER.name().equals(export.getType())) {
+            // Cover letter context
+            context.put("targetCompany", export.getParameters().get("targetCompany"));
+            context.put("targetRole", export.getParameters().get("targetRole"));
+            context.put("jobDescription", export.getParameters().get("jobDescription"));
+            context.put("market", export.getParameters().get("market"));
+
+            // Top skills (up to 8, sorted by proficiency)
+            List<Map<String, Object>> topSkills = userSkills.stream()
+                    .filter(us -> us.getSkill() != null)
+                    .sorted((a, b) -> Integer.compare(
+                            b.getProficiencyDepth() != null ? b.getProficiencyDepth() : 0,
+                            a.getProficiencyDepth() != null ? a.getProficiencyDepth() : 0))
+                    .limit(8)
+                    .map(this::toSkillMap)
+                    .collect(Collectors.toList());
+            context.put("topSkills", topSkills);
+
+            // Most recent job
+            List<JobExperience> jobs = jobExperienceRepository
+                    .findByProfileIdAndDeletedAtIsNullOrderByStartDateDesc(profile.getId());
+            if (!jobs.isEmpty()) {
+                context.put("recentJob", jobs.get(0));
+            }
+        } else {
+            // Resume context
+            List<JobExperience> jobs = jobExperienceRepository
+                    .findByProfileIdAndDeletedAtIsNullOrderByStartDateDesc(profile.getId());
+            List<Education> educationList = educationRepository
+                    .findByProfileIdAndDeletedAtIsNullOrderByEndDateDesc(profile.getId());
+
+            Map<String, List<Map<String, Object>>> skillsByCategory = userSkills.stream()
+                    .filter(us -> us.getSkill() != null)
+                    .collect(Collectors.groupingBy(
+                            us -> us.getSkill().getCategory() != null ? us.getSkill().getCategory() : "Other",
+                            LinkedHashMap::new,
+                            Collectors.mapping(this::toSkillMap, Collectors.toList())
+                    ));
+
+            context.put("jobExperiences", jobs);
+            context.put("education", educationList);
+            context.put("skills", skillsByCategory);
+            context.put("targetRole", export.getParameters().get("targetRole"));
+            context.put("location", export.getParameters().get("location"));
+            context.put("seniority", export.getParameters().get("seniority"));
+            context.put("language", export.getParameters().get("language"));
+        }
+
+        return context;
     }
 
     private void updateStatus(ExportHistory export, ExportStatus status, int retryCount) {

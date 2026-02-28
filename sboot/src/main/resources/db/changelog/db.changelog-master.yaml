@@ -49,3 +49,7 @@ databaseChangeLog:
       file: db/changelog/20260228001600-make-slug-index-partial.xml
   - include:
       file: db/changelog/20260228005136-create-package-tables.xml
+  - include:
+      file: db/changelog/20260228005848-seed-cover-letter-template.xml
+  - include:
+      file: db/changelog/20260228010310-seed-background-deck-template.xml

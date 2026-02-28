@@ -50,6 +50,23 @@ public class ExportController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
+    @PostMapping("/cover-letter")
+    @Transactional
+    public ResponseEntity<ExportHistoryResponse> createCoverLetterExport(
+            Authentication authentication,
+            @Valid @RequestBody ExportCoverLetterRequest request) {
+        Long tenantId = TenantContext.getCurrentTenantId();
+        Long userId = extractUserId(authentication);
+        log.info("POST /api/exports/cover-letter - tenantId: {}, userId: {}", tenantId, userId);
+
+        var profile = profileService.getProfileByUserId(userId);
+
+        ExportHistoryResponse response = exportService.createCoverLetterExport(
+                tenantId, profile.id(), request);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
+
     @GetMapping("/{id}/status")
     @Transactional(readOnly = true)
     public ResponseEntity<ExportStatusResponse> getExportStatus(@PathVariable Long id) {
@@ -68,7 +85,9 @@ public class ExportController {
 
         byte[] pdfBytes = exportService.downloadExport(tenantId, id);
 
-        String filename = "resume-" + LocalDate.now() + ".pdf";
+        String prefix = "COVER_LETTER".equals(exportService.getExportType(tenantId, id))
+                ? "cover-letter" : "resume";
+        String filename = prefix + "-" + LocalDate.now() + ".pdf";
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)

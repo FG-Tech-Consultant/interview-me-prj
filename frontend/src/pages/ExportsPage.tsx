@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Container,
   Typography,
@@ -6,32 +7,47 @@ import {
   Button,
   CircularProgress,
   Alert,
+  ButtonGroup,
 } from '@mui/material';
 import {
   useExportTemplates,
   useExportHistory,
   useCreateResumeExport,
+  useCreateCoverLetterExport,
 } from '../hooks/useExports';
 import { ExportFormDialog } from '../components/exports/ExportFormDialog';
+import { CoverLetterFormDialog } from '../components/exports/CoverLetterFormDialog';
 import { ExportProgressCard } from '../components/exports/ExportProgressCard';
 import { ExportHistoryTable } from '../components/exports/ExportHistoryTable';
 import { exportsApi } from '../api/exportsApi';
-import type { ExportResumeRequest } from '../types/export';
+import type { ExportResumeRequest, ExportCoverLetterRequest } from '../types/export';
 
 export const ExportsPage = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
-  const [formOpen, setFormOpen] = useState(false);
+  const [resumeFormOpen, setResumeFormOpen] = useState(false);
+  const [coverLetterFormOpen, setCoverLetterFormOpen] = useState(false);
   const [activeExportId, setActiveExportId] = useState<number | null>(null);
+  const { t } = useTranslation('exports');
 
   const { data: templates, isLoading: templatesLoading } = useExportTemplates();
   const { data: history, isLoading: historyLoading } = useExportHistory(page, rowsPerPage);
-  const createExport = useCreateResumeExport();
+  const createResumeExport = useCreateResumeExport();
+  const createCoverLetterExport = useCreateCoverLetterExport();
 
-  const handleSubmit = (request: ExportResumeRequest) => {
-    createExport.mutate(request, {
+  const handleResumeSubmit = (request: ExportResumeRequest) => {
+    createResumeExport.mutate(request, {
       onSuccess: (data) => {
-        setFormOpen(false);
+        setResumeFormOpen(false);
+        setActiveExportId(data.id);
+      },
+    });
+  };
+
+  const handleCoverLetterSubmit = (request: ExportCoverLetterRequest) => {
+    createCoverLetterExport.mutate(request, {
+      onSuccess: (data) => {
+        setCoverLetterFormOpen(false);
         setActiveExportId(data.id);
       },
     });
@@ -43,7 +59,7 @@ export const ExportsPage = () => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `resume-${new Date().toISOString().split('T')[0]}.pdf`;
+      link.download = `export-${new Date().toISOString().split('T')[0]}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -61,22 +77,34 @@ export const ExportsPage = () => {
     );
   }
 
+  const hasResumeTemplates = templates?.some((t) => t.type === 'RESUME') ?? false;
+  const hasCoverLetterTemplates = templates?.some((t) => t.type === 'COVER_LETTER') ?? false;
+
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4">Exports</Typography>
-        <Button
-          variant="contained"
-          onClick={() => setFormOpen(true)}
-          disabled={!templates || templates.length === 0}
-        >
-          New Resume Export
-        </Button>
+        <Typography variant="h4">{t('title')}</Typography>
+        <ButtonGroup variant="contained">
+          <Button
+            onClick={() => setResumeFormOpen(true)}
+            disabled={!hasResumeTemplates}
+          >
+            {t('newExport')}
+          </Button>
+          <Button
+            onClick={() => setCoverLetterFormOpen(true)}
+            disabled={!hasCoverLetterTemplates}
+          >
+            New Cover Letter
+          </Button>
+        </ButtonGroup>
       </Box>
 
-      {createExport.isError && (
+      {(createResumeExport.isError || createCoverLetterExport.isError) && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          {(createExport.error as Error)?.message || 'Failed to create export'}
+          {(createResumeExport.error as Error)?.message
+            || (createCoverLetterExport.error as Error)?.message
+            || t('failedToCreate')}
         </Alert>
       )}
 
@@ -88,7 +116,7 @@ export const ExportsPage = () => {
       )}
 
       <Typography variant="h6" gutterBottom>
-        Export History
+        {t('exportHistory')}
       </Typography>
 
       {historyLoading ? (
@@ -111,13 +139,22 @@ export const ExportsPage = () => {
       )}
 
       {templates && (
-        <ExportFormDialog
-          open={formOpen}
-          onClose={() => setFormOpen(false)}
-          onSubmit={handleSubmit}
-          templates={templates}
-          isSubmitting={createExport.isPending}
-        />
+        <>
+          <ExportFormDialog
+            open={resumeFormOpen}
+            onClose={() => setResumeFormOpen(false)}
+            onSubmit={handleResumeSubmit}
+            templates={templates.filter((t) => t.type === 'RESUME')}
+            isSubmitting={createResumeExport.isPending}
+          />
+          <CoverLetterFormDialog
+            open={coverLetterFormOpen}
+            onClose={() => setCoverLetterFormOpen(false)}
+            onSubmit={handleCoverLetterSubmit}
+            templates={templates}
+            isSubmitting={createCoverLetterExport.isPending}
+          />
+        </>
       )}
     </Container>
   );

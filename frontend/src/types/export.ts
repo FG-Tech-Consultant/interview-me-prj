@@ -42,7 +42,17 @@ export interface ExportResumeRequest {
   language?: string;
 }
 
+export interface ExportCoverLetterRequest {
+  templateId: number;
+  targetCompany: string;
+  targetRole: string;
+  jobDescription?: string;
+  market: string;
+}
+
 export type ExportStatusType = 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
+
+export type ExportTypeValue = 'RESUME' | 'COVER_LETTER' | 'BACKGROUND_DECK';
 
 export type SeniorityLevel = 'Junior' | 'Mid' | 'Senior' | 'Lead' | 'Principal' | 'Director';
 
@@ -54,4 +64,10 @@ export const LANGUAGES = [
   { value: 'en', label: 'English' },
   { value: 'pt', label: 'Portuguese' },
   { value: 'es', label: 'Spanish' },
+];
+
+export const MARKETS = [
+  { value: 'US', label: 'United States' },
+  { value: 'EU', label: 'European Union' },
+  { value: 'Canada', label: 'Canada' },
 ];

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${profile.fullName} + ' - Cover Letter'">Cover Letter</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 25mm 22mm 25mm 22mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header .name {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 2px;
+        }
+
+        .header .headline {
+            font-size: 11pt;
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .header .contact {
+            font-size: 9pt;
+            color: #777;
+        }
+
+        .header .contact span {
+            margin-right: 12px;
+        }
+
+        .date-line {
+            text-align: right;
+            font-size: 10pt;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .recipient {
+            margin-bottom: 20px;
+            font-size: 10.5pt;
+            color: #444;
+        }
+
+        .salutation {
+            margin-bottom: 16px;
+            font-size: 11pt;
+        }
+
+        .body-paragraph {
+            margin-bottom: 14px;
+            text-align: justify;
+            font-size: 10.5pt;
+            color: #444;
+        }
+
+        .skills-highlight {
+            margin: 14px 0;
+            padding-left: 16px;
+        }
+
+        .skills-highlight li {
+            margin-bottom: 4px;
+            font-size: 10pt;
+            color: #444;
+        }
+
+        .closing {
+            margin-top: 20px;
+            font-size: 10.5pt;
+            color: #444;
+        }
+
+        .signature {
+            margin-top: 30px;
+        }
+
+        .signature .name {
+            font-weight: bold;
+            font-size: 11pt;
+            color: #2c3e50;
+        }
+
+        .signature .title {
+            font-size: 10pt;
+            color: #555;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 8px;
+            border-top: 1px solid #ecf0f1;
+            font-size: 8pt;
+            color: #aaa;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <div class="name" th:text="${profile.fullName}">John Doe</div>
+    <div class="headline" th:text="${profile.headline}">Senior Software Engineer</div>
+    <div class="contact">
+        <span th:if="${profile.location}" th:text="${profile.location}">Berlin, Germany</span>
+        <span th:if="${profile.professionalLinks != null and profile.professionalLinks.containsKey('LinkedIn')}"
+              th:text="${profile.professionalLinks.get('LinkedIn')}"></span>
+    </div>
+</div>
+
+<!-- Date -->
+<div class="date-line" th:text="${generatedDate}">February 28, 2026</div>
+
+<!-- Recipient -->
+<div class="recipient">
+    <div th:text="${targetCompany}">Acme Corp</div>
+    <div th:text="'Re: ' + ${targetRole} + ' Position'">Re: Senior Backend Engineer Position</div>
+</div>
+
+<!-- Salutation -->
+<div class="salutation">Dear Hiring Manager,</div>
+
+<!-- Opening paragraph -->
+<div class="body-paragraph">
+    <span>I am writing to express my strong interest in the </span>
+    <strong th:text="${targetRole}">Senior Backend Engineer</strong>
+    <span> position at </span>
+    <strong th:text="${targetCompany}">Acme Corp</strong>
+    <span>. As a </span>
+    <span th:text="${profile.headline}">Senior Software Engineer</span>
+    <span th:if="${profile.location}"> based in </span>
+    <span th:if="${profile.location}" th:text="${profile.location}">Berlin</span>
+    <span>, I bring a proven track record of delivering high-quality solutions and driving technical excellence.</span>
+</div>
+
+<!-- Summary paragraph -->
+<div class="body-paragraph" th:if="${profile.summary != null and !profile.summary.isEmpty()}"
+     th:text="${profile.summary}">
+    Experienced software engineer with expertise in distributed systems.
+</div>
+
+<!-- Key skills section -->
+<div class="body-paragraph" th:if="${topSkills != null and !topSkills.isEmpty()}">
+    My core technical competencies that align with this role include:
+</div>
+<ul class="skills-highlight" th:if="${topSkills != null and !topSkills.isEmpty()}">
+    <li th:each="skill : ${topSkills}">
+        <strong th:text="${skill.skillName}">Java</strong>
+        <span th:if="${skill.yearsOfExperience != null and skill.yearsOfExperience > 0}"
+              th:text="' (' + ${skill.yearsOfExperience} + ' years)'"></span>
+    </li>
+</ul>
+
+<!-- Experience highlights -->
+<div class="body-paragraph" th:if="${recentJob != null}">
+    <span>In my most recent role as </span>
+    <strong th:text="${recentJob.role}">Software Engineer</strong>
+    <span> at </span>
+    <strong th:text="${recentJob.company}">Previous Corp</strong>
+    <span th:if="${recentJob.achievements != null and !recentJob.achievements.isEmpty()}">, </span>
+    <span th:if="${recentJob.achievements != null and !recentJob.achievements.isEmpty()}"
+          th:text="${recentJob.achievements}">I led key initiatives...</span>
+</div>
+
+<!-- Job description alignment (if provided) -->
+<div class="body-paragraph" th:if="${jobDescription != null and !jobDescription.isEmpty()}">
+    I have carefully reviewed the requirements for this position and am confident that my background and skills
+    are well-suited to contribute to your team's success.
+</div>
+
+<!-- Market-specific paragraph -->
+<div class="body-paragraph" th:if="${market != null}">
+    <span th:if="${market == 'US'}">I am authorized to work in the United States and am excited about the opportunity to contribute to your organization.</span>
+    <span th:if="${market == 'EU'}">I am eligible to work within the European Union and am enthusiastic about contributing to your organization.</span>
+    <span th:if="${market == 'Canada'}">I am interested in opportunities in Canada and am prepared to discuss work authorization requirements.</span>
+</div>
+
+<!-- Closing paragraph -->
+<div class="body-paragraph">
+    I would welcome the opportunity to discuss how my experience and skills can benefit
+    <span th:text="${targetCompany}">Acme Corp</span>.
+    Thank you for considering my application. I look forward to hearing from you.
+</div>
+
+<!-- Closing -->
+<div class="closing">Sincerely,</div>
+
+<!-- Signature -->
+<div class="signature">
+    <div class="name" th:text="${profile.fullName}">John Doe</div>
+    <div class="title" th:text="${profile.headline}">Senior Software Engineer</div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <span>Generated on </span>
+    <span th:text="${generatedDate}">2026-02-28</span>
+    <span> | Powered by Interview Me</span>
+</div>
+
+</body>
+</html>

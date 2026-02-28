@@ -93,11 +93,122 @@ public class ExportService {
         return ExportMapper.toResponse(saved);
     }
 
+    @Transactional
+    public ExportHistoryResponse createCoverLetterExport(Long tenantId, Long profileId, ExportCoverLetterRequest request) {
+        log.info("Creating cover letter export: tenantId={}, profileId={}, templateId={}",
+                tenantId, profileId, request.templateId());
+
+        // 1. Validate template exists and is active
+        ExportTemplate template = templateRepository.findById(request.templateId())
+                .orElseThrow(() -> new RuntimeException("Export template not found: " + request.templateId()));
+
+        if (!template.getIsActive()) {
+            throw new RuntimeException("Export template is not active: " + template.getName());
+        }
+
+        // 2. Validate profile has minimum data
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Profile not found: " + profileId));
+
+        if (profile.getFullName() == null || profile.getFullName().isBlank()
+                || profile.getHeadline() == null || profile.getHeadline().isBlank()) {
+            throw new IllegalArgumentException(
+                    "Profile must have at least a name and headline to generate a cover letter");
+        }
+
+        // 3. Get cost and deduct coins
+        int cost = billingProperties.getCosts().getOrDefault("COVER_LETTER_EXPORT", 10);
+        CoinTransaction tx = coinWalletService.spend(
+                tenantId, cost, RefType.EXPORT, null, "Cover letter export");
+
+        // 4. Create ExportHistory with PENDING status
+        Map<String, Object> params = new HashMap<>();
+        params.put("targetCompany", request.targetCompany());
+        params.put("targetRole", request.targetRole());
+        params.put("jobDescription", request.jobDescription());
+        params.put("market", request.market());
+
+        ExportHistory export = new ExportHistory();
+        export.setTenantId(tenantId);
+        export.setProfileId(profileId);
+        export.setTemplate(template);
+        export.setType(ExportType.COVER_LETTER.name());
+        export.setStatus(ExportStatus.PENDING.name());
+        export.setParameters(params);
+        export.setCoinsSpent(cost);
+        export.setCoinTransactionId(tx.getId());
+
+        ExportHistory saved = exportHistoryRepository.save(export);
+        log.info("Cover letter export created: exportId={}, status=PENDING", saved.getId());
+
+        // 5. Submit async job
+        exportJobService.processExport(saved.getId());
+
+        return ExportMapper.toResponse(saved);
+    }
+
+    @Transactional
+    public ExportHistoryResponse createBackgroundDeckExport(Long tenantId, Long profileId, ExportBackgroundDeckRequest request) {
+        log.info("Creating background deck export: tenantId={}, profileId={}, templateId={}",
+                tenantId, profileId, request.templateId());
+
+        // 1. Validate template exists and is active
+        ExportTemplate template = templateRepository.findById(request.templateId())
+                .orElseThrow(() -> new RuntimeException("Export template not found: " + request.templateId()));
+
+        if (!template.getIsActive()) {
+            throw new RuntimeException("Export template is not active: " + template.getName());
+        }
+
+        // 2. Validate profile has minimum data
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Profile not found: " + profileId));
+
+        if (profile.getFullName() == null || profile.getFullName().isBlank()
+                || profile.getHeadline() == null || profile.getHeadline().isBlank()) {
+            throw new IllegalArgumentException(
+                    "Profile must have at least a name and headline to generate a background presentation");
+        }
+
+        // 3. Get cost and deduct coins
+        int cost = billingProperties.getCosts().getOrDefault("BACKGROUND_DECK_EXPORT", 15);
+        CoinTransaction tx = coinWalletService.spend(
+                tenantId, cost, RefType.EXPORT, null, "Background presentation export");
+
+        // 4. Create ExportHistory with PENDING status
+        Map<String, Object> params = new HashMap<>();
+
+        ExportHistory export = new ExportHistory();
+        export.setTenantId(tenantId);
+        export.setProfileId(profileId);
+        export.setTemplate(template);
+        export.setType(ExportType.BACKGROUND_DECK.name());
+        export.setStatus(ExportStatus.PENDING.name());
+        export.setParameters(params);
+        export.setCoinsSpent(cost);
+        export.setCoinTransactionId(tx.getId());
+
+        ExportHistory saved = exportHistoryRepository.save(export);
+        log.info("Background deck export created: exportId={}, status=PENDING", saved.getId());
+
+        // 5. Submit async job
+        exportJobService.processExport(saved.getId());
+
+        return ExportMapper.toResponse(saved);
+    }
+
     @Transactional(readOnly = true)
     public ExportStatusResponse getExportStatus(Long tenantId, Long exportId) {
         ExportHistory export = exportHistoryRepository.findByIdAndTenantId(exportId, tenantId)
                 .orElseThrow(() -> new RuntimeException("Export not found: " + exportId));
         return ExportMapper.toStatusResponse(export);
+    }
+
+    @Transactional(readOnly = true)
+    public String getExportType(Long tenantId, Long exportId) {
+        ExportHistory export = exportHistoryRepository.findByIdAndTenantId(exportId, tenantId)
+                .orElseThrow(() -> new RuntimeException("Export not found: " + exportId));
+        return export.getType();
     }
 
     @Transactional(readOnly = true)

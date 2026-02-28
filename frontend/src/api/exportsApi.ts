@@ -3,6 +3,7 @@ import type {
   ExportHistory,
   ExportHistoryPage,
   ExportResumeRequest,
+  ExportCoverLetterRequest,
   ExportStatus,
   ExportTemplate,
 } from '../types/export';
@@ -10,6 +11,11 @@ import type {
 export const exportsApi = {
   createResumeExport: async (request: ExportResumeRequest): Promise<ExportHistory> => {
     const response = await apiClient.post<ExportHistory>('/exports/resume', request);
+    return response.data;
+  },
+
+  createCoverLetterExport: async (request: ExportCoverLetterRequest): Promise<ExportHistory> => {
+    const response = await apiClient.post<ExportHistory>('/exports/cover-letter', request);
     return response.data;
   },
 

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { exportsApi } from '../api/exportsApi';
-import type { ExportResumeRequest } from '../types/export';
+import type { ExportResumeRequest, ExportCoverLetterRequest } from '../types/export';
 
 const EXPORT_KEYS = {
   all: ['exports'] as const,
@@ -50,6 +50,18 @@ export const useCreateResumeExport = () => {
   return useMutation({
     mutationFn: (request: ExportResumeRequest) =>
       exportsApi.createResumeExport(request),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EXPORT_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: ['billing'] });
+    },
+  });
+};
+
+export const useCreateCoverLetterExport = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (request: ExportCoverLetterRequest) =>
+      exportsApi.createCoverLetterExport(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: EXPORT_KEYS.all });
       queryClient.invalidateQueries({ queryKey: ['billing'] });
