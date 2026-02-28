@@ -21,6 +21,7 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import AppVersion from '../common/AppVersion';
 
 const DRAWER_WIDTH_OPEN = 240;
 const DRAWER_WIDTH_COLLAPSED = 72;
@@ -94,6 +95,11 @@ export default function Sidebar({ open, onToggle, mobileOpen, onMobileClose }: S
           ))}
         </List>
       </Box>
+      {(open || isMobile) && (
+        <Box sx={{ px: 2, pb: 1 }}>
+          <AppVersion />
+        </Box>
+      )}
       {!isMobile && (
         <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
           <IconButton onClick={onToggle}>

@@ -12,6 +12,7 @@ import {
   Paper
 } from '@mui/material';
 import { login, LoginRequest } from '../api/auth';
+import AppVersion from '../components/common/AppVersion';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -88,6 +89,7 @@ export default function LoginPage() {
             </Box>
           </Box>
         </Paper>
+        <AppVersion sx={{ mt: 2 }} />
       </Box>
     </Container>
   );

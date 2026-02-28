@@ -12,6 +12,7 @@ import {
   Paper
 } from '@mui/material';
 import { register, RegisterRequest } from '../api/auth';
+import AppVersion from '../components/common/AppVersion';
 
 interface FieldErrors {
   email?: string;
@@ -139,6 +140,7 @@ export default function RegisterPage() {
             </Box>
           </Box>
         </Paper>
+        <AppVersion sx={{ mt: 2 }} />
       </Box>
     </Container>
   );

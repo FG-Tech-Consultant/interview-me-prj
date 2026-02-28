@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.interviewme"
-version = "1.0.0"
+version = project.property("appVersion") as String
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21

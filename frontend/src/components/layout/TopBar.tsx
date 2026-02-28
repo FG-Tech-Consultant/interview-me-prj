@@ -4,6 +4,7 @@ import {
   Typography,
   IconButton,
   Box,
+  Chip,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
@@ -12,6 +13,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { getCurrentUser, logout } from '../../api/auth';
+import { useAppInfo } from '../../hooks/useAppInfo';
 import { DRAWER_WIDTH_OPEN, DRAWER_WIDTH_COLLAPSED } from './Sidebar';
 import LanguageSelector from './LanguageSelector';
 
@@ -29,6 +31,8 @@ export default function TopBar({ onMenuClick, sidebarOpen }: TopBarProps) {
     queryKey: ['currentUser'],
     queryFn: getCurrentUser,
   });
+
+  const { data: appInfo } = useAppInfo();
 
   const drawerWidth = isMobile ? 0 : sidebarOpen ? DRAWER_WIDTH_OPEN : DRAWER_WIDTH_COLLAPSED;
 
@@ -57,6 +61,19 @@ export default function TopBar({ onMenuClick, sidebarOpen }: TopBarProps) {
         )}
         <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
           {t('appName')}
+          {appInfo?.build?.version && (
+            <Chip
+              label={`v${appInfo.build.version}`}
+              size="small"
+              sx={{
+                ml: 1,
+                height: 20,
+                fontSize: '0.7rem',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                color: 'inherit',
+              }}
+            />
+          )}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <LanguageSelector />

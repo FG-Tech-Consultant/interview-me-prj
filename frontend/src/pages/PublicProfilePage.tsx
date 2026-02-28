@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Container, Box, Typography, Skeleton, Divider, Link } from '@mui/material';
+import { Container, Box, Typography, Skeleton } from '@mui/material';
 import { usePublicProfile } from '../hooks/usePublicProfile';
 import { PublicProfileSeo } from '../components/public-profile/PublicProfileSeo';
 import { PublicProfileHeader } from '../components/public-profile/PublicProfileHeader';
@@ -11,6 +11,7 @@ import { PublicWorkTimeline } from '../components/public-profile/PublicWorkTimel
 import { PublicEducationSection } from '../components/public-profile/PublicEducationSection';
 import { PublicProfileNotFound } from '../components/public-profile/PublicProfileNotFound';
 import { ChatWidget } from '../components/chat/ChatWidget';
+import PoweredByFooter from '../components/common/PoweredByFooter';
 
 const PublicProfilePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -68,16 +69,7 @@ const PublicProfilePage: React.FC = () => {
           <PublicEducationSection education={profile.education} />
         )}
 
-        {/* Footer */}
-        <Divider sx={{ mt: 4, mb: 2 }} />
-        <Box sx={{ textAlign: 'center', py: 2 }}>
-          <Typography variant="caption" color="text.secondary">
-            {t('poweredBy')}{' '}
-            <Link href="/" color="primary" underline="hover">
-              {t('interviewMe')}
-            </Link>
-          </Typography>
-        </Box>
+        <PoweredByFooter />
       </Container>
 
       <ChatWidget slug={slug || ''} profileName={profile.fullName} />
