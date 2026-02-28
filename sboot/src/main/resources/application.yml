@@ -103,5 +103,5 @@ ai:
     session-expiry-hours: 24
   embedding:
     dimension: 768
-    similarity-threshold: 0.25
-    top-k: 10
+    similarity-threshold: 0.15
+    top-k: 20

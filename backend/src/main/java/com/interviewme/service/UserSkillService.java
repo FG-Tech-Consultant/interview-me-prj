@@ -84,9 +84,7 @@ public class UserSkillService {
         userSkill.setVisibility(visibility);
 
         UserSkill saved = userSkillRepository.save(userSkill);
-        // Reload to get the skill relationship populated
-        saved = userSkillRepository.findByIdAndTenantIdAndDeletedAtIsNull(saved.getId(), tenantId)
-                .orElse(saved);
+        saved.setSkill(skill);
         log.info("User skill created with id: {} for profile: {}", saved.getId(), profileId);
         triggerEmbeddingUpdate(saved);
         return SkillMapper.toUserSkillDto(saved);

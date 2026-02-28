@@ -79,8 +79,16 @@ public class ContentChangedEventListener {
         String skillName = skill.getSkill() != null ? skill.getSkill().getName() : "Unknown";
         String category = skill.getSkill() != null ? skill.getSkill().getCategory() : "General";
         String confidence = skill.getConfidenceLevel() != null ? skill.getConfidenceLevel() : "MEDIUM";
-        return "Skill: %s - Category: %s - %d years of experience - Proficiency: %d/5 - Confidence: %s".formatted(
-                skillName, category, skill.getYearsOfExperience(), skill.getProficiencyDepth(), confidence);
+        String proficiencyLabel = switch (skill.getProficiencyDepth()) {
+            case 5 -> "5/5 (Expert level)";
+            case 4 -> "4/5 (Advanced level)";
+            case 3 -> "3/5 (Intermediate level)";
+            case 2 -> "2/5 (Beginner level)";
+            case 1 -> "1/5 (Novice level)";
+            default -> skill.getProficiencyDepth() + "/5";
+        };
+        return "Skill: %s - Category: %s - %d years of experience - Proficiency: %s - Confidence: %s".formatted(
+                skillName, category, skill.getYearsOfExperience(), proficiencyLabel, confidence);
     }
 
     public static String formatStoryText(Story story) {

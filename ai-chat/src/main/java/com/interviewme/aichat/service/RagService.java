@@ -35,7 +35,7 @@ public class RagService {
         }
         float[] questionEmbedding;
         try {
-            questionEmbedding = embeddingClient.embed(question);
+            questionEmbedding = embeddingClient.embed("search_query: " + question);
         } catch (Exception e) {
             log.warn("Embedding generation failed for RAG, returning no context: {}", e.getMessage());
             return "No specific information available.";

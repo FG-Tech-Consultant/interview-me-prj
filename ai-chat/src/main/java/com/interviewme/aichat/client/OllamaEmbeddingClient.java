@@ -37,7 +37,8 @@ public class OllamaEmbeddingClient implements EmbeddingClient {
     public float[] embed(String text) {
         Map<String, Object> body = Map.of(
                 "model", aiProperties.getOllama().getEmbeddingModel(),
-                "input", text
+                "input", text,
+                "keep_alive", "10m"
         );
 
         @SuppressWarnings("unchecked")
@@ -62,7 +63,8 @@ public class OllamaEmbeddingClient implements EmbeddingClient {
     public List<float[]> embedBatch(List<String> texts) {
         Map<String, Object> body = Map.of(
                 "model", aiProperties.getOllama().getEmbeddingModel(),
-                "input", texts
+                "input", texts,
+                "keep_alive", "10m"
         );
 
         @SuppressWarnings("unchecked")

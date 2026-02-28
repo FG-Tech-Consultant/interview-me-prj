@@ -34,7 +34,7 @@ public class EmbeddingService {
         }
         log.info("Generating embedding tenantId={} type={} contentId={}", tenantId, type, contentId);
 
-        float[] embedding = embeddingClient.embed(contentText);
+        float[] embedding = embeddingClient.embed("search_document: " + contentText);
         String embeddingStr = floatArrayToString(embedding);
 
         embeddingRepository.upsertEmbedding(tenantId, type.name(), contentId, contentText, embeddingStr);
