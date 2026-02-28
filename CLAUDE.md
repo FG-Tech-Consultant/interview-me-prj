@@ -9,6 +9,19 @@
 - The `backend` module is a plain library (domain logic, controllers, services)
 - NEVER use `mvn` or `mvnw` commands
 
+## Versioning (SEMVER) - IMPORTANT
+
+**ALWAYS increment the version BEFORE building and deploying.**
+
+- Version is defined in TWO places (both MUST be updated together):
+  - `gradle.properties` → `appVersion=X.Y.Z`
+  - `frontend/package.json` → `"version": "X.Y.Z"`
+- Follow Semantic Versioning (MAJOR.MINOR.PATCH):
+  - **PATCH** (1.1.0 → 1.1.1): Bug fixes, small tweaks, test fixes
+  - **MINOR** (1.1.0 → 1.2.0): New features, enhancements, new UI components
+  - **MAJOR** (1.1.0 → 2.0.0): Breaking changes, major rewrites
+- The build/deploy workflow is: **bump version → build → docker build → deploy → commit**
+
 ## Speckit Workflow
 
 This project uses the `.specify/` framework for feature development.
