@@ -56,7 +56,7 @@ class ExportLifecycleIntegrationTest extends AbstractIntegrationTest {
         TenantContext.setTenantId(tenantId);
 
         // Get or create resume template (seeded by Liquibase)
-        resumeTemplate = exportTemplateRepository.findByType("RESUME")
+        resumeTemplate = exportTemplateRepository.findByTypeAndIsActiveTrue("RESUME")
             .stream().findFirst()
             .orElseGet(() -> {
                 ExportTemplate t = new ExportTemplate();
@@ -90,10 +90,10 @@ class ExportLifecycleIntegrationTest extends AbstractIntegrationTest {
 
         assertThat(export.getStatus()).isEqualTo("PENDING");
 
-        // Transition to PROCESSING
+        // Transition to IN_PROGRESS
         export.setStatus(ExportStatus.IN_PROGRESS.name());
         export = exportHistoryRepository.save(export);
-        assertThat(export.getStatus()).isEqualTo("PROCESSING");
+        assertThat(export.getStatus()).isEqualTo("IN_PROGRESS");
 
         // Transition to COMPLETED
         export.setStatus(ExportStatus.COMPLETED.name());

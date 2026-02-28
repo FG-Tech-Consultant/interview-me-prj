@@ -55,12 +55,15 @@ dependencies {
     testRuntimeOnly("com.h2database:h2")
 
     // Testcontainers for integration tests
-    testImplementation("org.testcontainers:testcontainers:1.19.7")
-    testImplementation("org.testcontainers:postgresql:1.19.7")
-    testImplementation("org.testcontainers:junit-jupiter:1.19.7")
+    testImplementation("org.testcontainers:testcontainers:1.21.0")
+    testImplementation("org.testcontainers:postgresql:1.21.0")
+    testImplementation("org.testcontainers:junit-jupiter:1.21.0")
     testRuntimeOnly("org.postgresql:postgresql")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // Docker API version required by Docker Engine 29+ (minimum API 1.44)
+    systemProperty("DOCKER_API_VERSION", "1.44")
+    environment("DOCKER_API_VERSION", "1.44")
 }
