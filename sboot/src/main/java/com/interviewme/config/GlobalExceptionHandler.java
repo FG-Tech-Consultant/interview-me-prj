@@ -150,6 +150,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    @ExceptionHandler(PackageNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handlePackageNotFoundException(PackageNotFoundException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", OffsetDateTime.now().toString());
+        response.put("status", HttpStatus.NOT_FOUND.value());
+        response.put("error", "Not Found");
+        response.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
     @ExceptionHandler(StoryNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleStoryNotFoundException(StoryNotFoundException ex) {
         Map<String, Object> response = new HashMap<>();

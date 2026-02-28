@@ -11,6 +11,22 @@ import org.springframework.stereotype.Repository;
 public interface AccountDeletionRepository extends JpaRepository<Tenant, Long> {
 
     @Modifying
+    @Query(value = "DELETE FROM package_story WHERE tenant_id = :tenantId", nativeQuery = true)
+    int deletePackageStoriesByTenantId(@Param("tenantId") Long tenantId);
+
+    @Modifying
+    @Query(value = "DELETE FROM package_project WHERE tenant_id = :tenantId", nativeQuery = true)
+    int deletePackageProjectsByTenantId(@Param("tenantId") Long tenantId);
+
+    @Modifying
+    @Query(value = "DELETE FROM package_skill WHERE tenant_id = :tenantId", nativeQuery = true)
+    int deletePackageSkillsByTenantId(@Param("tenantId") Long tenantId);
+
+    @Modifying
+    @Query(value = "DELETE FROM content_package WHERE tenant_id = :tenantId", nativeQuery = true)
+    int deleteContentPackagesByTenantId(@Param("tenantId") Long tenantId);
+
+    @Modifying
     @Query(value = "DELETE FROM story_skill WHERE tenant_id = :tenantId", nativeQuery = true)
     int deleteStorySkillsByTenantId(@Param("tenantId") Long tenantId);
 
