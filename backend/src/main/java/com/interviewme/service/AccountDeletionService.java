@@ -27,6 +27,10 @@ public class AccountDeletionService {
         Map<String, Integer> counts = new LinkedHashMap<>();
 
         // Delete in leaf-to-root FK order
+        counts.put("packageStories", deletionRepository.deletePackageStoriesByTenantId(tenantId));
+        counts.put("packageProjects", deletionRepository.deletePackageProjectsByTenantId(tenantId));
+        counts.put("packageSkills", deletionRepository.deletePackageSkillsByTenantId(tenantId));
+        counts.put("contentPackages", deletionRepository.deleteContentPackagesByTenantId(tenantId));
         counts.put("storySkills", deletionRepository.deleteStorySkillsByTenantId(tenantId));
         counts.put("experienceProjectSkills", deletionRepository.deleteExperienceProjectSkillsByTenantId(tenantId));
         counts.put("stories", deletionRepository.deleteStoriesByTenantId(tenantId));

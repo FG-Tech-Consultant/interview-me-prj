@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260228005136-1" author="backend-engineer">
+        <createTable tableName="content_package">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="profile_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(500)"/>
+            <column name="slug" type="VARCHAR(50)">
+                <constraints unique="true" uniqueConstraintName="uq_content_package_slug"/>
+            </column>
+            <column name="access_token" type="VARCHAR(255)">
+                <constraints unique="true" uniqueConstraintName="uq_content_package_access_token"/>
+            </column>
+            <column name="token_expires_at" type="TIMESTAMPTZ"/>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="view_count" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_at" type="TIMESTAMPTZ"/>
+            <column name="version" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="content_package" baseColumnNames="tenant_id"
+                                 referencedTableName="tenant" referencedColumnNames="id"
+                                 constraintName="fk_content_package_tenant"/>
+        <addForeignKeyConstraint baseTableName="content_package" baseColumnNames="profile_id"
+                                 referencedTableName="profile" referencedColumnNames="id"
+                                 constraintName="fk_content_package_profile"/>
+
+        <createIndex tableName="content_package" indexName="idx_content_package_tenant_id">
+            <column name="tenant_id"/>
+        </createIndex>
+        <createIndex tableName="content_package" indexName="idx_content_package_profile_id">
+            <column name="profile_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="content_package"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20260228005136-2" author="backend-engineer">
+        <createTable tableName="package_skill">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="package_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_skill_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_order" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="package_skill" baseColumnNames="package_id"
+                                 referencedTableName="content_package" referencedColumnNames="id"
+                                 constraintName="fk_package_skill_package"/>
+        <addForeignKeyConstraint baseTableName="package_skill" baseColumnNames="user_skill_id"
+                                 referencedTableName="user_skill" referencedColumnNames="id"
+                                 constraintName="fk_package_skill_user_skill"/>
+
+        <createIndex tableName="package_skill" indexName="idx_package_skill_package_id">
+            <column name="package_id"/>
+        </createIndex>
+        <addUniqueConstraint tableName="package_skill" columnNames="package_id, user_skill_id"
+                             constraintName="uq_package_skill_package_user_skill"/>
+
+        <rollback>
+            <dropTable tableName="package_skill"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20260228005136-3" author="backend-engineer">
+        <createTable tableName="package_project">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="package_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="experience_project_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_order" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="package_project" baseColumnNames="package_id"
+                                 referencedTableName="content_package" referencedColumnNames="id"
+                                 constraintName="fk_package_project_package"/>
+        <addForeignKeyConstraint baseTableName="package_project" baseColumnNames="experience_project_id"
+                                 referencedTableName="experience_project" referencedColumnNames="id"
+                                 constraintName="fk_package_project_experience_project"/>
+
+        <createIndex tableName="package_project" indexName="idx_package_project_package_id">
+            <column name="package_id"/>
+        </createIndex>
+        <addUniqueConstraint tableName="package_project" columnNames="package_id, experience_project_id"
+                             constraintName="uq_package_project_package_experience_project"/>
+
+        <rollback>
+            <dropTable tableName="package_project"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20260228005136-4" author="backend-engineer">
+        <createTable tableName="package_story">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="package_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="story_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_order" type="INTEGER" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="package_story" baseColumnNames="package_id"
+                                 referencedTableName="content_package" referencedColumnNames="id"
+                                 constraintName="fk_package_story_package"/>
+        <addForeignKeyConstraint baseTableName="package_story" baseColumnNames="story_id"
+                                 referencedTableName="story" referencedColumnNames="id"
+                                 constraintName="fk_package_story_story"/>
+
+        <createIndex tableName="package_story" indexName="idx_package_story_package_id">
+            <column name="package_id"/>
+        </createIndex>
+        <addUniqueConstraint tableName="package_story" columnNames="package_id, story_id"
+                             constraintName="uq_package_story_package_story"/>
+
+        <rollback>
+            <dropTable tableName="package_story"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
