@@ -33,9 +33,11 @@ This document tracks the technology stack and architectural decisions made acros
 - Liquibase 4.25.0+ (schema versioning)
 
 **AI/LLM Integration:**
-- OpenAI API (ChatGPT) - `spring-ai-openai-spring-boot-starter` or custom client
+- OpenAI API (ChatGPT) - Custom HTTP client
 - Google Gemini API - Custom HTTP client
 - Anthropic Claude API - Custom HTTP client
+- Ollama (local models) - qwen2.5:3b (chat), nomic-embed-text (embeddings)
+- LangChain4j 1.11.0+ (RAG query routing and filtered vector search)
 - Backend-controlled prompts and cost tracking
 
 **Build & Dependency Management:**
@@ -91,14 +93,19 @@ This document tracks the technology stack and architectural decisions made acros
 
 **Multi-Provider Support:**
 - Abstract `LlmClient` interface
-- Implementations: `OpenAiLlmClient`, `GeminiLlmClient`, `ClaudeLlmClient`
+- Implementations: `OpenAiLlmClient`, `GeminiLlmClient`, `ClaudeLlmClient`, `OllamaLlmClient`
 - Router service selects provider based on action type and tenant config
 - Enables A/B testing and cost optimization
 
-**RAG with pgvector:**
-- Store embeddings for skills, stories, experiences
-- Retrieve relevant context for recruiter chat
-- Semantic search over career data
+**RAG Pipeline (LangChain4j + pgvector):**
+- Store embeddings for skills, stories, experiences, education, profile summary (vector(768))
+- Content types: SKILL, STORY, PROJECT, JOB, EDUCATION, PROFILE_SUMMARY
+- LangChain4j `LanguageModelQueryRouter` classifies questions into relevant content types
+- Custom `ProfileContentRetriever` per ContentType wraps existing `ContentEmbeddingRepository`
+- Filtered vector search: `WHERE content_type IN (:types)` before similarity ranking
+- Embedding generation uses `search_document:` prefix, queries use `search_query:` prefix (nomic-embed-text optimization)
+- `OllamaChatModel` (LangChain4j) for routing classification; `LlmClient` for main chat (coexist)
+- Dependencies: `langchain4j:1.11.0`, `langchain4j-ollama:1.11.0` (NO pgvector module, NO Spring Boot starters)
 
 ---
 

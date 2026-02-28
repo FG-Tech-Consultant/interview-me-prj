@@ -19,11 +19,11 @@ Sync Impact Report (Version 2.2.1 - Related Projects Section):
 
 **Project Name:** Live Resume & Career Copilot
 
-**Version:** 2.2.1
+**Version:** 2.3.0
 
 **Ratification Date:** 2026-02-19
 
-**Last Amended:** 2026-02-27
+**Last Amended:** 2026-02-28
 
 ---
 
@@ -130,6 +130,17 @@ This constitution establishes the foundational principles, architectural decisio
 - Enforce coin-based usage limits for paid features
 - Use RAG with pgvector for context retrieval (skills, stories, experiences)
 - Cache LLM responses where appropriate (e.g., LinkedIn profile analysis)
+
+**RAG Pipeline (LangChain4j):**
+- Use LangChain4j (v1.11.0+) for RAG query routing and filtered vector search
+- `LanguageModelQueryRouter` classifies questions into relevant ContentType(s) before vector search
+- Custom `ProfileContentRetriever` (implements LangChain4j `ContentRetriever`) wraps existing `ContentEmbeddingRepository`
+- One retriever per ContentType: SKILL, STORY, PROJECT, JOB, EDUCATION, PROFILE_SUMMARY
+- `OllamaChatModel` bean used for query routing classification (NOT for main chat - that uses `LlmClient`)
+- `OllamaEmbeddingModel` bean used for query embedding with `search_query:` prefix
+- Do NOT use `langchain4j-pgvector` (incompatible table schema) - use custom `ContentRetriever` instead
+- Do NOT use Spring Boot starters (require Spring Boot 3.5+) - configure beans manually via `@Configuration`
+- Fallback: if query router is unavailable, RagService falls back to unfiltered vector search
 
 **Local Model Routing (Ollama):**
 - All local features use a single model via Ollama: `qwen2.5:7b`
