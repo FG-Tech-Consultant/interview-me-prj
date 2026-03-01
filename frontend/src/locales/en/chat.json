@@ -4,7 +4,7 @@
   "placeholder": "Ask a question...",
   "placeholderDefault": "Type a message...",
   "unavailable": "Chat unavailable",
-  "usingCoins": "Using coins (1 coin/message)",
+  "usingCredits": "Using credits (1 credit/message)",
   "freeRemaining": "{{count}} free messages remaining this month",
   "comingSoon": "Recruiter chat coming soon!",
   "greeting": "Hi! I'm {{name}}'s career assistant. Ask me anything about their experience, skills, and projects.",

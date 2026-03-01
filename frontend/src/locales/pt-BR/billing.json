@@ -1,7 +1,7 @@
 {
   "title": "Faturamento",
   "currentBalance": "Saldo Atual",
-  "coinsAmount": "{{amount}} moedas",
+  "creditsAmount": "{{amount}} creditos",
   "freeTierQuotas": "Cotas do Plano Gratuito",
   "transactionHistory": "Historico de Transacoes",
   "failedToLoad": "Falha ao carregar informacoes de faturamento.",
@@ -25,12 +25,12 @@
     "remaining": "{{count}} restantes",
     "quotaReached": "Cota atingida"
   },
-  "coinConfirm": {
-    "title": "Confirmar Gasto de Moedas",
+  "creditConfirm": {
+    "title": "Confirmar Gasto de Creditos",
     "feature": "Funcionalidade",
     "cost": "Custo",
     "currentBalanceLabel": "Saldo Atual",
     "balanceAfter": "Saldo Depois",
-    "insufficientBalance": "Saldo insuficiente. Voce precisa de mais {{amount}} moedas."
+    "insufficientBalance": "Saldo insuficiente. Voce precisa de mais {{amount}} creditos."
   }
 }

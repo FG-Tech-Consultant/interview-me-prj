@@ -60,7 +60,7 @@ export const BillingPage = () => {
         <Typography variant="subtitle2" color="text.secondary">
           {t('currentBalance')}
         </Typography>
-        <Typography variant="h3">{t('coinsAmount', { amount: wallet?.balance ?? 0 })}</Typography>
+        <Typography variant="h3">{t('creditsAmount', { amount: wallet?.balance ?? 0 })}</Typography>
       </Paper>
 
       {/* Free Tier Quotas */}

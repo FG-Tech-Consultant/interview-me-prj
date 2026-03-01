@@ -14,12 +14,16 @@ export const CoinBalanceBadge = () => {
 
   return (
     <Chip
-      label={t('coinsAmount', { amount: wallet?.balance ?? 0 })}
-      color="primary"
-      variant="outlined"
+      label={t('creditsAmount', { amount: wallet?.balance ?? 0 })}
       size="small"
       onClick={() => navigate('/billing')}
-      sx={{ cursor: 'pointer' }}
+      sx={{
+        cursor: 'pointer',
+        backgroundColor: 'rgba(255,255,255,0.15)',
+        color: 'inherit',
+        border: '1px solid rgba(255,255,255,0.3)',
+        '&:hover': { backgroundColor: 'rgba(255,255,255,0.25)' },
+      }}
     />
   );
 };

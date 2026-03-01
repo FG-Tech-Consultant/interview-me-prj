@@ -22,7 +22,7 @@
     "description": "Exclua permanentemente sua conta e todos os dados associados. Esta acao nao pode ser desfeita.",
     "deleteAccount": "Excluir Conta",
     "confirmTitle": "Excluir Conta Permanentemente",
-    "confirmDescription": "Isso excluira permanentemente toda a sua conta, incluindo perfil, habilidades, historias, projetos, experiencias profissionais, formacao, historico de chat, exportacoes, analises do LinkedIn, carteira de moedas e todos os outros dados. Esta acao e irreversivel.",
+    "confirmDescription": "Isso excluira permanentemente toda a sua conta, incluindo perfil, habilidades, historias, projetos, experiencias profissionais, formacao, historico de chat, exportacoes, analises do LinkedIn, carteira de creditos e todos os outros dados. Esta acao e irreversivel.",
     "confirmInstruction": "Digite DELETE MY ACCOUNT para confirmar:",
     "confirmPlaceholder": "DELETE MY ACCOUNT",
     "confirmButton": "Excluir Minha Conta Permanentemente",

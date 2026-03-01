@@ -46,9 +46,9 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
   const isFirstChange = slugChangeCount === 0;
   const changeCost = slugCheck?.changeCost ?? 0;
   const balance = wallet?.balance ?? 0;
-  const willCostCoins = isChangingSlug && !isFirstChange;
-  const hasEnoughCoins = !willCostCoins || balance >= changeCost;
-  const canSave = isValid && isAvailable && !isCurrentSlug && !updateSlug.isPending && hasEnoughCoins;
+  const willCostCredits = isChangingSlug && !isFirstChange;
+  const hasEnoughCredits = !willCostCredits || balance >= changeCost;
+  const canSave = isValid && isAvailable && !isCurrentSlug && !updateSlug.isPending && hasEnoughCredits;
 
   const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
@@ -60,7 +60,7 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
     try {
       await updateSlug.mutateAsync({ profileId, slug });
       setSaved(true);
-      if (willCostCoins) {
+      if (willCostCredits) {
         invalidateWallet();
       }
     } catch {
@@ -119,10 +119,10 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
         </Alert>
       )}
 
-      {willCostCoins && changeCost > 0 && slug.length >= 3 && (
-        <Alert severity={hasEnoughCoins ? 'info' : 'error'} sx={{ mb: 2 }}>
+      {willCostCredits && changeCost > 0 && slug.length >= 3 && (
+        <Alert severity={hasEnoughCredits ? 'info' : 'error'} sx={{ mb: 2 }}>
           {t('slug.changeCost', { cost: changeCost, balance })}
-          {!hasEnoughCoins && ` ${t('slug.notEnoughCoins')}`}
+          {!hasEnoughCredits && ` ${t('slug.notEnoughCredits')}`}
         </Alert>
       )}
 
@@ -154,7 +154,7 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
           onClick={handleSave}
           disabled={!canSave}
         >
-          {updateSlug.isPending ? t('common:status.saving') : willCostCoins ? t('slug.saveWithCost', { cost: changeCost }) : t('common:buttons.save')}
+          {updateSlug.isPending ? t('common:status.saving') : willCostCredits ? t('slug.saveWithCost', { cost: changeCost }) : t('common:buttons.save')}
         </Button>
 
         {(currentSlug || saved) && (
@@ -176,7 +176,7 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
       {saved && (
         <Alert severity="success" sx={{ mt: 2 }}>
           {t('slug.savedSuccess', { slug })}
-          {willCostCoins && changeCost > 0 && ` ${t('slug.coinsDeducted', { cost: changeCost })}`}
+          {willCostCredits && changeCost > 0 && ` ${t('slug.creditsDeducted', { cost: changeCost })}`}
         </Alert>
       )}
 

@@ -1,7 +1,7 @@
 {
   "title": "Billing",
   "currentBalance": "Current Balance",
-  "coinsAmount": "{{amount}} coins",
+  "creditsAmount": "{{amount}} credits",
   "freeTierQuotas": "Free Tier Quotas",
   "transactionHistory": "Transaction History",
   "failedToLoad": "Failed to load billing information.",
@@ -25,12 +25,12 @@
     "remaining": "{{count}} remaining",
     "quotaReached": "Quota reached"
   },
-  "coinConfirm": {
-    "title": "Confirm Coin Spend",
+  "creditConfirm": {
+    "title": "Confirm Credit Spend",
     "feature": "Feature",
     "cost": "Cost",
     "currentBalanceLabel": "Current Balance",
     "balanceAfter": "Balance After",
-    "insufficientBalance": "Insufficient balance. You need {{amount}} more coins."
+    "insufficientBalance": "Insufficient balance. You need {{amount}} more credits."
   }
 }

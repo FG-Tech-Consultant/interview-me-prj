@@ -16,6 +16,7 @@ import { getCurrentUser, logout } from '../../api/auth';
 import { useAppInfo } from '../../hooks/useAppInfo';
 import { DRAWER_WIDTH_OPEN, DRAWER_WIDTH_COLLAPSED } from './Sidebar';
 import LanguageSelector from './LanguageSelector';
+import { CoinBalanceBadge } from '../billing/CoinBalanceBadge';
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -76,6 +77,7 @@ export default function TopBar({ onMenuClick, sidebarOpen }: TopBarProps) {
           )}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <CoinBalanceBadge />
           <LanguageSelector />
           {user && (
             <Typography variant="body2" noWrap>

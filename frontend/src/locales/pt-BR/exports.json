@@ -9,7 +9,7 @@
     "template": "Modelo",
     "targetRole": "Cargo Alvo",
     "status": "Status",
-    "coins": "Moedas",
+    "credits": "Creditos",
     "actions": "Acoes"
   },
   "hoverForDetails": "passe o mouse para detalhes",
@@ -23,9 +23,9 @@
     "locationPlaceholder": "ex: Sao Paulo, Brasil",
     "seniorityLevel": "Nivel de Senioridade",
     "language": "Idioma",
-    "costMessage": "Isso custara {{cost}} moedas.",
-    "currentBalance": "Saldo atual: {{balance}} moedas",
-    "insufficientCoins": "Moedas insuficientes. Voce precisa de mais {{amount}} moedas.",
+    "costMessage": "Isso custara {{cost}} creditos.",
+    "currentBalance": "Saldo atual: {{balance}} creditos",
+    "insufficientCredits": "Creditos insuficientes. Voce precisa de mais {{amount}} creditos.",
     "generating": "Gerando...",
     "confirmGenerate": "Confirmar e Gerar"
   },
@@ -36,7 +36,7 @@
     "attempt": "(tentativa {{count}})",
     "success": "Curriculo gerado com sucesso!",
     "downloadPdf": "Baixar PDF",
-    "failed": "A exportacao do curriculo falhou. Suas moedas foram reembolsadas."
+    "failed": "A exportacao do curriculo falhou. Seus creditos foram reembolsados."
   },
   "status": {
     "pending": "Pendente",

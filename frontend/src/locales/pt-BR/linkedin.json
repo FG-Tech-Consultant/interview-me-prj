@@ -11,7 +11,7 @@
   "analyzed": "Analisado: {{filename}}",
   "sectionBreakdown": "Detalhamento por Secao",
   "suggestions": "Sugestoes",
-  "getMoreSuggestions": "Obter mais sugestoes ({{cost}} moedas)",
+  "getMoreSuggestions": "Obter mais sugestoes ({{cost}} creditos)",
   "generatingSuggestions": "Gerando...",
   "uploader": {
     "dropHere": "Solte seu PDF do LinkedIn aqui",

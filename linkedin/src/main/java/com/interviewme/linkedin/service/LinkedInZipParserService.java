@@ -181,13 +181,30 @@ public class LinkedInZipParserService {
         try {
             List<CSVRecord> records = parseCsvFile(file);
             return records.stream()
-                    .map(r -> getField(r, "Name"))
-                    .filter(name -> name != null && !name.isBlank())
+                    .map(r -> {
+                        String name = getField(r, "Name");
+                        if (name == null || name.isBlank()) return null;
+                        String proficiency = getField(r, "Proficiency");
+                        String mapped = mapLinkedInProficiency(proficiency);
+                        return mapped != null ? name + " - " + mapped : name;
+                    })
+                    .filter(lang -> lang != null && !lang.isBlank())
                     .toList();
         } catch (IOException e) {
             warnings.add("Failed to parse Languages.csv: " + e.getMessage());
             return List.of();
         }
+    }
+
+    private String mapLinkedInProficiency(String proficiency) {
+        if (proficiency == null || proficiency.isBlank()) return null;
+        String lower = proficiency.toLowerCase().trim();
+        if (lower.contains("native") || lower.contains("bilingual")) return "Native";
+        if (lower.contains("full professional")) return "Fluent";
+        if (lower.contains("professional working")) return "Advanced";
+        if (lower.contains("limited working")) return "Intermediate";
+        if (lower.contains("elementary")) return "Basic";
+        return proficiency.trim();
     }
 
     private List<LinkedInProjectData> parseProjects(Path dir, List<String> warnings) {

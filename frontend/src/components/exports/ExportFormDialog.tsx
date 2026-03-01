@@ -47,7 +47,7 @@ export const ExportFormDialog = ({
 
   const exportCost = costs?.costs?.RESUME_EXPORT ?? 10;
   const balance = wallet?.balance ?? 0;
-  const hasEnoughCoins = balance >= exportCost;
+  const hasEnoughCredits = balance >= exportCost;
 
   const handleSubmit = () => {
     if (!showConfirm) {
@@ -159,9 +159,9 @@ export const ExportFormDialog = ({
             <Typography variant="body2" color="text.secondary">
               {t('form.currentBalance', { balance })}
             </Typography>
-            {!hasEnoughCoins && (
+            {!hasEnoughCredits && (
               <Alert severity="error" sx={{ mt: 2 }}>
-                {t('form.insufficientCoins', { amount: exportCost - balance })}
+                {t('form.insufficientCredits', { amount: exportCost - balance })}
               </Alert>
             )}
           </Box>
@@ -175,7 +175,7 @@ export const ExportFormDialog = ({
             <Button
               variant="contained"
               onClick={handleSubmit}
-              disabled={!hasEnoughCoins || isSubmitting}
+              disabled={!hasEnoughCredits || isSubmitting}
             >
               {isSubmitting ? t('form.generating') : t('form.confirmGenerate')}
             </Button>

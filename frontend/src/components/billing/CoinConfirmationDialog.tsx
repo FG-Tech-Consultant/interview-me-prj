@@ -33,24 +33,24 @@ export const CoinConfirmationDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>{t('coinConfirm.title')}</DialogTitle>
+      <DialogTitle>{t('creditConfirm.title')}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mt: 1 }}>
           <Typography>
-            <strong>{t('coinConfirm.feature')}:</strong> {featureName}
+            <strong>{t('creditConfirm.feature')}:</strong> {featureName}
           </Typography>
           <Typography>
-            <strong>{t('coinConfirm.cost')}:</strong> {t('coinsAmount', { amount: cost })}
+            <strong>{t('creditConfirm.cost')}:</strong> {t('creditsAmount', { amount: cost })}
           </Typography>
           <Typography>
-            <strong>{t('coinConfirm.currentBalanceLabel')}:</strong> {t('coinsAmount', { amount: currentBalance })}
+            <strong>{t('creditConfirm.currentBalanceLabel')}:</strong> {t('creditsAmount', { amount: currentBalance })}
           </Typography>
           <Typography>
-            <strong>{t('coinConfirm.balanceAfter')}:</strong> {t('coinsAmount', { amount: balanceAfter })}
+            <strong>{t('creditConfirm.balanceAfter')}:</strong> {t('creditsAmount', { amount: balanceAfter })}
           </Typography>
           {insufficientBalance && (
             <Alert severity="error">
-              {t('coinConfirm.insufficientBalance', { amount: cost - currentBalance })}
+              {t('creditConfirm.insufficientBalance', { amount: cost - currentBalance })}
             </Alert>
           )}
         </Box>

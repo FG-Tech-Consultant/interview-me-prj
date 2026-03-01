@@ -56,7 +56,7 @@ export const ExportHistoryTable = ({
               <TableCell>{t('tableHeaders.template')}</TableCell>
               <TableCell>{t('tableHeaders.targetRole')}</TableCell>
               <TableCell>{t('tableHeaders.status')}</TableCell>
-              <TableCell>{t('tableHeaders.coins')}</TableCell>
+              <TableCell>{t('tableHeaders.credits')}</TableCell>
               <TableCell>{t('tableHeaders.actions')}</TableCell>
             </TableRow>
           </TableHead>

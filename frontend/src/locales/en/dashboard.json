@@ -6,7 +6,7 @@
     "skills": "Skills",
     "jobExperiences": "Job Experiences",
     "education": "Education",
-    "coinBalance": "Coin Balance",
+    "creditBalance": "Credit Balance",
     "exports": "Exports"
   },
   "actions": {
@@ -19,7 +19,7 @@
     "linkedinAnalyzer": "LinkedIn Analyzer",
     "linkedinAnalyzerDesc": "Get AI feedback on your LinkedIn profile",
     "viewBilling": "View Billing",
-    "viewBillingDesc": "Check your coin balance and usage"
+    "viewBillingDesc": "Check your credit balance and usage"
   },
   "completeness": {
     "title": "Profile Completeness",

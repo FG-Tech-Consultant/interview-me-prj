@@ -6,7 +6,7 @@
     "skills": "Habilidades",
     "jobExperiences": "Experiencias",
     "education": "Formacao",
-    "coinBalance": "Saldo de Moedas",
+    "creditBalance": "Saldo de Creditos",
     "exports": "Exportacoes"
   },
   "actions": {
@@ -19,7 +19,7 @@
     "linkedinAnalyzer": "Analisador LinkedIn",
     "linkedinAnalyzerDesc": "Receba feedback de IA sobre seu perfil LinkedIn",
     "viewBilling": "Ver Faturamento",
-    "viewBillingDesc": "Verifique seu saldo de moedas e uso"
+    "viewBillingDesc": "Verifique seu saldo de creditos e uso"
   },
   "completeness": {
     "title": "Completude do Perfil",

@@ -59,7 +59,7 @@ public class LinkedInImportMappingService {
             int skillCount = importSkills(tenantId, profileId, data.skills(), strategy, errors);
             itemCounts.put("skills", skillCount);
 
-            int langCount = importLanguages(profileId, data.languages(), errors);
+            int langCount = importLanguages(profileId, data.languages(), strategy, errors);
             itemCounts.put("languages", langCount);
 
             importRecord.setStatus(ImportStatus.COMPLETED);
@@ -270,7 +270,7 @@ public class LinkedInImportMappingService {
         return count;
     }
 
-    private int importLanguages(Long profileId, List<String> languages, List<String> errors) {
+    private int importLanguages(Long profileId, List<String> languages, ImportStrategy strategy, List<String> errors) {
         if (languages == null || languages.isEmpty()) return 0;
 
         try {
@@ -281,11 +281,22 @@ public class LinkedInImportMappingService {
             }
 
             Profile profile = optProfile.get();
+
+            if (strategy == ImportStrategy.OVERWRITE) {
+                profile.setLanguages(new ArrayList<>(languages));
+                profileRepository.save(profile);
+                return languages.size();
+            }
+
+            // MERGE: deduplicate by language name (part before " - ")
             List<String> existingLangs = profile.getLanguages() != null ? new ArrayList<>(profile.getLanguages()) : new ArrayList<>();
 
             int added = 0;
             for (String lang : languages) {
-                if (existingLangs.stream().noneMatch(l -> l.equalsIgnoreCase(lang))) {
+                String langName = extractLanguageName(lang);
+                boolean exists = existingLangs.stream()
+                        .anyMatch(l -> extractLanguageName(l).equalsIgnoreCase(langName));
+                if (!exists) {
                     existingLangs.add(lang);
                     added++;
                 }
@@ -298,6 +309,11 @@ public class LinkedInImportMappingService {
             errors.add("Failed to import languages: " + e.getMessage());
             return 0;
         }
+    }
+
+    private String extractLanguageName(String language) {
+        int dashIndex = language.indexOf(" - ");
+        return dashIndex > 0 ? language.substring(0, dashIndex).trim() : language.trim();
     }
 
     private LocalDate parseLinkedInDate(String dateStr) {

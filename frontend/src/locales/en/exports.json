@@ -9,7 +9,7 @@
     "template": "Template",
     "targetRole": "Target Role",
     "status": "Status",
-    "coins": "Coins",
+    "credits": "Credits",
     "actions": "Actions"
   },
   "hoverForDetails": "hover for details",
@@ -23,9 +23,9 @@
     "locationPlaceholder": "e.g., Berlin, Germany",
     "seniorityLevel": "Seniority Level",
     "language": "Language",
-    "costMessage": "This will cost {{cost}} coins.",
-    "currentBalance": "Current balance: {{balance}} coins",
-    "insufficientCoins": "Insufficient coins. You need {{amount}} more coins.",
+    "costMessage": "This will cost {{cost}} credits.",
+    "currentBalance": "Current balance: {{balance}} credits",
+    "insufficientCredits": "Insufficient credits. You need {{amount}} more credits.",
     "generating": "Generating...",
     "confirmGenerate": "Confirm & Generate"
   },
@@ -36,7 +36,7 @@
     "attempt": "(attempt {{count}})",
     "success": "Resume generated successfully!",
     "downloadPdf": "Download PDF",
-    "failed": "Resume export failed. Your coins have been refunded."
+    "failed": "Resume export failed. Your credits have been refunded."
   },
   "status": {
     "pending": "Pending",

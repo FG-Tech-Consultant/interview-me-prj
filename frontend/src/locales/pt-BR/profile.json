@@ -4,6 +4,7 @@
     "profileInfo": "Informacoes do Perfil",
     "workExperience": "Experiencia Profissional",
     "education": "Formacao",
+    "languages": "Idiomas",
     "publicProfile": "Perfil Publico"
   },
   "form": {
@@ -57,6 +58,25 @@
     "errorLoading": "Erro ao carregar formacao",
     "confirmDelete": "Tem certeza que deseja excluir este registro de formacao?"
   },
+  "languages": {
+    "title": "Idiomas",
+    "addButton": "+ Adicionar Idioma",
+    "addTitle": "Adicionar Novo Idioma",
+    "name": "Idioma",
+    "namePlaceholder": "ex: Ingles, Portugues",
+    "proficiency": "Nivel de Proficiencia",
+    "selectProficiency": "Selecione a proficiencia",
+    "levels": {
+      "Native": "Nativo",
+      "Fluent": "Fluente",
+      "Advanced": "Avancado",
+      "Intermediate": "Intermediario",
+      "Basic": "Basico"
+    },
+    "noRecords": "Nenhum idioma adicionado ainda. Clique em \"Adicionar Idioma\" para comecar.",
+    "confirmDelete": "Tem certeza que deseja excluir este idioma?",
+    "saveSuccess": "Idiomas salvos com sucesso!"
+  },
   "slug": {
     "title": "Perfil Publico",
     "label": "Slug da URL do Perfil",
@@ -70,11 +90,11 @@
     "takenWithSuggestions": "Ja em uso. Tente: {{suggestions}}",
     "changeWarning": "Alterar sua URL tornara a antiga inacessivel imediatamente.",
     "firstChangeFree": "A primeira alteracao de slug e gratuita!",
-    "changeCost": "Alterar seu slug custa {{cost}} moedas. Seu saldo: {{balance}} moedas.",
-    "notEnoughCoins": "Voce nao tem moedas suficientes para fazer esta alteracao.",
-    "saveWithCost": "Salvar ({{cost}} moedas)",
+    "changeCost": "Alterar seu slug custa {{cost}} creditos. Seu saldo: {{balance}} creditos.",
+    "notEnoughCredits": "Voce nao tem creditos suficientes para fazer esta alteracao.",
+    "saveWithCost": "Salvar ({{cost}} creditos)",
     "savedSuccess": "Slug atualizado com sucesso! Seu perfil esta ativo em: /p/{{slug}}",
-    "coinsDeducted": "({{cost}} moedas deduzidas)",
+    "creditsDeducted": "({{cost}} creditos deduzidos)",
     "linkCopied": "Link copiado para a area de transferencia!",
     "failedToUpdate": "Falha ao atualizar slug. Tente novamente.",
     "copyLink": "Copiar link"

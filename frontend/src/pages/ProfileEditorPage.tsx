@@ -13,6 +13,7 @@ import { useCurrentProfile } from '../hooks/useProfile';
 import { ProfileForm } from '../components/profile/ProfileForm';
 import { JobExperienceList } from '../components/profile/JobExperienceList';
 import { EducationList } from '../components/profile/EducationList';
+import { LanguageList } from '../components/profile/LanguageList';
 import { SlugSettingsSection } from '../components/profile/SlugSettingsSection';
 
 export const ProfileEditorPage: React.FC = () => {
@@ -56,6 +57,7 @@ export const ProfileEditorPage: React.FC = () => {
           <Tab label={t('tabs.profileInfo')} />
           <Tab label={t('tabs.workExperience')} disabled={!hasProfile} />
           <Tab label={t('tabs.education')} disabled={!hasProfile} />
+          <Tab label={t('tabs.languages')} disabled={!hasProfile} />
           <Tab label={t('tabs.publicProfile')} disabled={!hasProfile} />
         </Tabs>
       </Box>
@@ -94,6 +96,15 @@ export const ProfileEditorPage: React.FC = () => {
         )}
 
         {activeTab === 3 && profile && (
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              {t('languages.title')}
+            </Typography>
+            <LanguageList profile={profile} />
+          </Box>
+        )}
+
+        {activeTab === 4 && profile && (
           <Box>
             <Typography variant="h6" gutterBottom>
               {t('publicProfileSettings')}

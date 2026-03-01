@@ -18,7 +18,7 @@ export const ChatQuotaWarning: React.FC<ChatQuotaWarningProps> = ({ quotaInfo })
     return (
       <Box sx={{ px: 2, py: 0.5, bgcolor: 'warning.light', textAlign: 'center' }}>
         <Typography variant="caption" color="warning.contrastText">
-          {t('usingCoins')}
+          {t('usingCredits')}
         </Typography>
       </Box>
     );

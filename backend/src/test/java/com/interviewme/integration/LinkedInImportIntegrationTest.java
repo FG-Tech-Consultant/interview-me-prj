@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -111,9 +112,9 @@ class LinkedInImportIntegrationTest extends AbstractIntegrationTest {
         assertThat(data.skills()).hasSize(10);
         assertThat(data.skills()).contains("Java", "Spring Boot", "Docker", "PostgreSQL");
 
-        // Languages
+        // Languages (now include proficiency in "Name - Level" format)
         assertThat(data.languages()).hasSize(3);
-        assertThat(data.languages()).contains("Portuguese", "English", "German");
+        assertThat(data.languages()).contains("Portuguese - Native", "English - Fluent", "German - Basic");
     }
 
     @Test
@@ -196,9 +197,9 @@ class LinkedInImportIntegrationTest extends AbstractIntegrationTest {
         var userSkills = userSkillRepository.findByProfileIdAndDeletedAtIsNullOrderBySkill_CategoryAscSkill_NameAsc(profileId);
         assertThat(userSkills).hasSize(10);
 
-        // Verify languages
+        // Verify languages (stored as "Name - Level" format)
         Profile profileWithLangs = profileRepository.findByIdAndTenantId(profileId, tenantId).orElseThrow();
-        assertThat(profileWithLangs.getLanguages()).containsExactlyInAnyOrder("Portuguese", "English", "German");
+        assertThat(profileWithLangs.getLanguages()).containsExactlyInAnyOrder("Portuguese - Native", "English - Fluent", "German - Basic");
     }
 
     @Test
@@ -241,6 +242,56 @@ class LinkedInImportIntegrationTest extends AbstractIntegrationTest {
 
         var allEdu = educationRepository.findByProfileIdAndDeletedAtIsNullOrderByEndDateDesc(profileId);
         assertThat(allEdu).hasSize(2); // 1 existing + 1 new
+    }
+
+    @Test
+    @Transactional
+    void executeImport_mergeStrategy_skipsDuplicateLanguagesByName() throws IOException {
+        // Pre-set existing languages with different proficiency
+        Profile profile = profileRepository.findByIdAndTenantId(profileId, tenantId).orElseThrow();
+        profile.setLanguages(new ArrayList<>(List.of("Portuguese - Fluent", "Spanish - Basic")));
+        profileRepository.save(profile);
+
+        // Import with MERGE - Portuguese should be skipped (same name), English and German added
+        byte[] zipBytes = createTestLinkedInZip();
+        LinkedInImportData data = zipParserService.parseZip(new ByteArrayInputStream(zipBytes));
+        LinkedInImport result = mappingService.executeImport(
+                tenantId, profileId, data, ImportStrategy.MERGE, "test-export.zip");
+
+        assertThat(result.getStatus()).isEqualTo(ImportStatus.COMPLETED);
+        assertThat(result.getItemCounts().get("languages")).isEqualTo(2); // English + German (Portuguese skipped)
+
+        Profile updated = profileRepository.findByIdAndTenantId(profileId, tenantId).orElseThrow();
+        assertThat(updated.getLanguages()).hasSize(4); // Portuguese-Fluent(existing) + Spanish(existing) + English + German
+        // Existing Portuguese keeps its original proficiency
+        assertThat(updated.getLanguages()).contains("Portuguese - Fluent");
+        assertThat(updated.getLanguages()).contains("English - Fluent");
+        assertThat(updated.getLanguages()).contains("German - Basic");
+        assertThat(updated.getLanguages()).contains("Spanish - Basic");
+    }
+
+    @Test
+    @Transactional
+    void executeImport_overwriteStrategy_replacesLanguages() throws IOException {
+        // Pre-set existing languages
+        Profile profile = profileRepository.findByIdAndTenantId(profileId, tenantId).orElseThrow();
+        profile.setLanguages(new ArrayList<>(List.of("Spanish - Native", "French - Advanced")));
+        profileRepository.save(profile);
+
+        // Import with OVERWRITE
+        byte[] zipBytes = createTestLinkedInZip();
+        LinkedInImportData data = zipParserService.parseZip(new ByteArrayInputStream(zipBytes));
+        LinkedInImport result = mappingService.executeImport(
+                tenantId, profileId, data, ImportStrategy.OVERWRITE, "test-export.zip");
+
+        assertThat(result.getStatus()).isEqualTo(ImportStatus.COMPLETED);
+        assertThat(result.getItemCounts().get("languages")).isEqualTo(3);
+
+        Profile updated = profileRepository.findByIdAndTenantId(profileId, tenantId).orElseThrow();
+        assertThat(updated.getLanguages()).containsExactlyInAnyOrder(
+                "Portuguese - Native", "English - Fluent", "German - Basic");
+        // Old languages should be gone
+        assertThat(updated.getLanguages()).doesNotContain("Spanish - Native", "French - Advanced");
     }
 
     // ==================== OVERWRITE IMPORT TESTS ====================

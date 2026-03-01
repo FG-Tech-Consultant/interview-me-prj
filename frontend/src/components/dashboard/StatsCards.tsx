@@ -89,7 +89,7 @@ export default function StatsCards() {
     {
       icon: <AccountBalanceWalletIcon sx={{ fontSize: 40, color: '#f9a825' }} />,
       value: walletData?.balance ?? 0,
-      label: t('stats.coinBalance'),
+      label: t('stats.creditBalance'),
       loading: walletLoading,
     },
     {

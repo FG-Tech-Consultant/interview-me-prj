@@ -11,7 +11,7 @@
   "analyzed": "Analyzed: {{filename}}",
   "sectionBreakdown": "Section Breakdown",
   "suggestions": "Suggestions",
-  "getMoreSuggestions": "Get more suggestions ({{cost}} coins)",
+  "getMoreSuggestions": "Get more suggestions ({{cost}} credits)",
   "generatingSuggestions": "Generating...",
   "uploader": {
     "dropHere": "Drop your LinkedIn PDF here",
