@@ -57,6 +57,7 @@ public class AiProperties {
 
     @Data
     public static class EmbeddingConfig {
+        private String provider;
         private int dimension = 768;
         private double similarityThreshold = 0.25;
         private int topK = 10;

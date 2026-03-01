@@ -18,6 +18,7 @@ public record JobExperienceResponse(
     String responsibilities,
     String achievements,
     Map<String, Object> metrics,
+    String workLanguage,
     String visibility,
     Instant createdAt,
     Instant updatedAt,

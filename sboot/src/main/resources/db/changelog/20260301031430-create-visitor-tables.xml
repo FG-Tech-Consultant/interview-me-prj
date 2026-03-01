@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260301031430-1" author="claude">
+        <createTable tableName="visitor">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="profile_id" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="name" type="VARCHAR(200)"><constraints nullable="false"/></column>
+            <column name="company" type="VARCHAR(200)"><constraints nullable="false"/></column>
+            <column name="job_role" type="VARCHAR(200)"><constraints nullable="false"/></column>
+            <column name="linkedin_url" type="VARCHAR(500)"/>
+            <column name="contact_email" type="VARCHAR(300)"/>
+            <column name="contact_whatsapp" type="VARCHAR(50)"/>
+            <column name="ip_address" type="VARCHAR(50)"/>
+            <column name="user_agent" type="VARCHAR(500)"/>
+            <column name="visitor_token" type="VARCHAR(100)"><constraints nullable="false" unique="true"/></column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"><constraints nullable="false"/></column>
+        </createTable>
+        <createIndex tableName="visitor" indexName="idx_visitor_profile_id">
+            <column name="profile_id"/>
+        </createIndex>
+        <createIndex tableName="visitor" indexName="idx_visitor_tenant_id">
+            <column name="tenant_id"/>
+        </createIndex>
+        <createIndex tableName="visitor" indexName="idx_visitor_token">
+            <column name="visitor_token"/>
+        </createIndex>
+        <rollback><dropTable tableName="visitor"/></rollback>
+    </changeSet>
+
+    <changeSet id="20260301031430-2" author="claude">
+        <createTable tableName="visitor_session">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="visitor_id" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="tenant_id" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="profile_id" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="session_token" type="VARCHAR(100)"><constraints nullable="false" unique="true"/></column>
+            <column name="ip_address" type="VARCHAR(50)"/>
+            <column name="user_agent" type="VARCHAR(500)"/>
+            <column name="started_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"><constraints nullable="false"/></column>
+            <column name="ended_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="message_count" type="INT" defaultValue="0"><constraints nullable="false"/></column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"><constraints nullable="false"/></column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"><constraints nullable="false"/></column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_visitor_session_visitor"
+            baseTableName="visitor_session" baseColumnNames="visitor_id"
+            referencedTableName="visitor" referencedColumnNames="id"
+            onDelete="CASCADE"/>
+        <createIndex tableName="visitor_session" indexName="idx_vsession_visitor_id">
+            <column name="visitor_id"/>
+        </createIndex>
+        <rollback><dropTable tableName="visitor_session"/></rollback>
+    </changeSet>
+
+    <changeSet id="20260301031430-3" author="claude">
+        <createTable tableName="visitor_chat_log">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="visitor_session_id" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="tenant_id" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="role" type="VARCHAR(20)"><constraints nullable="false"/></column>
+            <column name="content" type="TEXT"><constraints nullable="false"/></column>
+            <column name="tokens_used" type="INT"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"><constraints nullable="false"/></column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_vchatlog_session"
+            baseTableName="visitor_chat_log" baseColumnNames="visitor_session_id"
+            referencedTableName="visitor_session" referencedColumnNames="id"
+            onDelete="CASCADE"/>
+        <createIndex tableName="visitor_chat_log" indexName="idx_vchatlog_session_id">
+            <column name="visitor_session_id"/>
+        </createIndex>
+        <rollback><dropTable tableName="visitor_chat_log"/></rollback>
+    </changeSet>
+
+    <changeSet id="20260301031430-4" author="claude">
+        <createTable tableName="contact_reveal">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="visitor_id" type="BIGINT"><constraints nullable="false"/></column>
+            <column name="revealed_at" type="TIMESTAMP WITH TIME ZONE"><constraints nullable="false"/></column>
+            <column name="expires_at" type="TIMESTAMP WITH TIME ZONE"><constraints nullable="false"/></column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()"><constraints nullable="false"/></column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_contact_reveal_visitor"
+            baseTableName="contact_reveal" baseColumnNames="visitor_id"
+            referencedTableName="visitor" referencedColumnNames="id"
+            onDelete="CASCADE"/>
+        <createIndex tableName="contact_reveal" indexName="idx_contact_reveal_tenant_visitor">
+            <column name="tenant_id"/>
+            <column name="visitor_id"/>
+        </createIndex>
+        <rollback><dropTable tableName="contact_reveal"/></rollback>
+    </changeSet>
+</databaseChangeLog>

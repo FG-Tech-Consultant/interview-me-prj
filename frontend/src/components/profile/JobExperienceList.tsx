@@ -156,6 +156,7 @@ const JobExperienceCard: React.FC<JobExperienceCardProps> = ({ experience, onEdi
             {formatDate(experience.startDate)} -{' '}
             {experience.isCurrent ? t('common:present') : experience.endDate ? formatDate(experience.endDate) : t('common:na')}
             {experience.location && ` \u2022 ${experience.location}`}
+            {experience.workLanguage && ` \u2022 ${experience.workLanguage}`}
           </Typography>
         </Box>
         <Stack direction="row" spacing={0.5}>

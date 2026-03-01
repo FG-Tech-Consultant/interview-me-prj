@@ -102,6 +102,7 @@ ai:
     rate-limit-per-minute: 5
     session-expiry-hours: 24
   embedding:
+    provider: ${AI_EMBEDDING_PROVIDER:}
     dimension: 768
     similarity-threshold: 0.15
     top-k: 20

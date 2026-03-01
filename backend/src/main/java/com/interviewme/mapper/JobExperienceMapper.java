@@ -19,6 +19,7 @@ public class JobExperienceMapper {
         jobExperience.setResponsibilities(request.responsibilities());
         jobExperience.setAchievements(request.achievements());
         jobExperience.setMetrics(request.metrics());
+        jobExperience.setWorkLanguage(request.workLanguage());
         jobExperience.setVisibility(request.visibility() != null ? request.visibility() : "private");
         return jobExperience;
     }
@@ -38,6 +39,7 @@ public class JobExperienceMapper {
             entity.getResponsibilities(),
             entity.getAchievements(),
             entity.getMetrics(),
+            entity.getWorkLanguage(),
             entity.getVisibility(),
             entity.getCreatedAt(),
             entity.getUpdatedAt(),
@@ -56,6 +58,7 @@ public class JobExperienceMapper {
         entity.setResponsibilities(request.responsibilities());
         entity.setAchievements(request.achievements());
         entity.setMetrics(request.metrics());
+        entity.setWorkLanguage(request.workLanguage());
         if (request.visibility() != null) {
             entity.setVisibility(request.visibility());
         }

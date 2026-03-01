@@ -1,0 +1,42 @@
+{
+  "title": "Visitors",
+  "subtitle": "People who visited your public profile",
+  "stats": {
+    "profileViews": "Profile Views",
+    "totalVisitors": "Total Visitors",
+    "chatVisitors": "Interviewed You"
+  },
+  "table": {
+    "name": "Name",
+    "company": "Company",
+    "role": "Role",
+    "date": "Date",
+    "sessions": "Sessions",
+    "messages": "Messages",
+    "contact": "Contact",
+    "actions": "Actions"
+  },
+  "reveal": {
+    "button": "Reveal Contact",
+    "cost": "Costs {{cost}} credits",
+    "revealed": "Contact Revealed",
+    "expiresIn": "Expires in {{hours}}h {{minutes}}m",
+    "expired": "Reveal expired",
+    "confirmTitle": "Reveal Contact Info?",
+    "confirmMessage": "This will cost {{cost}} credits. Contact info will be visible for 12 hours.",
+    "noCredits": "Not enough credits"
+  },
+  "session": {
+    "title": "Chat Sessions",
+    "startedAt": "Started",
+    "messageCount": "Messages",
+    "viewChat": "View Chat"
+  },
+  "chatLog": {
+    "title": "Chat Transcript",
+    "visitor": "Visitor",
+    "assistant": "Assistant"
+  },
+  "empty": "No visitors yet. Share your public profile to start getting visitors!",
+  "hidden": "Hidden"
+}

@@ -14,11 +14,12 @@ export const chatApi = {
   sendMessage: async (
     slug: string,
     message: string,
-    sessionToken: string | null
+    sessionToken: string | null,
+    visitorToken?: string | null
   ): Promise<ChatResponse> => {
     const response = await publicChatClient.post<ChatResponse>(
       `/public/chat/${slug}/messages`,
-      { message, sessionToken }
+      { message, sessionToken, visitorToken }
     );
     return response.data;
   },

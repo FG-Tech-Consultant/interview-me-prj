@@ -7,7 +7,9 @@
     "jobExperiences": "Job Experiences",
     "education": "Education",
     "creditBalance": "Credit Balance",
-    "exports": "Exports"
+    "exports": "Exports",
+    "visitors": "Visitors",
+    "interviews": "Interviews"
   },
   "actions": {
     "editProfile": "Edit Profile",

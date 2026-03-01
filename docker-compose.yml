@@ -1,16 +1,16 @@
 services:
   db:
     image: pgvector/pgvector:pg18
-    container_name: interview-me-db
+    container_name: interview-me-prod-db
     restart: always
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
       POSTGRES_DB: ${DATABASE_NAME:-interview_me}
     ports:
-      - "${IM_PG_PORT:-5432}:5432"
+      - "${IM_PROD_PG_PORT:-5433}:5432"
     volumes:
-      - interview-me-db_pg_data_prod:/var/lib/postgresql
+      - interview-me-prod-pg-data:/var/lib/postgresql
       - ./others/docker/postgresql/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -18,14 +18,14 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - app-network
+      - prod-network
 
   app:
     image: interview-me:${IM_APP_VERSION:-latest}
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: interview-me-app
+    container_name: interview-me-prod-app
     restart: always
     mem_limit: 1024m
     extra_hosts:
@@ -49,8 +49,9 @@ services:
       CLAUDE_API_KEY: ${CLAUDE_API_KEY:-}
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://interview-me-ollama:11434}
       OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-qwen2.5:3b}
+      AI_EMBEDDING_PROVIDER: ${AI_EMBEDDING_PROVIDER:-ollama}
     ports:
-      - "${IM_APP_PORT:-8080}:8080"
+      - "8080:8080"
     volumes:
       - /var/opt/interview-me-prj/logs_prod:/app/logs
     healthcheck:
@@ -60,12 +61,15 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - app-network
+      - prod-network
+      - ollama_default
 
 volumes:
-  interview-me-db_pg_data_prod:
+  interview-me-prod-pg-data:
     driver: local
 
 networks:
-  app-network:
+  prod-network:
     driver: bridge
+  ollama_default:
+    external: true

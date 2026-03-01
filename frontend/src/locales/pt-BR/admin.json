@@ -1,0 +1,9 @@
+{
+  "title": "Painel Admin",
+  "subtitle": "Analise de visitantes de todos os perfis",
+  "visitors": {
+    "title": "Todos os Visitantes",
+    "profile": "Perfil Visitado",
+    "noData": "Nenhum dado de visitante disponivel"
+  }
+}

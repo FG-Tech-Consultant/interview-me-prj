@@ -9,6 +9,7 @@ import {
   MenuItem,
   Autocomplete,
 } from '@mui/material';
+import { LANGUAGES } from '../../constants/languages';
 
 interface LanguageFormProps {
   language?: string;
@@ -25,72 +26,6 @@ const PROFICIENCY_LEVELS = [
   'Advanced',
   'Intermediate',
   'Basic',
-] as const;
-
-/**
- * Static list of common world languages (~50).
- * Stored as English names — the display is always the same regardless of locale.
- */
-const LANGUAGES = [
-  'Afrikaans',
-  'Albanian',
-  'Arabic',
-  'Armenian',
-  'Bengali',
-  'Bulgarian',
-  'Burmese',
-  'Catalan',
-  'Chinese (Mandarin)',
-  'Chinese (Cantonese)',
-  'Croatian',
-  'Czech',
-  'Danish',
-  'Dutch',
-  'English',
-  'Estonian',
-  'Finnish',
-  'French',
-  'Georgian',
-  'German',
-  'Greek',
-  'Gujarati',
-  'Hebrew',
-  'Hindi',
-  'Hungarian',
-  'Icelandic',
-  'Indonesian',
-  'Italian',
-  'Japanese',
-  'Kannada',
-  'Kazakh',
-  'Korean',
-  'Latvian',
-  'Lithuanian',
-  'Malay',
-  'Malayalam',
-  'Marathi',
-  'Nepali',
-  'Norwegian',
-  'Persian',
-  'Polish',
-  'Portuguese',
-  'Punjabi',
-  'Romanian',
-  'Russian',
-  'Serbian',
-  'Slovak',
-  'Slovenian',
-  'Spanish',
-  'Swahili',
-  'Swedish',
-  'Tagalog',
-  'Tamil',
-  'Telugu',
-  'Thai',
-  'Turkish',
-  'Ukrainian',
-  'Urdu',
-  'Vietnamese',
 ] as const;
 
 export const LanguageForm: React.FC<LanguageFormProps> = ({

@@ -13,6 +13,8 @@ import { LinkedInAnalyzerPage } from './pages/LinkedInAnalyzerPage';
 import { LinkedInInboxPage } from './pages/LinkedInInboxPage';
 import { LinkedInImportPage } from './pages/LinkedInImportPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { VisitorsPage } from './pages/VisitorsPage';
+import { AdminPage } from './pages/AdminPage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
@@ -62,6 +64,8 @@ function App() {
               <Route path="/linkedin-analyzer" element={<LinkedInAnalyzerPage />} />
               <Route path="/linkedin-inbox" element={<LinkedInInboxPage />} />
               <Route path="/linkedin-import" element={<LinkedInImportPage />} />
+              <Route path="/visitors" element={<VisitorsPage />} />
+              <Route path="/admin" element={<AdminPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>
 

@@ -15,6 +15,8 @@ import dashboardEn from './locales/en/dashboard.json';
 import publicProfileEn from './locales/en/public-profile.json';
 import errorsEn from './locales/en/errors.json';
 import settingsEn from './locales/en/settings.json';
+import visitorsEn from './locales/en/visitors.json';
+import adminEn from './locales/en/admin.json';
 
 import commonPtBR from './locales/pt-BR/common.json';
 import authPtBR from './locales/pt-BR/auth.json';
@@ -29,6 +31,8 @@ import dashboardPtBR from './locales/pt-BR/dashboard.json';
 import publicProfilePtBR from './locales/pt-BR/public-profile.json';
 import errorsPtBR from './locales/pt-BR/errors.json';
 import settingsPtBR from './locales/pt-BR/settings.json';
+import visitorsPtBR from './locales/pt-BR/visitors.json';
+import adminPtBR from './locales/pt-BR/admin.json';
 
 const resources = {
   en: {
@@ -45,6 +49,8 @@ const resources = {
     'public-profile': publicProfileEn,
     errors: errorsEn,
     settings: settingsEn,
+    visitors: visitorsEn,
+    admin: adminEn,
   },
   'pt-BR': {
     common: commonPtBR,
@@ -60,6 +66,8 @@ const resources = {
     'public-profile': publicProfilePtBR,
     errors: errorsPtBR,
     settings: settingsPtBR,
+    visitors: visitorsPtBR,
+    admin: adminPtBR,
   },
 };
 
@@ -84,6 +92,8 @@ i18n
       'public-profile',
       'errors',
       'settings',
+      'visitors',
+      'admin',
     ],
     defaultNS: 'common',
     detection: {

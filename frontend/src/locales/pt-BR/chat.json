@@ -19,5 +19,18 @@
     "justNow": "agora mesmo",
     "minAgo": "{{count}} min atras",
     "hoursAgo": "{{count}}h atras"
+  },
+  "visitor": {
+    "title": "Apresente-se",
+    "subtitle": "Antes de conversar com o assistente de carreira de {{name}}, nos conte um pouco sobre voce.",
+    "name": "Seu Nome",
+    "company": "Empresa",
+    "jobRole": "Seu Cargo / Posicao",
+    "linkedinUrl": "Perfil LinkedIn (opcional)",
+    "contactEmail": "Email (opcional)",
+    "contactWhatsapp": "WhatsApp (opcional)",
+    "cancel": "Cancelar",
+    "startChat": "Iniciar Chat",
+    "identifying": "Iniciando..."
   }
 }

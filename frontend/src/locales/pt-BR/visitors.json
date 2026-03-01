@@ -1,0 +1,42 @@
+{
+  "title": "Visitantes",
+  "subtitle": "Pessoas que visitaram seu perfil publico",
+  "stats": {
+    "profileViews": "Visualizacoes do Perfil",
+    "totalVisitors": "Total de Visitantes",
+    "chatVisitors": "Te Entrevistaram"
+  },
+  "table": {
+    "name": "Nome",
+    "company": "Empresa",
+    "role": "Cargo",
+    "date": "Data",
+    "sessions": "Sessoes",
+    "messages": "Mensagens",
+    "contact": "Contato",
+    "actions": "Acoes"
+  },
+  "reveal": {
+    "button": "Revelar Contato",
+    "cost": "Custa {{cost}} creditos",
+    "revealed": "Contato Revelado",
+    "expiresIn": "Expira em {{hours}}h {{minutes}}m",
+    "expired": "Revelacao expirou",
+    "confirmTitle": "Revelar Info de Contato?",
+    "confirmMessage": "Isso custara {{cost}} creditos. Info de contato ficara visivel por 12 horas.",
+    "noCredits": "Creditos insuficientes"
+  },
+  "session": {
+    "title": "Sessoes de Chat",
+    "startedAt": "Iniciada",
+    "messageCount": "Mensagens",
+    "viewChat": "Ver Chat"
+  },
+  "chatLog": {
+    "title": "Transcricao do Chat",
+    "visitor": "Visitante",
+    "assistant": "Assistente"
+  },
+  "empty": "Nenhum visitante ainda. Compartilhe seu perfil publico para comecar!",
+  "hidden": "Oculto"
+}

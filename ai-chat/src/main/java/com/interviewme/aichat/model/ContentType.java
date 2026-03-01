@@ -6,5 +6,6 @@ public enum ContentType {
     PROJECT,
     JOB,
     EDUCATION,
-    PROFILE_SUMMARY
+    PROFILE_SUMMARY,
+    LANGUAGE
 }

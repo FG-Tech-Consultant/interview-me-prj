@@ -2,6 +2,7 @@ package com.interviewme.repository;
 
 import com.interviewme.model.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,6 +21,8 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     @Query("SELECT p FROM Profile p WHERE p.id = :id AND p.deletedAt IS NULL AND p.tenantId = :tenantId")
     Optional<Profile> findByIdAndTenantId(@Param("id") Long id, @Param("tenantId") Long tenantId);
 
+    Optional<Profile> findByTenantId(Long tenantId);
+
     Optional<Profile> findBySlugAndDeletedAtIsNull(String slug);
 
     boolean existsBySlugAndDeletedAtIsNull(String slug);
@@ -30,4 +33,8 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
      */
     @Query(value = "SELECT EXISTS(SELECT 1 FROM profile WHERE slug = :slug AND deleted_at IS NULL)", nativeQuery = true)
     boolean existsBySlugGlobally(@Param("slug") String slug);
+
+    @Modifying
+    @Query(value = "UPDATE profile SET view_count = view_count + 1 WHERE id = :profileId", nativeQuery = true)
+    void incrementViewCount(@Param("profileId") Long profileId);
 }

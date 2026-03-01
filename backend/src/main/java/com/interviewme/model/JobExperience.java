@@ -57,6 +57,9 @@ public class JobExperience {
     @Column(name = "achievements", columnDefinition = "TEXT")
     private String achievements;
 
+    @Column(name = "work_language", length = 100)
+    private String workLanguage;
+
     @Type(JsonBinaryType.class)
     @Column(name = "metrics", columnDefinition = "jsonb")
     private Map<String, Object> metrics;

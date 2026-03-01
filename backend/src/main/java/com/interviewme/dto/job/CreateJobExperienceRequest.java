@@ -37,6 +37,9 @@ public record CreateJobExperienceRequest(
 
     Map<String, Object> metrics,
 
+    @Size(max = 100, message = "Work language must not exceed 100 characters")
+    String workLanguage,
+
     String visibility
 ) {
 }

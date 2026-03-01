@@ -7,5 +7,6 @@ import java.util.UUID;
 
 public record ChatRequest(
     @NotBlank @Size(max = 500) String message,
-    UUID sessionToken
+    UUID sessionToken,
+    String visitorToken
 ) {}

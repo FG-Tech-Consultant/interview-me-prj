@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Component
 @Slf4j
-@ConditionalOnExpression("'${ai.openai.api-key:}' != ''")
+@ConditionalOnExpression("'${ai.embedding.provider:}' != 'ollama' and '${ai.openai.api-key:}' != ''")
 public class OpenAiEmbeddingClient implements EmbeddingClient {
 
     private final AiProperties aiProperties;

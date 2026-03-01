@@ -15,7 +15,7 @@ interface UseChatReturn {
   sessionToken: string | null;
 }
 
-export function useChat(slug: string, profileName: string): UseChatReturn {
+export function useChat(slug: string, profileName: string, visitorToken?: string | null): UseChatReturn {
   const { t } = useTranslation('chat');
   const [messages, setMessages] = useState<ChatMessageDisplay[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,7 +76,7 @@ export function useChat(slug: string, profileName: string): UseChatReturn {
       setIsLoading(true);
 
       try {
-        const response = await chatApi.sendMessage(slug, text.trim(), sessionToken);
+        const response = await chatApi.sendMessage(slug, text.trim(), sessionToken, visitorToken);
 
         // Save session token
         if (response.sessionToken) {
@@ -130,7 +130,7 @@ export function useChat(slug: string, profileName: string): UseChatReturn {
         setIsLoading(false);
       }
     },
-    [slug, sessionToken, isLoading, t]
+    [slug, sessionToken, isLoading, t, visitorToken]
   );
 
   return {

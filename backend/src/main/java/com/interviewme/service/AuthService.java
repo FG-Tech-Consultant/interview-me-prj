@@ -108,6 +108,7 @@ public class AuthService implements UserDetailsService {
                 user.getId(),
                 user.getEmail(),
                 user.getTenantId(),
+                user.getRole(),
                 user.getCreatedAt().toString()
         );
     }

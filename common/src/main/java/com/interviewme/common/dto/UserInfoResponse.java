@@ -4,5 +4,6 @@ public record UserInfoResponse(
     Long id,
     String email,
     Long tenantId,
+    String role,
     String createdAt
 ) {}

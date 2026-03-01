@@ -9,7 +9,7 @@ public class InsufficientBalanceException extends RuntimeException {
     private final long available;
 
     public InsufficientBalanceException(int required, long available) {
-        super("Insufficient coins. Required: " + required + ", Available: " + available);
+        super("Insufficient credits. Required: " + required + ", Available: " + available);
         this.required = required;
         this.available = available;
     }

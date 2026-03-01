@@ -63,3 +63,9 @@ databaseChangeLog:
       file: db/changelog/20260228073817-content-embedding-cascade-delete.xml
   - include:
       file: db/changelog/20260301012730-create-linkedin-import-table.xml
+  - include:
+      file: db/changelog/20260301031525-add-work-language-to-job-experience.xml
+  - include:
+      file: db/changelog/20260301031430-create-visitor-tables.xml
+  - include:
+      file: db/changelog/20260301031500-add-role-to-users.xml

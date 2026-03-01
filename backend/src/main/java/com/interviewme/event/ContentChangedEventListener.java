@@ -73,6 +73,14 @@ public class ContentChangedEventListener {
         } else {
             embeddingService.deleteEmbedding(profile.getTenantId(), ContentType.PROFILE_SUMMARY, profile.getId());
         }
+
+        // Generate separate LANGUAGE embedding
+        if (profile.getDeletedAt() == null && profile.getLanguages() != null && !profile.getLanguages().isEmpty()) {
+            String text = formatLanguageText(profile);
+            embeddingService.generateEmbedding(profile.getTenantId(), ContentType.LANGUAGE, profile.getId(), text);
+        } else {
+            embeddingService.deleteEmbedding(profile.getTenantId(), ContentType.LANGUAGE, profile.getId());
+        }
     }
 
     public static String formatSkillText(UserSkill skill) {
@@ -143,6 +151,9 @@ public class ContentChangedEventListener {
         if (job.getAchievements() != null && !job.getAchievements().isBlank()) {
             sb.append(". Key achievements: ").append(job.getAchievements());
         }
+        if (job.getWorkLanguage() != null && !job.getWorkLanguage().isBlank()) {
+            sb.append(". Work Language: ").append(job.getWorkLanguage());
+        }
         return sb.toString();
     }
 
@@ -161,6 +172,10 @@ public class ContentChangedEventListener {
             sb.append(". ").append(education.getNotes());
         }
         return sb.toString();
+    }
+
+    public static String formatLanguageText(Profile profile) {
+        return "Languages spoken: " + String.join(", ", profile.getLanguages());
     }
 
     public static String formatProfileSummaryText(Profile profile) {

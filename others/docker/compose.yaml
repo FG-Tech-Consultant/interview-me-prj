@@ -2,7 +2,7 @@ services:
 
   interview-me-db:
     image: pgvector/pgvector:pg18
-    container_name: interview_me_db
+    container_name: interview-me-dev-db
     restart: always
     environment:
       - POSTGRES_USER=${IM_PG_USER:-postgres}
@@ -12,16 +12,18 @@ services:
       - "${IM_PG_PORT:-5432}:5432"
     volumes:
       - ./postgresql/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
-      - interview-me-db_pg_data:/var/lib/postgresql
+      - interview-me-dev-pg-data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - dev-network
 
   interview-me-app:
     image: interview-me:${IM_APP_VERSION:-latest}
-    container_name: interview_me_app
+    container_name: interview-me-dev-app
     restart: always
     mem_limit: 1024m
     extra_hosts:
@@ -43,21 +45,24 @@ services:
       - OPENAI_CHAT_MODEL=${IM_OPENAI_CHAT_MODEL:-gpt-4o-mini}
       - GEMINI_API_KEY=${IM_GEMINI_API_KEY:-}
       - CLAUDE_API_KEY=${IM_CLAUDE_API_KEY:-}
-      - OLLAMA_BASE_URL=${IM_OLLAMA_BASE_URL:-http://ollama:11434}
+      - OLLAMA_BASE_URL=${IM_OLLAMA_BASE_URL:-http://interview-me-ollama:11434}
       - OLLAMA_CHAT_MODEL=${IM_OLLAMA_CHAT_MODEL:-qwen2.5:7b}
+      - AI_EMBEDDING_PROVIDER=${IM_EMBEDDING_PROVIDER:-ollama}
       - TEST_CLEANUP_API_KEY=${IM_TEST_CLEANUP_API_KEY:-test-cleanup-secret-key-dev}
     ports:
-      - "${IM_APP_PORT:-8080}:8080"
+      - "8081:8080"
     volumes:
-      - /var/opt/interview-me-prj/logs:/app/logs
+      - /var/opt/interview-me-prj/logs_dev:/app/logs
     networks:
-      - default
+      - dev-network
       - ollama_default
 
 volumes:
-  interview-me-db_pg_data:
+  interview-me-dev-pg-data:
     driver: local
 
 networks:
+  dev-network:
+    driver: bridge
   ollama_default:
     external: true

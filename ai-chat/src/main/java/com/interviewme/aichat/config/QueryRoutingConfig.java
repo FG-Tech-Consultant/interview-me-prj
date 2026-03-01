@@ -74,7 +74,11 @@ public class QueryRoutingConfig {
 
         retrieverToDescription.put(
                 new ProfileContentRetriever(embeddingRepository, ollamaEmbeddingModel, ContentType.PROFILE_SUMMARY, topK, threshold),
-                "professional summary, career overview, headline, location, languages spoken");
+                "professional summary, career overview, headline, location");
+
+        retrieverToDescription.put(
+                new ProfileContentRetriever(embeddingRepository, ollamaEmbeddingModel, ContentType.LANGUAGE, topK, threshold),
+                "languages spoken, language proficiency, fluency levels, native language, multilingual abilities");
 
         log.info("Created LanguageModelQueryRouter with {} content type retrievers", retrieverToDescription.size());
         return new LanguageModelQueryRouter(ollamaChatModel, retrieverToDescription);

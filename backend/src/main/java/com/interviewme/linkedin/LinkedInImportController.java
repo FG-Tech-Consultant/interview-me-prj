@@ -5,9 +5,11 @@ import com.interviewme.linkedin.dto.*;
 import com.interviewme.linkedin.service.LinkedInZipParserService;
 import com.interviewme.model.ImportStrategy;
 import com.interviewme.model.LinkedInImport;
+import com.interviewme.model.Profile;
 import com.interviewme.model.User;
 import com.interviewme.repository.LinkedInImportRepository;
 import com.interviewme.repository.ProfileRepository;
+import com.interviewme.util.SlugGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -80,7 +82,7 @@ public class LinkedInImportController {
         User user = (User) authentication.getPrincipal();
         log.info("POST /api/v1/linkedin/import/confirm - tenantId={}, previewId={}", tenantId, request.previewId());
 
-        LinkedInImportData data = previewCache.remove(request.previewId());
+        LinkedInImportData data = previewCache.get(request.previewId());
         if (data == null) {
             return ResponseEntity.badRequest()
                     .body(Map.of("error", "Preview not found or expired. Please upload the file again."));
@@ -91,14 +93,18 @@ public class LinkedInImportController {
                 .orElse(null);
 
         if (profileId == null) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("error", "No profile found. Please create a profile first."));
+            log.info("No profile found for user={}, auto-creating from LinkedIn data", user.getId());
+            Profile profile = createProfileFromLinkedIn(tenantId, user, data);
+            profileId = profile.getId();
         }
 
         ImportStrategy strategy = request.importStrategy() != null ? request.importStrategy() : ImportStrategy.MERGE;
 
         LinkedInImport importRecord = mappingService.executeImport(
                 tenantId, profileId, data, strategy, "linkedin-export.zip");
+
+        // Only remove from cache after successful import
+        previewCache.remove(request.previewId());
 
         ImportResultResponse response = new ImportResultResponse(
                 importRecord.getId(),
@@ -137,5 +143,37 @@ public class LinkedInImportController {
                 .toList();
 
         return ResponseEntity.ok(history);
+    }
+
+    private Profile createProfileFromLinkedIn(Long tenantId, User user, LinkedInImportData data) {
+        LinkedInProfileData profileData = data.profile();
+
+        String fullName = user.getEmail().split("@")[0]; // fallback
+        if (profileData != null) {
+            String linkedInName = ((profileData.firstName() != null ? profileData.firstName() : "") + " " +
+                    (profileData.lastName() != null ? profileData.lastName() : "")).trim();
+            if (!linkedInName.isBlank()) {
+                fullName = linkedInName;
+            }
+        }
+
+        String headline = profileData != null && profileData.headline() != null
+                ? profileData.headline() : "Professional";
+
+        String slug = SlugGenerator.generateUniqueSlug(fullName, profileRepository::existsBySlugGlobally);
+
+        Profile profile = new Profile();
+        profile.setTenantId(tenantId);
+        profile.setUserId(user.getId());
+        profile.setFullName(fullName);
+        profile.setHeadline(headline);
+        profile.setSummary(profileData != null ? profileData.summary() : null);
+        profile.setLocation(profileData != null ? profileData.location() : null);
+        profile.setSlug(slug);
+        profile.setDefaultVisibility("public");
+
+        Profile saved = profileRepository.save(profile);
+        log.info("Auto-created profile id={} slug={} for user={}", saved.getId(), slug, user.getId());
+        return saved;
     }
 }

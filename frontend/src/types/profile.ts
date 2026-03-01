@@ -34,6 +34,7 @@ export interface JobExperience {
   responsibilities: string | null;
   achievements: string | null;
   metrics: Record<string, unknown>;
+  workLanguage: string | null;
   visibility: string;
   version: number;
   createdAt: string;
@@ -91,6 +92,7 @@ export interface CreateJobExperienceRequest {
   responsibilities?: string;
   achievements?: string;
   metrics?: Record<string, unknown>;
+  workLanguage?: string;
   visibility?: string;
 }
 
@@ -105,6 +107,7 @@ export interface UpdateJobExperienceRequest {
   responsibilities?: string;
   achievements?: string;
   metrics?: Record<string, unknown>;
+  workLanguage?: string;
   visibility?: string;
   version: number;
 }

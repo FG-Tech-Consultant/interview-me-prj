@@ -1,0 +1,9 @@
+{
+  "title": "Admin Panel",
+  "subtitle": "Visitor analytics across all profiles",
+  "visitors": {
+    "title": "All Visitors",
+    "profile": "Profile Visited",
+    "noData": "No visitor data available"
+  }
+}

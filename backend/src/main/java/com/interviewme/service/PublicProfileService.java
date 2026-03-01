@@ -43,7 +43,7 @@ public class PublicProfileService {
     private final StorySkillRepository storySkillRepository;
     private final BillingProperties billingProperties;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PublicProfileResponse getPublicProfile(String slug) {
         log.info("Fetching public profile for slug: {}", slug);
 
@@ -126,13 +126,9 @@ public class PublicProfileService {
         return new SlugCheckResponse(normalized, true, Collections.emptyList(), changeCost);
     }
 
-    @Transactional
     public void incrementViewCount(Long profileId) {
         try {
-            profileRepository.findById(profileId).ifPresent(profile -> {
-                profile.setViewCount(profile.getViewCount() + 1);
-                profileRepository.save(profile);
-            });
+            profileRepository.incrementViewCount(profileId);
         } catch (Exception ex) {
             log.warn("Failed to increment view count for profile {}: {}", profileId, ex.getMessage());
         }
@@ -255,6 +251,7 @@ public class PublicProfileService {
                             job.getResponsibilities(),
                             job.getAchievements(),
                             job.getMetrics(),
+                            job.getWorkLanguage(),
                             projectResponses
                     );
                 })

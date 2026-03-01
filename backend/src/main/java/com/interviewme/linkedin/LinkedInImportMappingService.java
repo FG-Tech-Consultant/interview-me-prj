@@ -1,5 +1,6 @@
 package com.interviewme.linkedin;
 
+import com.interviewme.event.ContentChangedEventListener;
 import com.interviewme.linkedin.dto.*;
 import com.interviewme.model.*;
 import com.interviewme.repository.*;
@@ -27,6 +28,7 @@ public class LinkedInImportMappingService {
     private final SkillRepository skillRepository;
     private final UserSkillRepository userSkillRepository;
     private final LinkedInImportRepository linkedInImportRepository;
+    private final ContentChangedEventListener contentChangedEventListener;
 
     @Transactional
     public LinkedInImport executeImport(Long tenantId, Long profileId, LinkedInImportData data, ImportStrategy strategy, String filename) {
@@ -64,6 +66,9 @@ public class LinkedInImportMappingService {
 
             importRecord.setStatus(ImportStatus.COMPLETED);
             importRecord.setImportedAt(Instant.now());
+
+            // Generate RAG embeddings for all imported content
+            generateEmbeddings(tenantId, profileId);
         } catch (Exception e) {
             log.error("Import failed for tenant={}, profile={}", tenantId, profileId, e);
             importRecord.setStatus(ImportStatus.FAILED);
@@ -352,5 +357,42 @@ public class LinkedInImportMappingService {
         if (a == null && b == null) return true;
         if (a == null || b == null) return false;
         return a.equalsIgnoreCase(b);
+    }
+
+    private void generateEmbeddings(Long tenantId, Long profileId) {
+        try {
+            // Profile summary + languages
+            profileRepository.findByIdAndTenantId(profileId, tenantId)
+                    .ifPresent(profile -> {
+                        try { contentChangedEventListener.onProfileChanged(profile); }
+                        catch (Exception e) { log.warn("Failed to generate profile embedding: {}", e.getMessage()); }
+                    });
+
+            // Jobs
+            List<JobExperience> jobs = jobExperienceRepository.findByProfileIdAndDeletedAtIsNullOrderByStartDateDesc(profileId);
+            for (JobExperience job : jobs) {
+                try { contentChangedEventListener.onJobChanged(job); }
+                catch (Exception e) { log.warn("Failed to generate job embedding for {}: {}", job.getId(), e.getMessage()); }
+            }
+
+            // Education
+            List<Education> edus = educationRepository.findByProfileIdAndDeletedAtIsNullOrderByEndDateDesc(profileId);
+            for (Education edu : edus) {
+                try { contentChangedEventListener.onEducationChanged(edu); }
+                catch (Exception e) { log.warn("Failed to generate education embedding for {}: {}", edu.getId(), e.getMessage()); }
+            }
+
+            // Skills (reload to get Skill entity via eager fetch)
+            List<UserSkill> skills = userSkillRepository.findByProfileIdAndDeletedAtIsNullOrderBySkill_CategoryAscSkill_NameAsc(profileId);
+            for (UserSkill skill : skills) {
+                try { contentChangedEventListener.onSkillChanged(skill); }
+                catch (Exception e) { log.warn("Failed to generate skill embedding for {}: {}", skill.getId(), e.getMessage()); }
+            }
+
+            log.info("Generated embeddings for LinkedIn import: profile={}, jobs={}, education={}, skills={}",
+                    profileId, jobs.size(), edus.size(), skills.size());
+        } catch (Exception e) {
+            log.warn("Failed to generate embeddings after LinkedIn import for profile {}: {}", profileId, e.getMessage());
+        }
     }
 }

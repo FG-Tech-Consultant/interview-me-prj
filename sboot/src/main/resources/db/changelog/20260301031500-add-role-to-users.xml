@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260301031500-1" author="claude">
+        <addColumn tableName="users">
+            <column name="role" type="VARCHAR(20)" defaultValue="USER">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback><dropColumn tableName="users" columnName="role"/></rollback>
+    </changeSet>
+
+    <changeSet id="20260301031500-2" author="claude" context="!test">
+        <comment>Create default admin user. Password: admin123 (BCrypt hash)</comment>
+        <sql>
+            INSERT INTO tenant (id, name, created_at) VALUES (999999, 'Admin', NOW()) ON CONFLICT (id) DO NOTHING;
+            INSERT INTO users (tenant_id, email, password_hash, role, created_at)
+            VALUES (999999, 'admin@interview-me.dev', '$2b$10$BFZIIAesVBA5eUiOZQ/OFuBHHbmwyKDFqIMMO0I/uNvaoueJ6.pDO', 'ADMIN', NOW())
+            ON CONFLICT (email) DO NOTHING;
+        </sql>
+        <rollback>
+            <sql>DELETE FROM users WHERE email = 'admin@interview-me.dev';</sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

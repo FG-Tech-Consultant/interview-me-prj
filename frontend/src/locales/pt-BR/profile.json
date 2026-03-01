@@ -37,6 +37,8 @@
     "noExperiences": "Nenhuma experiencia adicionada ainda. Clique em \"Adicionar Experiencia\" para comecar.",
     "errorLoading": "Erro ao carregar experiencias profissionais",
     "confirmDelete": "Tem certeza que deseja excluir esta experiencia profissional?",
+    "workLanguage": "Idioma de Trabalho",
+    "workLanguagePlaceholder": "ex: Ingles, Portugues",
     "showProjects": "Mostrar Projetos e Historias",
     "hideProjects": "Ocultar Projetos"
   },

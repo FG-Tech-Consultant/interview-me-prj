@@ -8,9 +8,11 @@ import {
   FormControlLabel,
   Alert,
   Stack,
+  Autocomplete,
 } from '@mui/material';
 import { useCreateJobExperience, useUpdateJobExperience } from '../../hooks/useJobExperience';
 import type { JobExperience, CreateJobExperienceRequest } from '../../types/profile';
+import { LANGUAGES } from '../../constants/languages';
 
 interface JobExperienceFormProps {
   profileId: number;
@@ -35,6 +37,7 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
     employmentType: experience?.employmentType || '',
     responsibilities: experience?.responsibilities || '',
     achievements: experience?.achievements || '',
+    workLanguage: experience?.workLanguage || '',
   });
   const { t } = useTranslation('profile');
 
@@ -69,6 +72,7 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
             employmentType: formData.employmentType || undefined,
             responsibilities: formData.responsibilities || undefined,
             achievements: formData.achievements || undefined,
+            workLanguage: formData.workLanguage || undefined,
             version: experience.version,
           },
         },
@@ -89,6 +93,7 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
         employmentType: formData.employmentType || undefined,
         responsibilities: formData.responsibilities || undefined,
         achievements: formData.achievements || undefined,
+        workLanguage: formData.workLanguage || undefined,
       };
 
       createMutation.mutate(
@@ -153,6 +158,28 @@ export const JobExperienceForm: React.FC<JobExperienceFormProps> = ({
               onChange={handleChange}
               placeholder={t('job.employmentTypePlaceholder')}
               size="small"
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Autocomplete
+              options={LANGUAGES as unknown as string[]}
+              value={formData.workLanguage || null}
+              onChange={(_e, newValue) =>
+                setFormData((prev) => ({ ...prev, workLanguage: newValue || '' }))
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={t('job.workLanguage')}
+                  placeholder={t('job.workLanguagePlaceholder')}
+                  size="small"
+                />
+              )}
+              freeSolo={false}
+              autoHighlight
             />
           </Grid>
         </Grid>

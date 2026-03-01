@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 import {
   Drawer,
   List,
@@ -19,10 +20,13 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import InboxIcon from '@mui/icons-material/Inbox';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import PeopleIcon from '@mui/icons-material/People';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AppVersion from '../common/AppVersion';
+import { getCurrentUser } from '../../api/auth';
 
 const DRAWER_WIDTH_OPEN = 240;
 const DRAWER_WIDTH_COLLAPSED = 72;
@@ -33,7 +37,7 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
-const navItems: NavItem[] = [
+const baseNavItems: NavItem[] = [
   { labelKey: 'nav.dashboard', path: '/dashboard', icon: <DashboardIcon /> },
   { labelKey: 'nav.profile', path: '/profile', icon: <PersonIcon /> },
   { labelKey: 'nav.skills', path: '/skills', icon: <PsychologyIcon /> },
@@ -41,9 +45,12 @@ const navItems: NavItem[] = [
   { labelKey: 'nav.linkedinAnalyzer', path: '/linkedin-analyzer', icon: <AssessmentIcon /> },
   { labelKey: 'nav.linkedinInbox', path: '/linkedin-inbox', icon: <InboxIcon /> },
   { labelKey: 'nav.linkedinImport', path: '/linkedin-import', icon: <FileUploadIcon /> },
+  { labelKey: 'nav.visitors', path: '/visitors', icon: <PeopleIcon /> },
   { labelKey: 'nav.billing', path: '/billing', icon: <AccountBalanceWalletIcon /> },
   { labelKey: 'nav.settings', path: '/settings', icon: <SettingsIcon /> },
 ];
+
+const adminNavItem: NavItem = { labelKey: 'nav.admin', path: '/admin', icon: <AdminPanelSettingsIcon /> };
 
 interface SidebarProps {
   open: boolean;
@@ -58,6 +65,16 @@ export default function Sidebar({ open, onToggle, mobileOpen, onMobileClose }: S
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { t } = useTranslation('common');
+
+  const { data: currentUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: getCurrentUser,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const navItems = currentUser?.role === 'ADMIN'
+    ? [...baseNavItems, adminNavItem]
+    : baseNavItems;
 
   const drawerWidth = open ? DRAWER_WIDTH_OPEN : DRAWER_WIDTH_COLLAPSED;
 

@@ -15,6 +15,7 @@ public record PublicJobResponse(
     String responsibilities,
     String achievements,
     Map<String, Object> metrics,
+    String workLanguage,
     List<PublicProjectResponse> projects
 ) {
 }

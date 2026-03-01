@@ -19,5 +19,18 @@
     "justNow": "just now",
     "minAgo": "{{count}} min ago",
     "hoursAgo": "{{count}}h ago"
+  },
+  "visitor": {
+    "title": "Introduce Yourself",
+    "subtitle": "Before chatting with {{name}}'s career assistant, please tell us a bit about yourself.",
+    "name": "Your Name",
+    "company": "Company",
+    "jobRole": "Your Role / Position",
+    "linkedinUrl": "LinkedIn Profile (optional)",
+    "contactEmail": "Email (optional)",
+    "contactWhatsapp": "WhatsApp (optional)",
+    "cancel": "Cancel",
+    "startChat": "Start Chat",
+    "identifying": "Starting..."
   }
 }

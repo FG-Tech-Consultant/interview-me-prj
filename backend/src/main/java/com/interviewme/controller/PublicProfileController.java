@@ -17,7 +17,7 @@ public class PublicProfileController {
     private final PublicProfileService publicProfileService;
 
     @GetMapping("/{slug}")
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<PublicProfileResponse> getPublicProfile(@PathVariable String slug) {
         log.info("GET /api/public/profiles/{}", slug);
         PublicProfileResponse response = publicProfileService.getPublicProfile(slug);

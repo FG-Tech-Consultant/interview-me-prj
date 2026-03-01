@@ -153,7 +153,7 @@ class CoinWalletServiceTest {
 
             assertThatThrownBy(() -> coinWalletService.spend(TENANT_ID, 10, RefType.EXPORT, "export-1", "PDF export"))
                     .isInstanceOf(InsufficientBalanceException.class)
-                    .hasMessageContaining("Insufficient coins");
+                    .hasMessageContaining("Insufficient credits");
         }
 
         @Test

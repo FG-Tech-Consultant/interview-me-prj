@@ -21,6 +21,7 @@ export interface UserInfoResponse {
   id: number;
   email: string;
   tenantId: number;
+  role: string;
   createdAt: string;
 }
 

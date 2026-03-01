@@ -12,12 +12,16 @@ import WorkIcon from '@mui/icons-material/Work';
 import SchoolIcon from '@mui/icons-material/School';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import DescriptionIcon from '@mui/icons-material/Description';
+import PeopleIcon from '@mui/icons-material/People';
+import ChatIcon from '@mui/icons-material/Chat';
+import { useQuery } from '@tanstack/react-query';
 import { useCurrentProfile } from '../../hooks/useProfile';
 import { useUserSkills } from '../../hooks/useSkills';
 import { useJobExperiences } from '../../hooks/useJobExperience';
 import { useEducations } from '../../hooks/useEducation';
 import { useWallet } from '../../hooks/useBilling';
 import { useExportHistory } from '../../hooks/useExports';
+import { visitorApi } from '../../api/visitorApi';
 import type { UserSkillsGrouped } from '../../types/skill';
 
 interface StatCardProps {
@@ -66,6 +70,10 @@ export default function StatsCards() {
   const { data: eduData, isLoading: eduLoading } = useEducations(profileId ?? 0);
   const { data: walletData, isLoading: walletLoading } = useWallet();
   const { data: exportsData, isLoading: exportsLoading } = useExportHistory(0, 1);
+  const { data: visitorStats, isLoading: visitorStatsLoading } = useQuery({
+    queryKey: ['visitorStats'],
+    queryFn: visitorApi.getVisitorStats,
+  });
 
   const stats = [
     {
@@ -97,6 +105,18 @@ export default function StatsCards() {
       value: exportsData?.totalElements ?? 0,
       label: t('stats.exports'),
       loading: exportsLoading,
+    },
+    {
+      icon: <PeopleIcon sx={{ fontSize: 40, color: '#e65100' }} />,
+      value: visitorStats?.totalVisitors ?? 0,
+      label: t('stats.visitors'),
+      loading: visitorStatsLoading,
+    },
+    {
+      icon: <ChatIcon sx={{ fontSize: 40, color: '#00695c' }} />,
+      value: visitorStats?.chatVisitors ?? 0,
+      label: t('stats.interviews'),
+      loading: visitorStatsLoading,
     },
   ];
 

@@ -56,6 +56,7 @@ public class ChatService {
     private final BillingProperties billingProperties;
     private final AiProperties aiProperties;
     private final ApplicationEventPublisher eventPublisher;
+    private final VisitorService visitorService;
 
     private JsonNode ragInstructions;
 
@@ -99,6 +100,11 @@ public class ChatService {
         ChatMessage userMsg = saveMessage(session, ChatMessageRole.USER,
                 request.message(), ChatMessageStatus.DELIVERED);
 
+        // 5b. Log visitor message if visitor token present
+        if (request.visitorToken() != null && !request.visitorToken().isBlank()) {
+            visitorService.logChatMessage(request.visitorToken(), "VISITOR", request.message(), null);
+        }
+
         // 6. RAG: retrieve relevant public content
         String retrievedContext;
         try {
@@ -126,6 +132,11 @@ public class ChatService {
             assistantMsg.setLlmModel(llmResponse.model());
             assistantMsg.setLatencyMs((int) llmResponse.latencyMs());
             messageRepository.save(assistantMsg);
+
+            // 10b. Log assistant message for visitor tracking
+            if (request.visitorToken() != null && !request.visitorToken().isBlank()) {
+                visitorService.logChatMessage(request.visitorToken(), "ASSISTANT", llmResponse.content(), llmResponse.tokensUsed());
+            }
 
             // 11. Update session
             session.setLastMessageAt(Instant.now());
