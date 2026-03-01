@@ -32,6 +32,8 @@ public class OpenAiLlmClient implements LlmClient {
 
     @Override
     public LlmResponse complete(LlmRequest request) {
+        String model = request.modelOverride() != null ? request.modelOverride() : getModel();
+
         List<Map<String, String>> messages = new ArrayList<>();
         messages.add(Map.of("role", "system", "content", request.systemPrompt()));
         for (LlmChatMessage msg : request.messages()) {
@@ -39,7 +41,7 @@ public class OpenAiLlmClient implements LlmClient {
         }
 
         Map<String, Object> body = Map.of(
-                "model", getModel(),
+                "model", model,
                 "messages", messages,
                 "max_tokens", request.maxTokens(),
                 "temperature", request.temperature()
@@ -66,7 +68,7 @@ public class OpenAiLlmClient implements LlmClient {
         Map<String, Object> usage = (Map<String, Object>) response.get("usage");
         int totalTokens = ((Number) usage.get("total_tokens")).intValue();
 
-        return new LlmResponse(content, totalTokens, getProvider(), getModel(), latency);
+        return new LlmResponse(content, totalTokens, getProvider(), model, latency);
     }
 
     @Override

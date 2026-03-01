@@ -60,6 +60,7 @@ public class ChatService {
     private final ApplicationEventPublisher eventPublisher;
     private final VisitorService visitorService;
     private final ObjectMapper objectMapper;
+    private final TenantSettingsService tenantSettingsService;
 
     private JsonNode ragInstructions;
 
@@ -123,9 +124,12 @@ public class ChatService {
         // 8. Build system prompt
         String systemPrompt = buildSystemPrompt(profile, retrievedContext);
 
-        // 9. Call LLM
+        // 9. Look up tenant AI provider preferences and call LLM
+        String providerOverride = tenantSettingsService.getAiProvider(tenantId).orElse(null);
+        String modelOverride = tenantSettingsService.getAiChatModel(tenantId).orElse(null);
         try {
-            LlmCompletionResult completionResult = llmRouter.completeWithRequest(tenantId, systemPrompt, history);
+            LlmCompletionResult completionResult = llmRouter.completeWithRequest(
+                    tenantId, providerOverride, modelOverride, systemPrompt, history);
             LlmResponse llmResponse = completionResult.response();
             LlmRequest llmRequest = completionResult.request();
 

@@ -32,13 +32,15 @@ public class ClaudeLlmClient implements LlmClient {
 
     @Override
     public LlmResponse complete(LlmRequest request) {
+        String model = request.modelOverride() != null ? request.modelOverride() : getModel();
+
         List<Map<String, String>> messages = new ArrayList<>();
         for (LlmChatMessage msg : request.messages()) {
             messages.add(Map.of("role", msg.role(), "content", msg.content()));
         }
 
         Map<String, Object> body = Map.of(
-                "model", getModel(),
+                "model", model,
                 "system", request.systemPrompt(),
                 "messages", messages,
                 "max_tokens", request.maxTokens(),
@@ -65,7 +67,7 @@ public class ClaudeLlmClient implements LlmClient {
         int inputTokens = ((Number) usage.get("input_tokens")).intValue();
         int outputTokens = ((Number) usage.get("output_tokens")).intValue();
 
-        return new LlmResponse(text, inputTokens + outputTokens, getProvider(), getModel(), latency);
+        return new LlmResponse(text, inputTokens + outputTokens, getProvider(), model, latency);
     }
 
     @Override

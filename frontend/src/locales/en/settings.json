@@ -2,7 +2,8 @@
   "title": "Settings",
   "tabs": {
     "account": "Account",
-    "preferences": "Preferences"
+    "preferences": "Preferences",
+    "ai": "AI Settings"
   },
   "account": {
     "title": "Account Information",
@@ -29,5 +30,19 @@
     "cancelButton": "Cancel",
     "deleting": "Deleting account...",
     "mismatch": "Confirmation text does not match. Please type exactly: DELETE MY ACCOUNT"
+  },
+  "ai": {
+    "title": "AI Provider Settings",
+    "description": "Configure which AI model powers your public profile assistant.",
+    "provider": "AI Provider",
+    "providerHelp": "Select which AI provider to use for your assistant chat.",
+    "systemDefault": "System Default",
+    "chatModel": "Model",
+    "chatModelHelp": "Override the default model for the selected provider. Leave empty to use the provider's default.",
+    "defaultModel": "Default: {{model}}",
+    "save": "Save Settings",
+    "saveSuccess": "AI settings saved successfully.",
+    "saveError": "Failed to save AI settings.",
+    "resetToDefault": "Reset to Default"
   }
 }

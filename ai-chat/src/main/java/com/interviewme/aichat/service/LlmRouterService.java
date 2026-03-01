@@ -10,6 +10,7 @@ import com.interviewme.aichat.exception.LlmUnavailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +36,27 @@ public class LlmRouterService {
     }
 
     /**
-     * Sends a chat completion request to the configured LLM provider and returns both
+     * Sends a chat completion request to the default LLM provider and returns both
      * the request that was sent and the response that was received.
      */
     public LlmCompletionResult completeWithRequest(Long tenantId, String systemPrompt, List<LlmChatMessage> history) {
-        String provider = aiProperties.getDefaultProvider();
+        return completeWithRequest(tenantId, null, null, systemPrompt, history);
+    }
+
+    /**
+     * Sends a chat completion request to the specified LLM provider (or default if null)
+     * with an optional model override, and returns both the request and response.
+     */
+    public LlmCompletionResult completeWithRequest(Long tenantId, String providerOverride, String modelOverride,
+                                                     String systemPrompt, List<LlmChatMessage> history) {
+        String provider = (providerOverride != null) ? providerOverride : aiProperties.getDefaultProvider();
         LlmClient client = clients.get(provider);
+
+        if (client == null) {
+            log.warn("Provider {} not available, falling back to default: {}", provider, aiProperties.getDefaultProvider());
+            provider = aiProperties.getDefaultProvider();
+            client = clients.get(provider);
+        }
 
         if (client == null) {
             throw new LlmUnavailableException("No LLM client configured for provider: " + provider);
@@ -50,10 +66,12 @@ public class LlmRouterService {
                 systemPrompt,
                 history,
                 aiProperties.getChat().getMaxTokens(),
-                aiProperties.getChat().getTemperature()
+                aiProperties.getChat().getTemperature(),
+                modelOverride
         );
 
-        log.info("Calling LLM provider={} model={} tenantId={}", provider, client.getModel(), tenantId);
+        String effectiveModel = modelOverride != null ? modelOverride : client.getModel();
+        log.info("Calling LLM provider={} model={} tenantId={}", provider, effectiveModel, tenantId);
 
         long start = System.currentTimeMillis();
         try {
@@ -67,7 +85,7 @@ public class LlmRouterService {
                     response.content(),
                     response.tokensUsed(),
                     provider,
-                    client.getModel(),
+                    effectiveModel,
                     latency
             );
 
@@ -77,5 +95,20 @@ public class LlmRouterService {
             log.error("LLM call failed provider={} latencyMs={} error={}", provider, latency, e.getMessage());
             throw new LlmUnavailableException("AI service temporarily unavailable", e);
         }
+    }
+
+    /**
+     * Returns the list of available (configured) LLM provider names.
+     */
+    public List<String> getAvailableProviders() {
+        return new ArrayList<>(clients.keySet());
+    }
+
+    /**
+     * Returns the default model name for the given provider, or null if the provider is not available.
+     */
+    public String getDefaultModel(String provider) {
+        LlmClient client = clients.get(provider);
+        return client != null ? client.getModel() : null;
     }
 }

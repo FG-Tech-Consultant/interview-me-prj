@@ -30,6 +30,8 @@ public class GeminiLlmClient implements LlmClient {
 
     @Override
     public LlmResponse complete(LlmRequest request) {
+        String model = request.modelOverride() != null ? request.modelOverride() : getModel();
+
         List<Map<String, Object>> contents = new ArrayList<>();
 
         // Add system instruction as first user message (Gemini style)
@@ -57,7 +59,7 @@ public class GeminiLlmClient implements LlmClient {
         @SuppressWarnings("unchecked")
         Map<String, Object> response = restClient.post()
                 .uri("/models/{model}:generateContent?key={key}",
-                        getModel(), aiProperties.getGemini().getApiKey())
+                        model, aiProperties.getGemini().getApiKey())
                 .body(body)
                 .retrieve()
                 .body(Map.class);
@@ -79,7 +81,7 @@ public class GeminiLlmClient implements LlmClient {
             totalTokens = ((Number) usageMetadata.getOrDefault("totalTokenCount", 0)).intValue();
         }
 
-        return new LlmResponse(text, totalTokens, getProvider(), getModel(), latency);
+        return new LlmResponse(text, totalTokens, getProvider(), model, latency);
     }
 
     @Override

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Container,
   Typography,
@@ -24,24 +24,56 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  FormHelperText,
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { getCurrentUser, logout } from '../api/auth';
 import { deleteAccount } from '../api/accountApi';
+import { settingsApi, AiSettingsRequest } from '../api/settingsApi';
 
 export const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [confirmText, setConfirmText] = useState('');
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [aiProvider, setAiProvider] = useState<string>('');
+  const [aiChatModel, setAiChatModel] = useState('');
+  const [aiSaveSuccess, setAiSaveSuccess] = useState(false);
+  const [aiSaveError, setAiSaveError] = useState<string | null>(null);
   const { t } = useTranslation('settings');
   const { t: tCommon } = useTranslation('common');
   const { i18n } = useTranslation();
+  const queryClient = useQueryClient();
 
   const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
     queryFn: getCurrentUser,
+  });
+
+  const { data: aiSettings, isLoading: isAiLoading } = useQuery({
+    queryKey: ['aiSettings'],
+    queryFn: settingsApi.getAiSettings,
+  });
+
+  useEffect(() => {
+    if (aiSettings) {
+      setAiProvider(aiSettings.provider ?? '');
+      setAiChatModel(aiSettings.chatModel ?? '');
+    }
+  }, [aiSettings]);
+
+  const aiSettingsMutation = useMutation({
+    mutationFn: (data: AiSettingsRequest) => settingsApi.updateAiSettings(data),
+    onSuccess: () => {
+      setAiSaveSuccess(true);
+      setAiSaveError(null);
+      queryClient.invalidateQueries({ queryKey: ['aiSettings'] });
+    },
+    onError: () => {
+      setAiSaveError(t('ai.saveError'));
+      setAiSaveSuccess(false);
+    },
   });
 
   const deleteAccountMutation = useMutation({
@@ -73,6 +105,30 @@ export const SettingsPage = () => {
     i18n.changeLanguage(lang);
   };
 
+  const handleAiSave = () => {
+    setAiSaveSuccess(false);
+    setAiSaveError(null);
+    aiSettingsMutation.mutate({
+      provider: aiProvider || null,
+      chatModel: aiChatModel || null,
+    });
+  };
+
+  const handleAiReset = () => {
+    setAiProvider('');
+    setAiChatModel('');
+    setAiSaveSuccess(false);
+    setAiSaveError(null);
+    aiSettingsMutation.mutate({
+      provider: null,
+      chatModel: null,
+    });
+  };
+
+  const selectedProviderDefault = aiSettings?.availableProviders.find(
+    (p) => p.name === aiProvider,
+  )?.defaultModel;
+
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -91,6 +147,7 @@ export const SettingsPage = () => {
         <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)}>
           <Tab label={t('tabs.account')} />
           <Tab label={t('tabs.preferences')} />
+          <Tab label={t('tabs.ai')} />
         </Tabs>
       </Paper>
 
@@ -178,6 +235,92 @@ export const SettingsPage = () => {
               <MenuItem value="pt-BR">{tCommon('language.ptBR')}</MenuItem>
             </Select>
           </FormControl>
+        </Paper>
+      )}
+
+      {activeTab === 2 && (
+        <Paper sx={{ p: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            {t('ai.title')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            {t('ai.description')}
+          </Typography>
+
+          {isAiLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <FormControl sx={{ minWidth: 200 }}>
+                <InputLabel>{t('ai.provider')}</InputLabel>
+                <Select
+                  value={aiProvider}
+                  label={t('ai.provider')}
+                  onChange={(e) => {
+                    setAiProvider(e.target.value);
+                    setAiChatModel('');
+                    setAiSaveSuccess(false);
+                  }}
+                >
+                  <MenuItem value="">{t('ai.systemDefault')}</MenuItem>
+                  {aiSettings?.availableProviders.map((p) => (
+                    <MenuItem key={p.name} value={p.name}>
+                      {p.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText>{t('ai.providerHelp')}</FormHelperText>
+              </FormControl>
+
+              <TextField
+                label={t('ai.chatModel')}
+                value={aiChatModel}
+                onChange={(e) => {
+                  setAiChatModel(e.target.value);
+                  setAiSaveSuccess(false);
+                }}
+                placeholder={selectedProviderDefault ?? ''}
+                helperText={
+                  selectedProviderDefault
+                    ? `${t('ai.defaultModel', { model: selectedProviderDefault })}. ${t('ai.chatModelHelp')}`
+                    : t('ai.chatModelHelp')
+                }
+                sx={{ maxWidth: 400 }}
+              />
+
+              {aiSaveSuccess && (
+                <Alert severity="success" onClose={() => setAiSaveSuccess(false)}>
+                  {t('ai.saveSuccess')}
+                </Alert>
+              )}
+
+              {aiSaveError && (
+                <Alert severity="error" onClose={() => setAiSaveError(null)}>
+                  {aiSaveError}
+                </Alert>
+              )}
+
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  variant="contained"
+                  onClick={handleAiSave}
+                  disabled={aiSettingsMutation.isPending}
+                  startIcon={aiSettingsMutation.isPending ? <CircularProgress size={16} /> : undefined}
+                >
+                  {t('ai.save')}
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={handleAiReset}
+                  disabled={aiSettingsMutation.isPending}
+                >
+                  {t('ai.resetToDefault')}
+                </Button>
+              </Box>
+            </Box>
+          )}
         </Paper>
       )}
 

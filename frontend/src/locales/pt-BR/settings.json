@@ -2,7 +2,8 @@
   "title": "Configuracoes",
   "tabs": {
     "account": "Conta",
-    "preferences": "Preferencias"
+    "preferences": "Preferencias",
+    "ai": "Config. IA"
   },
   "account": {
     "title": "Informacoes da Conta",
@@ -29,5 +30,19 @@
     "cancelButton": "Cancelar",
     "deleting": "Excluindo conta...",
     "mismatch": "O texto de confirmacao nao corresponde. Digite exatamente: DELETE MY ACCOUNT"
+  },
+  "ai": {
+    "title": "Configurações do Provedor de IA",
+    "description": "Configure qual modelo de IA alimenta o assistente do seu perfil público.",
+    "provider": "Provedor de IA",
+    "providerHelp": "Selecione qual provedor de IA usar para o chat do assistente.",
+    "systemDefault": "Padrão do Sistema",
+    "chatModel": "Modelo",
+    "chatModelHelp": "Sobrescreva o modelo padrão do provedor selecionado. Deixe vazio para usar o padrão.",
+    "defaultModel": "Padrão: {{model}}",
+    "save": "Salvar Configurações",
+    "saveSuccess": "Configurações de IA salvas com sucesso.",
+    "saveError": "Falha ao salvar configurações de IA.",
+    "resetToDefault": "Restaurar Padrão"
   }
 }
