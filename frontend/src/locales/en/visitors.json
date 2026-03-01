@@ -17,13 +17,13 @@
     "actions": "Actions"
   },
   "reveal": {
-    "button": "Reveal Contact",
+    "button": "Reveal Info",
     "cost": "Costs {{cost}} credits",
-    "revealed": "Contact Revealed",
+    "revealed": "Info Revealed",
     "expiresIn": "Expires in {{hours}}h {{minutes}}m",
     "expired": "Reveal expired",
-    "confirmTitle": "Reveal Contact Info?",
-    "confirmMessage": "This will cost {{cost}} credits. Contact info will be visible for 12 hours.",
+    "confirmTitle": "Reveal Visitor Info?",
+    "confirmMessage": "This will cost {{cost}} credits. Full visitor info will be visible for 12 hours.",
     "noCredits": "Not enough credits"
   },
   "session": {
@@ -35,7 +35,8 @@
   "chatLog": {
     "title": "Chat Transcript",
     "visitor": "Visitor",
-    "assistant": "Assistant"
+    "assistant": "Assistant",
+    "llmRequest": "LLM Request (Full Prompt Sent)"
   },
   "empty": "No visitors yet. Share your public profile to start getting visitors!",
   "hidden": "Hidden"

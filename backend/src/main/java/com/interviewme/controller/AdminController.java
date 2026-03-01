@@ -1,6 +1,8 @@
 package com.interviewme.controller;
 
 import com.interviewme.common.util.TenantContext;
+import com.interviewme.dto.admin.AccountResponse;
+import com.interviewme.dto.admin.GlobalStatsResponse;
 import com.interviewme.dto.visitor.*;
 import com.interviewme.event.ContentChangedEventListener;
 import com.interviewme.model.*;
@@ -30,7 +32,65 @@ public class AdminController {
     private final JobExperienceRepository jobExperienceRepository;
     private final EducationRepository educationRepository;
     private final UserSkillRepository userSkillRepository;
+    private final UserRepository userRepository;
+    private final VisitorRepository visitorRepository;
+    private final VisitorSessionRepository visitorSessionRepository;
     private final ContentChangedEventListener contentChangedEventListener;
+
+    @GetMapping("/global-stats")
+    @Transactional(readOnly = true)
+    public ResponseEntity<GlobalStatsResponse> getGlobalStats(
+            @AuthenticationPrincipal User user) {
+        if (!"ADMIN".equals(user.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        Long savedTenantId = TenantContext.getTenantId();
+        TenantContext.clear();
+        try {
+            long totalAccounts = userRepository.count();
+            long totalProfileViews = profileRepository.sumAllViewCounts();
+            long totalVisitors = visitorRepository.countAllVisitors();
+            long totalInterviews = visitorSessionRepository.countAllInterviews();
+
+            return ResponseEntity.ok(new GlobalStatsResponse(
+                    totalAccounts, totalProfileViews, totalVisitors, totalInterviews));
+        } finally {
+            TenantContext.setTenantId(savedTenantId);
+        }
+    }
+
+    @GetMapping("/accounts")
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<AccountResponse>> getAccounts(
+            @AuthenticationPrincipal User user) {
+        if (!"ADMIN".equals(user.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        Long savedTenantId = TenantContext.getTenantId();
+        TenantContext.clear();
+        try {
+            List<User> users = userRepository.findAll();
+            List<AccountResponse> accounts = users.stream().map(u -> {
+                Profile profile = profileRepository.findByUserIdAndDeletedAtIsNull(u.getId()).orElse(null);
+                String fullName = profile != null ? profile.getFullName() : u.getEmail();
+                String slug = profile != null ? profile.getSlug() : null;
+                String publicProfileUrl = slug != null ? "/p/" + slug : null;
+                return new AccountResponse(
+                        u.getId(),
+                        u.getEmail(),
+                        fullName,
+                        u.getRole(),
+                        slug,
+                        publicProfileUrl,
+                        u.getCreatedAt()
+                );
+            }).toList();
+
+            return ResponseEntity.ok(accounts);
+        } finally {
+            TenantContext.setTenantId(savedTenantId);
+        }
+    }
 
     @GetMapping("/visitors")
     @Transactional(readOnly = true)

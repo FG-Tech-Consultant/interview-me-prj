@@ -42,6 +42,7 @@ export interface VisitorChatLogResponse {
   role: string;
   content: string;
   tokensUsed: number | null;
+  llmRequest: string | null;
   createdAt: string;
 }
 
@@ -49,6 +50,23 @@ export interface VisitorStatsResponse {
   profileViews: number;
   totalVisitors: number;
   chatVisitors: number;
+}
+
+export interface GlobalStatsResponse {
+  totalAccounts: number;
+  totalProfileViews: number;
+  totalVisitors: number;
+  totalInterviews: number;
+}
+
+export interface AccountResponse {
+  id: number;
+  email: string;
+  fullName: string;
+  role: string;
+  slug: string | null;
+  publicProfileUrl: string | null;
+  createdAt: string;
 }
 
 export const visitorApi = {
@@ -88,6 +106,18 @@ export const visitorApi = {
   // Authenticated: reveal visitor contact (costs credits)
   revealContact: async (visitorId: number): Promise<VisitorResponse> => {
     const response = await apiClient.post<VisitorResponse>(`/v1/visitors/${visitorId}/reveal`);
+    return response.data;
+  },
+
+  // Admin: get global stats
+  adminGetGlobalStats: async (): Promise<GlobalStatsResponse> => {
+    const response = await apiClient.get<GlobalStatsResponse>('/admin/global-stats');
+    return response.data;
+  },
+
+  // Admin: get accounts list
+  adminGetAccounts: async (): Promise<AccountResponse[]> => {
+    const response = await apiClient.get<AccountResponse[]>('/admin/accounts');
     return response.data;
   },
 

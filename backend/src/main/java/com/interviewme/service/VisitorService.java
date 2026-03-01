@@ -74,6 +74,11 @@ public class VisitorService {
 
     @Transactional
     public void logChatMessage(String visitorToken, String role, String content, Integer tokensUsed) {
+        logChatMessage(visitorToken, role, content, tokensUsed, null);
+    }
+
+    @Transactional
+    public void logChatMessage(String visitorToken, String role, String content, Integer tokensUsed, String llmRequest) {
         Visitor visitor = visitorRepository.findByVisitorToken(visitorToken).orElse(null);
         if (visitor == null) return;
 
@@ -96,6 +101,7 @@ public class VisitorService {
         chatLog.setRole(role);
         chatLog.setContent(content);
         chatLog.setTokensUsed(tokensUsed);
+        chatLog.setLlmRequest(llmRequest);
         visitorChatLogRepository.save(chatLog);
 
         session.setMessageCount(session.getMessageCount() + 1);
@@ -145,7 +151,7 @@ public class VisitorService {
     public List<VisitorChatLogResponse> getSessionMessages(Long sessionId) {
         return visitorChatLogRepository.findByVisitorSessionIdOrderByCreatedAtAsc(sessionId)
                 .stream()
-                .map(l -> new VisitorChatLogResponse(l.getId(), l.getRole(), l.getContent(), l.getTokensUsed(), l.getCreatedAt()))
+                .map(l -> new VisitorChatLogResponse(l.getId(), l.getRole(), l.getContent(), l.getTokensUsed(), l.getLlmRequest(), l.getCreatedAt()))
                 .toList();
     }
 
@@ -184,11 +190,28 @@ public class VisitorService {
         int sessionCount = sessions.size();
         int totalMessages = sessions.stream().mapToInt(VisitorSession::getMessageCount).sum();
 
+        String displayName = isRevealed ? v.getName() : maskName(v.getName());
+        String displayCompany = isRevealed ? v.getCompany() : "******";
+
         return new VisitorResponse(
-                v.getId(), v.getName(), v.getCompany(), v.getJobRole(),
+                v.getId(), displayName, displayCompany, v.getJobRole(),
                 isRevealed ? v.getLinkedinUrl() : null,
                 isRevealed ? v.getContactEmail() : null,
                 isRevealed ? v.getContactWhatsapp() : null,
                 v.getCreatedAt(), sessionCount, totalMessages, isRevealed);
+    }
+
+    /**
+     * Masks the visitor name: keeps the first name visible and replaces the rest with ******.
+     * Example: "John Smith" -> "John ******", "Maria" -> "Maria"
+     */
+    private String maskName(String name) {
+        if (name == null || name.isBlank()) return "******";
+        String trimmed = name.trim();
+        int spaceIndex = trimmed.indexOf(' ');
+        if (spaceIndex < 0) {
+            return trimmed;
+        }
+        return trimmed.substring(0, spaceIndex) + " ******";
     }
 }

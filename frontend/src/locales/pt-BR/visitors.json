@@ -17,13 +17,13 @@
     "actions": "Acoes"
   },
   "reveal": {
-    "button": "Revelar Contato",
+    "button": "Revelar Info",
     "cost": "Custa {{cost}} creditos",
-    "revealed": "Contato Revelado",
+    "revealed": "Info Revelada",
     "expiresIn": "Expira em {{hours}}h {{minutes}}m",
     "expired": "Revelacao expirou",
-    "confirmTitle": "Revelar Info de Contato?",
-    "confirmMessage": "Isso custara {{cost}} creditos. Info de contato ficara visivel por 12 horas.",
+    "confirmTitle": "Revelar Info do Visitante?",
+    "confirmMessage": "Isso custara {{cost}} creditos. Info completa do visitante ficara visivel por 12 horas.",
     "noCredits": "Creditos insuficientes"
   },
   "session": {
@@ -35,7 +35,8 @@
   "chatLog": {
     "title": "Transcricao do Chat",
     "visitor": "Visitante",
-    "assistant": "Assistente"
+    "assistant": "Assistente",
+    "llmRequest": "Requisicao LLM (Prompt Completo Enviado)"
   },
   "empty": "Nenhum visitante ainda. Compartilhe seu perfil publico para comecar!",
   "hidden": "Oculto"

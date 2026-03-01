@@ -35,6 +35,9 @@ public class VisitorChatLog {
     @Column(name = "tokens_used")
     private Integer tokensUsed;
 
+    @Column(name = "llm_request", columnDefinition = "TEXT")
+    private String llmRequest;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 

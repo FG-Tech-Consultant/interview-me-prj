@@ -7,5 +7,6 @@ public record VisitorChatLogResponse(
     String role,
     String content,
     Integer tokensUsed,
+    String llmRequest,
     Instant createdAt
 ) {}

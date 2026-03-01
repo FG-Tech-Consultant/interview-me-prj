@@ -1,16 +1,14 @@
 # Project Constitution
 
 <!--
-Sync Impact Report (Version 2.2.1 - Related Projects Section):
-- Version: 2.2.0 → 2.2.1 (PATCH - Added Related Projects reference)
+Sync Impact Report (Version 2.4.0 - Environments Section):
+- Version: 2.3.0 → 2.4.0 (MINOR - Added Environments documentation)
 - Added Sections:
-  - Governance > Related Projects: Cross-reference to E2E test project (interview-me-test-prj)
-- Rationale: Document the sibling E2E test project for discoverability and cross-project awareness
-- Templates requiring updates:
-  ⚠ plan-template.md (pending - still needs update for single-container architecture from v2.2.0)
-  ⚠ spec-template.md (pending - still needs update for monolithic deployment pattern from v2.2.0)
-  ⚠ tasks-template.md (pending - still needs update for Gradle multi-module tasks from v2.2.0)
+  - Governance > Environments (Docker Compose): Documents PROD vs DEV compose files and workflow
+- Rationale: Formalize that docker-compose.yml (root) is PROD and others/docker/compose.yaml is DEV. Tests run on DEV first, PROD updated only after verification.
 - Previous versions:
+  - v2.3.0: Added visitor tracking, admin, work language features
+  - v2.2.1: Added Related Projects reference
   - v2.2.0: Architectural pattern change (monolithic deployment)
   - v2.1.0: Added Principle 9 (Freemium Model)
   - v2.0.1: PostgreSQL corrections
@@ -19,11 +17,11 @@ Sync Impact Report (Version 2.2.1 - Related Projects Section):
 
 **Project Name:** Live Resume & Career Copilot
 
-**Version:** 2.3.0
+**Version:** 2.4.0
 
 **Ratification Date:** 2026-02-19
 
-**Last Amended:** 2026-02-28
+**Last Amended:** 2026-03-01
 
 ---
 
@@ -521,6 +519,13 @@ The following template files MUST remain synchronized with this constitution:
 - `.specify/templates/commands/*.md` - Workflow command definitions
 
 When amending this constitution, review and update dependent templates to maintain alignment.
+
+### Environments (Docker Compose)
+
+- **PROD:** `docker-compose.yml` (root of project) — Production environment
+- **DEV:** `others/docker/compose.yaml` — Development/testing environment
+- **Workflow:** Always test on DEV first. Only update PROD compose when everything is implemented and tested.
+- E2E tests run against the DEV environment
 
 ### Related Projects
 

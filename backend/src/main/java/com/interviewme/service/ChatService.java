@@ -3,6 +3,8 @@ package com.interviewme.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.interviewme.aichat.client.LlmChatMessage;
+import com.interviewme.aichat.client.LlmCompletionResult;
+import com.interviewme.aichat.client.LlmRequest;
 import com.interviewme.aichat.client.LlmResponse;
 import com.interviewme.aichat.config.AiProperties;
 import com.interviewme.aichat.exception.LlmUnavailableException;
@@ -57,6 +59,7 @@ public class ChatService {
     private final AiProperties aiProperties;
     private final ApplicationEventPublisher eventPublisher;
     private final VisitorService visitorService;
+    private final ObjectMapper objectMapper;
 
     private JsonNode ragInstructions;
 
@@ -122,7 +125,12 @@ public class ChatService {
 
         // 9. Call LLM
         try {
-            LlmResponse llmResponse = llmRouter.complete(tenantId, systemPrompt, history);
+            LlmCompletionResult completionResult = llmRouter.completeWithRequest(tenantId, systemPrompt, history);
+            LlmResponse llmResponse = completionResult.response();
+            LlmRequest llmRequest = completionResult.request();
+
+            // 9b. Serialize the LLM request for audit logging
+            String serializedLlmRequest = serializeLlmRequest(llmRequest);
 
             // 10. Store assistant message
             ChatMessage assistantMsg = saveMessage(session, ChatMessageRole.ASSISTANT,
@@ -133,9 +141,9 @@ public class ChatService {
             assistantMsg.setLatencyMs((int) llmResponse.latencyMs());
             messageRepository.save(assistantMsg);
 
-            // 10b. Log assistant message for visitor tracking
+            // 10b. Log assistant message for visitor tracking (with LLM request for audit)
             if (request.visitorToken() != null && !request.visitorToken().isBlank()) {
-                visitorService.logChatMessage(request.visitorToken(), "ASSISTANT", llmResponse.content(), llmResponse.tokensUsed());
+                visitorService.logChatMessage(request.visitorToken(), "ASSISTANT", llmResponse.content(), llmResponse.tokensUsed(), serializedLlmRequest);
             }
 
             // 11. Update session
@@ -343,5 +351,18 @@ public class ChatService {
         var status = freeTierService.getQuotaStatus(tenantId, FeatureType.CHAT_MESSAGE);
         int freeRemaining = Math.max(0, status.limit() - status.used());
         return new QuotaInfo(freeRemaining, status.limit(), status.quotaExceeded());
+    }
+
+    /**
+     * Serializes the LLM request (system prompt + messages + parameters) to JSON
+     * for storage in the visitor chat audit log.
+     */
+    private String serializeLlmRequest(LlmRequest llmRequest) {
+        try {
+            return objectMapper.writeValueAsString(llmRequest);
+        } catch (Exception e) {
+            log.warn("Failed to serialize LLM request for audit logging: {}", e.getMessage());
+            return null;
+        }
     }
 }

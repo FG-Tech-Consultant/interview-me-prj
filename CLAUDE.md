@@ -1,5 +1,11 @@
 # Project Instructions
 
+## Environments (Docker Compose)
+
+- **PROD:** `docker-compose.yml` (root) — Production environment. Only update after everything is implemented and tested.
+- **DEV:** `others/docker/compose.yaml` — Development/testing environment. Test here first.
+- E2E tests run against DEV environment.
+
 ## Build System
 
 **This project uses GRADLE, NOT Maven!**

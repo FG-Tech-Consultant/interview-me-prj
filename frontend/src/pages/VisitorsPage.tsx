@@ -32,6 +32,9 @@ import {
   Divider,
   Link,
   TablePagination,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PeopleIcon from '@mui/icons-material/People';
@@ -40,6 +43,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import EmailIcon from '@mui/icons-material/Email';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { visitorApi } from '../api/visitorApi';
 import type { VisitorResponse, VisitorSessionResponse, VisitorChatLogResponse } from '../api/visitorApi';
 
@@ -311,6 +315,44 @@ export const VisitorsPage = () => {
                         <Typography variant="body2" sx={{ mt: 0.5, whiteSpace: 'pre-wrap' }}>
                           {msg.content}
                         </Typography>
+                        {msg.llmRequest && (
+                          <Accordion
+                            elevation={0}
+                            sx={{ mt: 1, bgcolor: 'transparent', '&:before': { display: 'none' } }}
+                          >
+                            <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              sx={{ minHeight: 'auto', px: 0, '& .MuiAccordionSummary-content': { my: 0.5 } }}
+                            >
+                              <Typography variant="caption" color="text.secondary">
+                                {t('chatLog.llmRequest')}
+                              </Typography>
+                            </AccordionSummary>
+                            <AccordionDetails sx={{ px: 0, pt: 0 }}>
+                              <Box
+                                component="pre"
+                                sx={{
+                                  fontSize: '0.75rem',
+                                  bgcolor: 'grey.100',
+                                  p: 1,
+                                  borderRadius: 1,
+                                  overflow: 'auto',
+                                  maxHeight: 300,
+                                  whiteSpace: 'pre-wrap',
+                                  wordBreak: 'break-word',
+                                }}
+                              >
+                                {(() => {
+                                  try {
+                                    return JSON.stringify(JSON.parse(msg.llmRequest), null, 2);
+                                  } catch {
+                                    return msg.llmRequest;
+                                  }
+                                })()}
+                              </Box>
+                            </AccordionDetails>
+                          </Accordion>
+                        )}
                       </Paper>
                     ))}
                   </Box>

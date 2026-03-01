@@ -1,6 +1,22 @@
 {
   "title": "Admin Panel",
   "subtitle": "Visitor analytics across all profiles",
+  "stats": {
+    "title": "Global Dashboard",
+    "totalAccounts": "Total Accounts",
+    "totalProfileViews": "Total Profile Views",
+    "totalVisitors": "Total Visitors",
+    "totalInterviews": "Total Interviews"
+  },
+  "accounts": {
+    "title": "Registered Accounts",
+    "name": "Name",
+    "email": "Email",
+    "plan": "Plan / Status",
+    "publicProfile": "Public Profile",
+    "noAccounts": "No accounts found",
+    "noProfile": "No profile"
+  },
   "visitors": {
     "title": "All Visitors",
     "profile": "Profile Visited",

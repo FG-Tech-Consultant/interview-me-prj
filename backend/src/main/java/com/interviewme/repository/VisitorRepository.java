@@ -19,4 +19,7 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 
     @Query("SELECT v FROM Visitor v ORDER BY v.createdAt DESC")
     Page<Visitor> findAllOrderByCreatedAtDesc(Pageable pageable);
+
+    @Query(value = "SELECT COUNT(*) FROM visitor", nativeQuery = true)
+    long countAllVisitors();
 }

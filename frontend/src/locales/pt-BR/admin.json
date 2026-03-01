@@ -1,6 +1,22 @@
 {
   "title": "Painel Admin",
   "subtitle": "Analise de visitantes de todos os perfis",
+  "stats": {
+    "title": "Painel Global",
+    "totalAccounts": "Total de Contas",
+    "totalProfileViews": "Total de Visualizacoes",
+    "totalVisitors": "Total de Visitantes",
+    "totalInterviews": "Total de Entrevistas"
+  },
+  "accounts": {
+    "title": "Contas Registradas",
+    "name": "Nome",
+    "email": "Email",
+    "plan": "Plano / Status",
+    "publicProfile": "Perfil Publico",
+    "noAccounts": "Nenhuma conta encontrada",
+    "noProfile": "Sem perfil"
+  },
   "visitors": {
     "title": "Todos os Visitantes",
     "profile": "Perfil Visitado",

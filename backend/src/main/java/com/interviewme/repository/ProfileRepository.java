@@ -37,4 +37,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     @Modifying
     @Query(value = "UPDATE profile SET view_count = view_count + 1 WHERE id = :profileId", nativeQuery = true)
     void incrementViewCount(@Param("profileId") Long profileId);
+
+    @Query(value = "SELECT COALESCE(SUM(view_count), 0) FROM profile WHERE deleted_at IS NULL", nativeQuery = true)
+    long sumAllViewCounts();
 }

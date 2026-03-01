@@ -2,6 +2,7 @@ package com.interviewme.aichat.service;
 
 import com.interviewme.aichat.client.LlmChatMessage;
 import com.interviewme.aichat.client.LlmClient;
+import com.interviewme.aichat.client.LlmCompletionResult;
 import com.interviewme.aichat.client.LlmRequest;
 import com.interviewme.aichat.client.LlmResponse;
 import com.interviewme.aichat.config.AiProperties;
@@ -25,7 +26,19 @@ public class LlmRouterService {
         log.info("LlmRouterService initialized with providers: {}", clients.keySet());
     }
 
+    /**
+     * @deprecated Use {@link #completeWithRequest(Long, String, List)} instead to capture the full LLM request for audit logging.
+     */
+    @Deprecated
     public LlmResponse complete(Long tenantId, String systemPrompt, List<LlmChatMessage> history) {
+        return completeWithRequest(tenantId, systemPrompt, history).response();
+    }
+
+    /**
+     * Sends a chat completion request to the configured LLM provider and returns both
+     * the request that was sent and the response that was received.
+     */
+    public LlmCompletionResult completeWithRequest(Long tenantId, String systemPrompt, List<LlmChatMessage> history) {
         String provider = aiProperties.getDefaultProvider();
         LlmClient client = clients.get(provider);
 
@@ -50,13 +63,15 @@ public class LlmRouterService {
             log.info("LLM response received provider={} tokens={} latencyMs={}",
                     provider, response.tokensUsed(), latency);
 
-            return new LlmResponse(
+            LlmResponse enrichedResponse = new LlmResponse(
                     response.content(),
                     response.tokensUsed(),
                     provider,
                     client.getModel(),
                     latency
             );
+
+            return new LlmCompletionResult(request, enrichedResponse);
         } catch (Exception e) {
             long latency = System.currentTimeMillis() - start;
             log.error("LLM call failed provider={} latencyMs={} error={}", provider, latency, e.getMessage());
