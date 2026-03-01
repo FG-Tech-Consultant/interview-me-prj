@@ -39,6 +39,9 @@ dependencies {
     // PDF parsing (LinkedIn analyzer)
     implementation("org.apache.pdfbox:pdfbox:3.0.1")
 
+    // CSV parsing (LinkedIn ZIP data import)
+    implementation("org.apache.commons:commons-csv:1.12.0")
+
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 }

@@ -11,6 +11,7 @@ import { BillingPage } from './pages/BillingPage';
 import { ExportsPage } from './pages/ExportsPage';
 import { LinkedInAnalyzerPage } from './pages/LinkedInAnalyzerPage';
 import { LinkedInInboxPage } from './pages/LinkedInInboxPage';
+import { LinkedInImportPage } from './pages/LinkedInImportPage';
 import { SettingsPage } from './pages/SettingsPage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -60,6 +61,7 @@ function App() {
               <Route path="/exports" element={<ExportsPage />} />
               <Route path="/linkedin-analyzer" element={<LinkedInAnalyzerPage />} />
               <Route path="/linkedin-inbox" element={<LinkedInInboxPage />} />
+              <Route path="/linkedin-import" element={<LinkedInImportPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>
 

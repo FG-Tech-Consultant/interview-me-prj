@@ -61,3 +61,5 @@ databaseChangeLog:
       file: db/changelog/20260228055706-alter-content-embedding-vector-dimension.xml
   - include:
       file: db/changelog/20260228073817-content-embedding-cascade-delete.xml
+  - include:
+      file: db/changelog/20260301012730-create-linkedin-import-table.xml

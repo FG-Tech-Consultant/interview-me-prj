@@ -46,5 +46,70 @@
     "trend": "Tendencia",
     "status": "Status",
     "actions": "Acoes"
+  },
+  "import": {
+    "title": "Importar do LinkedIn",
+    "subtitle": "Importe seus dados de carreira de um arquivo ZIP exportado do LinkedIn",
+    "existingDataWarning": "Voce ja possui dados no seu perfil ({{jobs}} empregos, {{education}} formacoes, {{skills}} habilidades). Voce pode escolher mesclar novos dados ou substituir os existentes durante a importacao.",
+    "currentProfile": "Seu perfil atual",
+    "step1": {
+      "title": "Baixar Seus Dados",
+      "description": "O arquivo ZIP nao e gerado na hora. O LinkedIn precisa de tempo para preparar o arquivo dos seus dados. Voce recebera um email quando estiver pronto para download.",
+      "instruction1": "Va para LinkedIn Configuracoes > Privacidade de Dados > Baixar seus dados",
+      "instruction1Link": "https://www.linkedin.com/mypreferences/d/download-my-data",
+      "instruction2": "Selecione as categorias desejadas (Perfil, Cargos, Formacao, Habilidades, Idiomas)",
+      "instruction3": "Clique em \"Solicitar arquivo\" e aguarde o email do LinkedIn",
+      "instruction4": "Quando receber o email, baixe o arquivo ZIP",
+      "instruction5": "Volte aqui e envie o arquivo ZIP no proximo passo",
+      "note": "Nota: O LinkedIn pode levar de alguns minutos a varias horas para preparar seus dados. Voce recebera um email no endereco cadastrado no LinkedIn quando o download estiver pronto."
+    },
+    "step2": {
+      "title": "Enviar Arquivo ZIP",
+      "dropzone": "Arraste e solte seu arquivo ZIP do LinkedIn aqui, ou clique para selecionar",
+      "maxSize": "Tamanho maximo do arquivo: 50MB",
+      "upload": "Enviar",
+      "uploading": "Enviando...",
+      "uploadFailed": "Falha no envio. Tente novamente.",
+      "onlyZip": "Apenas arquivos ZIP sao aceitos",
+      "fileTooLarge": "Arquivo excede o tamanho maximo de {{size}}MB"
+    },
+    "step3": {
+      "title": "Revisar e Importar",
+      "profileInfo": "Informacoes do Perfil",
+      "jobs": "Empregos",
+      "education": "Formacao",
+      "skills": "Habilidades",
+      "languages": "Idiomas",
+      "projects": "Projetos",
+      "certifications": "Certificacoes",
+      "warnings": "Avisos",
+      "strategy": "Estrategia de Importacao",
+      "merge": "Mesclar (Recomendado)",
+      "mergeDesc": "Adicionar novos itens, manter dados existentes",
+      "overwrite": "Substituir",
+      "overwriteDesc": "Substituir todos os dados existentes pelos importados",
+      "mergeInfo": "Novos itens serao adicionados. Seus dados existentes serao mantidos intactos.",
+      "overwriteWarning": "Isso ira excluir seus dados de perfil existentes!",
+      "overwriteWarningDetailed": "ATENCAO: Isso ira EXCLUIR todos os seus dados de perfil existentes ({{jobs}} empregos, {{education}} formacoes, {{skills}} habilidades) e substitui-los pelos dados importados. Esta acao nao pode ser desfeita.",
+      "overwriteConfirm": "Eu entendo que meus dados existentes serao permanentemente substituidos"
+    },
+    "step4": {
+      "title": "Resultado",
+      "success": "Importacao Concluida!",
+      "imported": "Seus dados do LinkedIn foram importados com sucesso",
+      "viewProfile": "Ver Perfil",
+      "importAnother": "Importar Outro",
+      "error": "Falha na Importacao",
+      "retry": "Tentar Novamente"
+    },
+    "history": {
+      "title": "Historico de Importacoes",
+      "empty": "Nenhuma importacao ainda",
+      "date": "Data",
+      "filename": "Arquivo",
+      "strategy": "Estrategia",
+      "status": "Status",
+      "counts": "Itens"
+    }
   }
 }
