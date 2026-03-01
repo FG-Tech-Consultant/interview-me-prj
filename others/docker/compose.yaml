@@ -24,6 +24,8 @@ services:
     container_name: interview_me_app
     restart: always
     mem_limit: 1024m
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       interview-me-db:
         condition: service_healthy
@@ -37,6 +39,8 @@ services:
       - JWT_EXPIRATION_MS=${IM_JWT_EXPIRATION_MS:-86400000}
       - AI_DEFAULT_PROVIDER=${IM_AI_PROVIDER:-ollama}
       - OPENAI_API_KEY=${IM_OPENAI_API_KEY:-}
+      - OPENAI_BASE_URL=${IM_OPENAI_BASE_URL:-https://api.openai.com/v1}
+      - OPENAI_CHAT_MODEL=${IM_OPENAI_CHAT_MODEL:-gpt-4o-mini}
       - GEMINI_API_KEY=${IM_GEMINI_API_KEY:-}
       - CLAUDE_API_KEY=${IM_CLAUDE_API_KEY:-}
       - OLLAMA_BASE_URL=${IM_OLLAMA_BASE_URL:-http://ollama:11434}
@@ -44,6 +48,8 @@ services:
       - TEST_CLEANUP_API_KEY=${IM_TEST_CLEANUP_API_KEY:-test-cleanup-secret-key-dev}
     ports:
       - "${IM_APP_PORT:-8080}:8080"
+    volumes:
+      - /var/opt/interview-me-prj/logs:/app/logs
     networks:
       - default
       - ollama_default

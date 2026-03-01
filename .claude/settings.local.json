@@ -9,7 +9,19 @@
       "Grep(**)",
       "Glob(**)",
       "Bash(*)",
-      "mcp__*"
+      "mcp__*",
+      "WebFetch(domain:docs.langchain4j.dev)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:mvnrepository.com)",
+      "WebFetch(domain:central.sonatype.com)",
+      "WebFetch(domain:mydeveloperplanet.com)",
+      "WebFetch(domain:69.62.91.201)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "WebFetch(domain:espirian.co.uk)",
+      "WebFetch(domain:developer.linkedin.com)",
+      "WebFetch(domain:www.linkedin.com)",
+      "WebFetch(domain:yanghgris-organization.gitbook.io)"
     ],
     "deny": [],
     "ask": []
