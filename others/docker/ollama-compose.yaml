@@ -1,0 +1,43 @@
+# Ollama service for Interview Me
+#
+# Usage:
+#   docker compose -f others/docker/ollama-compose.yaml up -d
+#   docker compose -f others/docker/ollama-compose.yaml exec ollama ollama pull qwen2.5:3b
+#   docker compose -f others/docker/ollama-compose.yaml exec ollama ollama pull nomic-embed-text
+#
+# The app compose files (docker-compose.yml and others/docker/compose.yaml)
+# reference the "ollama_default" network as external. This compose creates
+# that network so the app containers can reach Ollama by hostname.
+#
+# Models used:
+#   - qwen2.5:3b     (prod chat)
+#   - qwen2.5:7b     (dev chat)
+#   - nomic-embed-text (embeddings)
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: interview-me-ollama
+    restart: unless-stopped
+    mem_limit: 8g
+    ports:
+      - "127.0.0.1:11434:11434"
+    environment:
+      OLLAMA_HOST: "0.0.0.0"
+      OLLAMA_NUM_PARALLEL: "2"
+      OLLAMA_MAX_LOADED_MODELS: "1"
+      OLLAMA_KEEP_ALIVE: "24h"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - ollama_default
+
+volumes:
+  ollama_data:
+    name: ollama_ollama_data
+    external: true
+
+networks:
+  ollama_default:
+    name: ollama_default
+    driver: bridge
