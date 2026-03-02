@@ -21,5 +21,14 @@
     "title": "Todos os Visitantes",
     "profile": "Perfil Visitado",
     "noData": "Nenhum dado de visitante disponivel"
+  },
+  "testEmail": {
+    "title": "Testar Email",
+    "description": "Envie um email de teste para verificar se a configuracao de email esta funcionando.",
+    "emailLabel": "Email do Destinatario",
+    "sendButton": "Enviar Email de Teste",
+    "sending": "Enviando...",
+    "success": "Email de teste enviado com sucesso!",
+    "error": "Falha ao enviar email de teste"
   }
 }

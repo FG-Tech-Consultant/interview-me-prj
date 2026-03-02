@@ -7,6 +7,7 @@ import com.interviewme.dto.visitor.*;
 import com.interviewme.event.ContentChangedEventListener;
 import com.interviewme.model.*;
 import com.interviewme.repository.*;
+import com.interviewme.service.EmailNotificationService;
 import com.interviewme.service.VisitorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import java.util.Map;
 public class AdminController {
 
     private final VisitorService visitorService;
+    private final EmailNotificationService emailNotificationService;
     private final ProfileRepository profileRepository;
     private final JobExperienceRepository jobExperienceRepository;
     private final EducationRepository educationRepository;
@@ -193,6 +195,27 @@ public class AdminController {
             ));
         } finally {
             TenantContext.setTenantId(savedTenantId);
+        }
+    }
+
+    @PostMapping("/test-email")
+    public ResponseEntity<?> sendTestEmail(
+            @AuthenticationPrincipal User user,
+            @RequestBody Map<String, String> request) {
+        if (!"ADMIN".equals(user.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        String to = request.get("to");
+        if (to == null || to.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email address is required"));
+        }
+        try {
+            emailNotificationService.sendTestEmail(to);
+            return ResponseEntity.ok(Map.of("message", "Test email sent to " + to));
+        } catch (Exception e) {
+            log.error("Failed to send test email to={}: {}", to, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to send email: " + e.getMessage()));
         }
     }
 }

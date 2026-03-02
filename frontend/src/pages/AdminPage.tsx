@@ -29,6 +29,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  TextField,
+  Button,
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -37,6 +39,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PersonIcon from '@mui/icons-material/Person';
 import ChatIcon from '@mui/icons-material/Chat';
+import EmailIcon from '@mui/icons-material/Email';
 import { visitorApi } from '../api/visitorApi';
 import type { VisitorResponse, VisitorSessionResponse, VisitorChatLogResponse, AccountResponse } from '../api/visitorApi';
 
@@ -265,6 +268,9 @@ export const AdminPage = () => {
   const { t: tv } = useTranslation('visitors');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [testEmail, setTestEmail] = useState('');
+  const [testEmailSending, setTestEmailSending] = useState(false);
+  const [testEmailResult, setTestEmailResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const { data: globalStats, isLoading: statsLoading } = useQuery({
     queryKey: ['adminGlobalStats'],
@@ -340,6 +346,53 @@ export const AdminPage = () => {
       <Box sx={{ mb: 4 }}>
         <AccountsTable accounts={accounts} loading={accountsLoading} />
       </Box>
+
+      {/* Test Email Section */}
+      <Card elevation={2} sx={{ mb: 4 }}>
+        <CardContent>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+            <EmailIcon color="primary" />
+            <Typography variant="h6">{t('testEmail.title')}</Typography>
+          </Box>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {t('testEmail.description')}
+          </Typography>
+          {testEmailResult && (
+            <Alert severity={testEmailResult.type} sx={{ mb: 2 }} onClose={() => setTestEmailResult(null)}>
+              {testEmailResult.message}
+            </Alert>
+          )}
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+            <TextField
+              size="small"
+              label={t('testEmail.emailLabel')}
+              type="email"
+              value={testEmail}
+              onChange={(e) => setTestEmail(e.target.value)}
+              sx={{ minWidth: 300 }}
+            />
+            <Button
+              variant="contained"
+              disabled={!testEmail || testEmailSending}
+              onClick={async () => {
+                setTestEmailSending(true);
+                setTestEmailResult(null);
+                try {
+                  await visitorApi.adminSendTestEmail(testEmail);
+                  setTestEmailResult({ type: 'success', message: t('testEmail.success') });
+                } catch (e: unknown) {
+                  const msg = e instanceof Error ? e.message : String(e);
+                  setTestEmailResult({ type: 'error', message: `${t('testEmail.error')}: ${msg}` });
+                } finally {
+                  setTestEmailSending(false);
+                }
+              }}
+            >
+              {testEmailSending ? t('testEmail.sending') : t('testEmail.sendButton')}
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
 
       {/* Visitors Section */}
       <Typography variant="h6" gutterBottom>{t('visitors.title')}</Typography>

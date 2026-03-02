@@ -138,4 +138,10 @@ export const visitorApi = {
     const response = await apiClient.get<VisitorChatLogResponse[]>(`/admin/sessions/${sessionId}/messages`);
     return response.data;
   },
+
+  // Admin: send test email
+  adminSendTestEmail: async (to: string): Promise<{ message: string }> => {
+    const response = await apiClient.post<{ message: string }>('/admin/test-email', { to });
+    return response.data;
+  },
 };

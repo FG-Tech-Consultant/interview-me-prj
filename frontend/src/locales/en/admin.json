@@ -21,5 +21,14 @@
     "title": "All Visitors",
     "profile": "Profile Visited",
     "noData": "No visitor data available"
+  },
+  "testEmail": {
+    "title": "Test Email",
+    "description": "Send a test email to verify your email configuration is working.",
+    "emailLabel": "Recipient Email",
+    "sendButton": "Send Test Email",
+    "sending": "Sending...",
+    "success": "Test email sent successfully!",
+    "error": "Failed to send test email"
   }
 }

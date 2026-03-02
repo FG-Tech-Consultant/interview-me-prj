@@ -78,4 +78,31 @@ public class EmailNotificationService {
             log.error("Failed to send visitor chat notification to={}: {}", recipientEmail, e.getMessage());
         }
     }
+
+    public void sendTestEmail(String to) {
+        String subject = "Interview Me - Test Email";
+        String body = """
+                This is a test email from Interview Me.
+
+                If you received this, your email configuration is working correctly!
+
+                Email notifications enabled: %s
+                Configured from: %s
+                Base URL: %s
+
+                --
+                Interview Me - Live Resume & Career Copilot
+                """.formatted(
+                notificationProperties.isEnabled(),
+                notificationProperties.getFrom(),
+                notificationProperties.getBaseUrl());
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(notificationProperties.getFrom());
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(body);
+        mailSender.send(message);
+        log.info("Test email sent to={}", to);
+    }
 }
