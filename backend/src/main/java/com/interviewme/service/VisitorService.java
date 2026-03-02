@@ -33,6 +33,11 @@ public class VisitorService {
     private final CoinWalletService coinWalletService;
     private final BillingProperties billingProperties;
 
+    @Transactional(readOnly = true)
+    public java.util.Optional<Visitor> findByVisitorToken(String visitorToken) {
+        return visitorRepository.findByVisitorToken(visitorToken);
+    }
+
     @Transactional
     public VisitorIdentifyResponse identify(String slug, VisitorIdentifyRequest request, String ipAddress, String userAgent) {
         Profile profile = profileRepository.findBySlugAndDeletedAtIsNull(slug)

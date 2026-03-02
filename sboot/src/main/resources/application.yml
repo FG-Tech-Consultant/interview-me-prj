@@ -106,3 +106,26 @@ ai:
     dimension: 768
     similarity-threshold: 0.15
     top-k: 20
+
+spring.mail:
+  host: smtp.gmail.com
+  port: 587
+  username: ${MAIL_USERNAME:}
+  password: ${MAIL_PASSWORD:}
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+          required: true
+        connectiontimeout: 5000
+        timeout: 5000
+        writetimeout: 5000
+
+notification:
+  email:
+    enabled: ${NOTIFICATION_EMAIL_ENABLED:false}
+    from: ${MAIL_USERNAME:noreply@interviewme.com}
+    delay-minutes: ${NOTIFICATION_DELAY_MINUTES:60}
+    base-url: ${NOTIFICATION_BASE_URL:http://localhost:8080}

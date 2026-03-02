@@ -37,6 +37,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
+import com.interviewme.event.VisitorChatStartedEvent;
+import com.interviewme.model.Visitor;
+
 import java.time.Instant;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
@@ -107,6 +110,16 @@ public class ChatService {
         // 5b. Log visitor message if visitor token present
         if (request.visitorToken() != null && !request.visitorToken().isBlank()) {
             visitorService.logChatMessage(request.visitorToken(), "VISITOR", request.message(), null);
+
+            // 5c. Schedule notification on first message of visitor session
+            if (session.getMessageCount() == 0) {
+                visitorService.findByVisitorToken(request.visitorToken()).ifPresent(visitor ->
+                        eventPublisher.publishEvent(new VisitorChatStartedEvent(
+                                tenantId, profile.getId(), visitor.getId(),
+                                session.getId(),
+                                visitor.getName(), visitor.getCompany(), visitor.getJobRole(),
+                                Instant.now())));
+            }
         }
 
         // 6. RAG: retrieve relevant public content
