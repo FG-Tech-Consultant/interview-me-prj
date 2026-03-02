@@ -288,10 +288,12 @@ public class PublicProfileService {
     }
 
     private SeoMetadata buildSeoMetadata(Profile profile, List<PublicSkillResponse> skills) {
-        String title = profile.getFullName() + " - " + profile.getHeadline() + " | Interview Me";
+        String title = profile.getHeadline() != null
+                ? profile.getFullName() + " - " + profile.getHeadline() + " | Interview Me"
+                : profile.getFullName() + " | Interview Me";
         String description = profile.getSummary() != null
                 ? profile.getSummary().substring(0, Math.min(profile.getSummary().length(), 160))
-                : profile.getHeadline();
+                : (profile.getHeadline() != null ? profile.getHeadline() : profile.getFullName());
         String canonicalUrl = "https://interviewme.app/p/" + profile.getSlug();
         List<String> keywords = skills.stream()
                 .map(PublicSkillResponse::skillName)

@@ -12,7 +12,6 @@ public record UpdateProfileRequest(
     @Size(max = 255, message = "Full name must not exceed 255 characters")
     String fullName,
 
-    @NotBlank(message = "Headline is required")
     @Size(max = 255, message = "Headline must not exceed 255 characters")
     String headline,
 

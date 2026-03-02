@@ -181,8 +181,12 @@ public class ContentChangedEventListener {
     public static String formatProfileSummaryText(Profile profile) {
         StringBuilder sb = new StringBuilder();
         sb.append("Professional Summary for ").append(profile.getFullName()).append(": ");
-        sb.append(profile.getHeadline()).append(". ");
-        sb.append(profile.getSummary());
+        if (profile.getHeadline() != null && !profile.getHeadline().isBlank()) {
+            sb.append(profile.getHeadline()).append(". ");
+        }
+        if (profile.getSummary() != null && !profile.getSummary().isBlank()) {
+            sb.append(profile.getSummary());
+        }
         if (profile.getLocation() != null && !profile.getLocation().isBlank()) {
             sb.append(" Location: ").append(profile.getLocation()).append(".");
         }

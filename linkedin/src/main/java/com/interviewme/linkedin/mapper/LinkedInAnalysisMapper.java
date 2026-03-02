@@ -23,6 +23,7 @@ public final class LinkedInAnalysisMapper {
                 analysis.getId(),
                 analysis.getProfileId(),
                 analysis.getStatus(),
+                analysis.getSourceType(),
                 analysis.getOverallScore(),
                 analysis.getErrorMessage(),
                 analysis.getPdfFilename(),
@@ -36,6 +37,7 @@ public final class LinkedInAnalysisMapper {
         return new LinkedInAnalysisSummary(
                 analysis.getId(),
                 analysis.getStatus(),
+                analysis.getSourceType(),
                 analysis.getOverallScore(),
                 analysis.getPdfFilename(),
                 analysis.getAnalyzedAt(),

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography, Skeleton } from '@mui/material';
 import { getCurrentUser } from '../api/auth';
+import { useCurrentProfile } from '../hooks/useProfile';
 import StatsCards from '../components/dashboard/StatsCards';
 import ProfileCompletenessCard from '../components/dashboard/ProfileCompletenessCard';
 import QuickActionsGrid from '../components/dashboard/QuickActionsGrid';
@@ -9,11 +10,15 @@ import RecentActivityCard from '../components/dashboard/RecentActivityCard';
 import PublicProfileCard from '../components/dashboard/PublicProfileCard';
 
 export default function DashboardPage() {
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['currentUser'],
     queryFn: getCurrentUser,
   });
+  const { data: profile, isLoading: profileLoading } = useCurrentProfile();
   const { t } = useTranslation('dashboard');
+
+  const isLoading = userLoading || profileLoading;
+  const displayName = profile?.fullName?.trim() || user?.email?.split('@')[0];
 
   return (
     <Box>
@@ -22,8 +27,8 @@ export default function DashboardPage() {
         {isLoading ? (
           <Skeleton width={300} />
         ) : (
-          user?.email
-            ? t('welcomeBack', { name: user.email.split('@')[0] })
+          displayName
+            ? t('welcomeBack', { name: displayName })
             : t('welcomeBackDefault')
         )}
       </Typography>

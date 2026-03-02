@@ -2,6 +2,7 @@ package com.interviewme.controller;
 
 import com.interviewme.common.util.TenantContext;
 import com.interviewme.linkedin.dto.*;
+import com.interviewme.linkedin.model.AnalysisSourceType;
 import com.interviewme.service.LinkedInAnalysisService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +28,21 @@ public class LinkedInController {
     @PostMapping(value = "/analyze", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Transactional
     public ResponseEntity<StartAnalysisResponse> analyze(
-            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam("profileId") Long profileId,
+            @RequestParam(value = "sourceType", defaultValue = "PDF") String sourceType,
             Authentication authentication) {
         Long tenantId = TenantContext.getCurrentTenantId();
-        log.info("POST /api/v1/linkedin/analyze - profileId={}, tenantId={}", profileId, tenantId);
+        log.info("POST /api/v1/linkedin/analyze - profileId={}, tenantId={}, sourceType={}", profileId, tenantId, sourceType);
 
-        StartAnalysisResponse response = analysisService.startAnalysis(tenantId, profileId, file);
+        AnalysisSourceType source;
+        try {
+            source = AnalysisSourceType.valueOf(sourceType.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        StartAnalysisResponse response = analysisService.startAnalysis(tenantId, profileId, file, source);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 

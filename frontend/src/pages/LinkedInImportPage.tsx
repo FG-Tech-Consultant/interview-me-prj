@@ -32,6 +32,8 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
+import ChecklistIcon from '@mui/icons-material/Checklist';
 import {
   linkedinImportApi,
   type ImportPreviewResponse,
@@ -181,6 +183,39 @@ export function LinkedInImportPage() {
       <Alert severity="info" sx={{ mb: 2 }}>
         {t('import.step1.description')}
       </Alert>
+
+      {/* Important notices */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
+        <Alert
+          severity="error"
+          icon={<DesktopWindowsIcon />}
+          sx={{
+            '& .MuiAlert-message': { fontWeight: 500 },
+          }}
+        >
+          <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+            {t('import.step1.desktopOnlyTitle')}
+          </Typography>
+          <Typography variant="body2">
+            {t('import.step1.desktopOnlyMessage')}
+          </Typography>
+        </Alert>
+        <Alert
+          severity="warning"
+          icon={<ChecklistIcon />}
+          sx={{
+            '& .MuiAlert-message': { fontWeight: 500 },
+          }}
+        >
+          <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+            {t('import.step1.selectAllFieldsTitle')}
+          </Typography>
+          <Typography variant="body2">
+            {t('import.step1.selectAllFieldsMessage')}
+          </Typography>
+        </Alert>
+      </Box>
+
       <Box component="ol" sx={{ pl: 2 }}>
         <li>
           <Typography variant="body1" sx={{ mb: 1 }}>
@@ -195,7 +230,7 @@ export function LinkedInImportPage() {
           </Typography>
         </li>
         <li>
-          <Typography variant="body1" sx={{ mb: 1 }}>
+          <Typography variant="body1" sx={{ mb: 1, fontWeight: 'bold' }}>
             {t('import.step1.instruction2')}
           </Typography>
         </li>

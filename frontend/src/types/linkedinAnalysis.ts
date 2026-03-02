@@ -1,3 +1,5 @@
+export type AnalysisSourceType = 'PDF' | 'ZIP' | 'PROFILE';
+
 export interface StartAnalysisResponse {
   analysisId: number;
   status: string;
@@ -8,6 +10,7 @@ export interface LinkedInAnalysisResponse {
   id: number;
   profileId: number;
   status: string;
+  sourceType: AnalysisSourceType;
   overallScore: number | null;
   errorMessage: string | null;
   pdfFilename: string | null;
@@ -19,6 +22,7 @@ export interface LinkedInAnalysisResponse {
 export interface LinkedInAnalysisSummary {
   id: number;
   status: string;
+  sourceType: AnalysisSourceType;
   overallScore: number | null;
   pdfFilename: string | null;
   analyzedAt: string | null;

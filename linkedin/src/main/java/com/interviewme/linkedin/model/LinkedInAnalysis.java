@@ -35,6 +35,9 @@ public class LinkedInAnalysis {
     @Column(name = "error_message", columnDefinition = "TEXT")
     private String errorMessage;
 
+    @Column(name = "source_type", nullable = false, length = 20)
+    private String sourceType = AnalysisSourceType.PDF.name();
+
     @Column(name = "pdf_filename", length = 255)
     private String pdfFilename;
 

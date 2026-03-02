@@ -13,8 +13,8 @@ import com.interviewme.linkedin.model.*;
 import com.interviewme.linkedin.mapper.LinkedInAnalysisMapper;
 import com.interviewme.linkedin.repository.LinkedInAnalysisRepository;
 import com.interviewme.linkedin.service.LinkedInPdfParserService;
+import com.interviewme.linkedin.service.LinkedInZipParserService;
 import com.interviewme.linkedin.repository.LinkedInSectionScoreRepository;
-import com.interviewme.linkedin.service.LinkedInPdfParserService;
 import com.interviewme.model.Profile;
 import com.interviewme.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -42,7 +43,10 @@ public class LinkedInAnalysisService {
     private final LinkedInAnalysisRepository analysisRepository;
     private final LinkedInSectionScoreRepository sectionScoreRepository;
     private final LinkedInPdfParserService pdfParserService;
+    private final LinkedInZipParserService zipParserService;
     private final LinkedInPromptService promptService;
+    private final ProfileDataCollectorService profileDataCollectorService;
+    private final ZipDataToSectionsService zipDataToSectionsService;
     private final LlmClient llmClient;
     private final CoinWalletService coinWalletService;
     private final ProfileRepository profileRepository;
@@ -54,14 +58,30 @@ public class LinkedInAnalysisService {
     private static final long[] RETRY_DELAYS_MS = {2000, 4000, 8000};
 
     @Transactional
-    public StartAnalysisResponse startAnalysis(Long tenantId, Long profileId, MultipartFile pdf) {
-        log.info("Starting LinkedIn analysis for tenantId={}, profileId={}", tenantId, profileId);
+    public StartAnalysisResponse startAnalysis(Long tenantId, Long profileId, MultipartFile file) {
+        return startAnalysis(tenantId, profileId, file, AnalysisSourceType.PDF);
+    }
 
-        validatePdf(pdf);
+    @Transactional
+    public StartAnalysisResponse startAnalysis(Long tenantId, Long profileId, MultipartFile file,
+                                                AnalysisSourceType sourceType) {
+        log.info("Starting analysis for tenantId={}, profileId={}, sourceType={}", tenantId, profileId, sourceType);
 
         // Verify profile exists and belongs to tenant
         profileRepository.findByIdAndTenantId(profileId, tenantId)
                 .orElseThrow(() -> new ProfileNotFoundException(profileId));
+
+        if (sourceType == AnalysisSourceType.PROFILE) {
+            return startProfileAnalysis(tenantId, profileId);
+        } else if (sourceType == AnalysisSourceType.ZIP) {
+            return startZipAnalysis(tenantId, profileId, file);
+        } else {
+            return startPdfAnalysis(tenantId, profileId, file);
+        }
+    }
+
+    private StartAnalysisResponse startPdfAnalysis(Long tenantId, Long profileId, MultipartFile pdf) {
+        validatePdf(pdf);
 
         // Save PDF to temp file
         Path tempPath;
@@ -77,10 +97,11 @@ public class LinkedInAnalysisService {
         analysis.setTenantId(tenantId);
         analysis.setProfileId(profileId);
         analysis.setStatus(AnalysisStatus.PENDING.name());
+        analysis.setSourceType(AnalysisSourceType.PDF.name());
         analysis.setPdfFilename(pdf.getOriginalFilename());
         analysis = analysisRepository.save(analysis);
 
-        log.info("Analysis created with id={}, triggering async processing", analysis.getId());
+        log.info("PDF analysis created with id={}, triggering async processing", analysis.getId());
 
         // Trigger async processing
         processAnalysis(analysis.getId(), tenantId, tempPath);
@@ -92,9 +113,64 @@ public class LinkedInAnalysisService {
         );
     }
 
+    private StartAnalysisResponse startZipAnalysis(Long tenantId, Long profileId, MultipartFile zip) {
+        validateZip(zip);
+
+        // Save ZIP to temp file
+        Path tempPath;
+        try {
+            tempPath = Files.createTempFile("analysis-", ".zip");
+            zip.transferTo(tempPath.toFile());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save uploaded ZIP", e);
+        }
+
+        // Create analysis record
+        LinkedInAnalysis analysis = new LinkedInAnalysis();
+        analysis.setTenantId(tenantId);
+        analysis.setProfileId(profileId);
+        analysis.setStatus(AnalysisStatus.PENDING.name());
+        analysis.setSourceType(AnalysisSourceType.ZIP.name());
+        analysis.setPdfFilename(zip.getOriginalFilename());
+        analysis = analysisRepository.save(analysis);
+
+        log.info("ZIP analysis created with id={}, triggering async processing", analysis.getId());
+
+        // Trigger async processing
+        processZipAnalysis(analysis.getId(), tenantId, tempPath);
+
+        return new StartAnalysisResponse(
+                analysis.getId(),
+                AnalysisStatus.PENDING.name(),
+                "Analysis started. Poll for status updates."
+        );
+    }
+
+    private StartAnalysisResponse startProfileAnalysis(Long tenantId, Long profileId) {
+        // Create analysis record
+        LinkedInAnalysis analysis = new LinkedInAnalysis();
+        analysis.setTenantId(tenantId);
+        analysis.setProfileId(profileId);
+        analysis.setStatus(AnalysisStatus.PENDING.name());
+        analysis.setSourceType(AnalysisSourceType.PROFILE.name());
+        analysis.setPdfFilename(null);
+        analysis = analysisRepository.save(analysis);
+
+        log.info("Profile analysis created with id={}, triggering async processing", analysis.getId());
+
+        // Trigger async processing
+        processProfileAnalysis(analysis.getId(), tenantId, profileId);
+
+        return new StartAnalysisResponse(
+                analysis.getId(),
+                AnalysisStatus.PENDING.name(),
+                "Analysis started. Poll for status updates."
+        );
+    }
+
     @Async
     public void processAnalysis(Long analysisId, Long tenantId, Path pdfPath) {
-        log.info("Processing analysis id={}", analysisId);
+        log.info("Processing PDF analysis id={}", analysisId);
 
         try {
             // Update status to IN_PROGRESS
@@ -123,6 +199,83 @@ public class LinkedInAnalysisService {
 
         } catch (Exception e) {
             log.error("Analysis id={} failed", analysisId, e);
+            updateStatus(analysisId, AnalysisStatus.FAILED, null, e.getMessage());
+        }
+    }
+
+    @Async
+    public void processZipAnalysis(Long analysisId, Long tenantId, Path zipPath) {
+        log.info("Processing ZIP analysis id={}", analysisId);
+
+        try {
+            // Update status to IN_PROGRESS
+            updateStatus(analysisId, AnalysisStatus.IN_PROGRESS, null, null);
+
+            // Parse ZIP
+            LinkedInImportData importData;
+            try (InputStream is = Files.newInputStream(zipPath)) {
+                importData = zipParserService.parseZip(is);
+            } finally {
+                deleteTempFile(zipPath);
+            }
+
+            // Convert to profile sections
+            Map<ProfileSection, String> sections = zipDataToSectionsService.convertToSections(importData);
+
+            // Build prompt and call LLM with retries
+            LlmRequest request = promptService.buildScoringPrompt(sections);
+            LlmResponse llmResponse = callLlmWithRetry(request);
+
+            // Parse LLM response
+            LinkedInLlmResult result = promptService.parseScoringResponse(llmResponse);
+
+            // Save results
+            saveAnalysisResults(analysisId, tenantId, result, sections);
+
+            log.info("ZIP analysis id={} completed with overallScore={}", analysisId, result.overallScore());
+
+        } catch (Exception e) {
+            log.error("ZIP analysis id={} failed", analysisId, e);
+            updateStatus(analysisId, AnalysisStatus.FAILED, null, e.getMessage());
+        }
+    }
+
+    @Async
+    public void processProfileAnalysis(Long analysisId, Long tenantId, Long profileId) {
+        log.info("Processing profile analysis id={}", analysisId);
+
+        try {
+            // Update status to IN_PROGRESS
+            updateStatus(analysisId, AnalysisStatus.IN_PROGRESS, null, null);
+
+            // Collect profile data
+            Map<ProfileSection, String> sections = profileDataCollectorService.collectProfileData(profileId, tenantId);
+
+            // Check if profile has enough data
+            boolean hasContent = sections.entrySet().stream()
+                    .filter(e -> e.getKey() != ProfileSection.OTHER)
+                    .anyMatch(e -> !e.getValue().isBlank());
+
+            if (!hasContent) {
+                updateStatus(analysisId, AnalysisStatus.FAILED, null,
+                        "Your profile doesn't have enough data to analyze. Please add experience, education, or skills first.");
+                return;
+            }
+
+            // Build prompt and call LLM with retries
+            LlmRequest request = promptService.buildScoringPrompt(sections);
+            LlmResponse llmResponse = callLlmWithRetry(request);
+
+            // Parse LLM response
+            LinkedInLlmResult result = promptService.parseScoringResponse(llmResponse);
+
+            // Save results
+            saveAnalysisResults(analysisId, tenantId, result, sections);
+
+            log.info("Profile analysis id={} completed with overallScore={}", analysisId, result.overallScore());
+
+        } catch (Exception e) {
+            log.error("Profile analysis id={} failed", analysisId, e);
             updateStatus(analysisId, AnalysisStatus.FAILED, null, e.getMessage());
         }
     }
@@ -263,6 +416,17 @@ public class LinkedInAnalysisService {
         }
     }
 
+    private void validateZip(MultipartFile zip) {
+        if (zip == null || zip.isEmpty()) {
+            throw new ValidationException("file", "ZIP file is required and must not be empty");
+        }
+
+        String filename = zip.getOriginalFilename();
+        if (filename == null || !filename.toLowerCase().endsWith(".zip")) {
+            throw new ValidationException("file", "Only ZIP files are accepted");
+        }
+    }
+
     private LlmResponse callLlmWithRetry(LlmRequest request) {
         Exception lastException = null;
 
@@ -337,9 +501,9 @@ public class LinkedInAnalysisService {
     private void deleteTempFile(Path path) {
         try {
             Files.deleteIfExists(path);
-            log.debug("Deleted temp PDF file: {}", path);
+            log.debug("Deleted temp file: {}", path);
         } catch (IOException e) {
-            log.warn("Failed to delete temp PDF file: {}", path, e);
+            log.warn("Failed to delete temp file: {}", path, e);
         }
     }
 }

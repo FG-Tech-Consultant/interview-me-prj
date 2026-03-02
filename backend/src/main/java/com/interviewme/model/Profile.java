@@ -33,7 +33,7 @@ public class Profile {
     @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 
-    @Column(name = "headline", nullable = false, length = 255)
+    @Column(name = "headline", length = 255)
     private String headline;
 
     @Column(name = "summary", columnDefinition = "TEXT")

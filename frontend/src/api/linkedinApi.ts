@@ -5,16 +5,38 @@ import type {
   LinkedInAnalysisSummary,
   SectionScoreResponse,
   PageResponse,
+  AnalysisSourceType,
 } from '../types/linkedinAnalysis';
 
 export const linkedinApi = {
   uploadAndAnalyze: async (
     file: File,
-    profileId: number
+    profileId: number,
+    sourceType: AnalysisSourceType = 'PDF'
   ): Promise<StartAnalysisResponse> => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('profileId', String(profileId));
+    formData.append('sourceType', sourceType);
+
+    const response = await apiClient.post<StartAnalysisResponse>(
+      '/v1/linkedin/analyze',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  },
+
+  analyzeProfile: async (
+    profileId: number
+  ): Promise<StartAnalysisResponse> => {
+    const formData = new FormData();
+    formData.append('profileId', String(profileId));
+    formData.append('sourceType', 'PROFILE');
 
     const response = await apiClient.post<StartAnalysisResponse>(
       '/v1/linkedin/analyze',

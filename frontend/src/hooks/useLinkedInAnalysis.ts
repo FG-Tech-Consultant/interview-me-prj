@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { linkedinApi } from '../api/linkedinApi';
+import type { AnalysisSourceType } from '../types/linkedinAnalysis';
 
 const LINKEDIN_KEYS = {
   all: ['linkedin'] as const,
@@ -39,10 +40,24 @@ export const useUploadAndAnalyze = () => {
     mutationFn: ({
       file,
       profileId,
+      sourceType,
     }: {
       file: File;
       profileId: number;
-    }) => linkedinApi.uploadAndAnalyze(file, profileId),
+      sourceType?: AnalysisSourceType;
+    }) => linkedinApi.uploadAndAnalyze(file, profileId, sourceType),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: LINKEDIN_KEYS.all });
+    },
+  });
+};
+
+export const useAnalyzeProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ profileId }: { profileId: number }) =>
+      linkedinApi.analyzeProfile(profileId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: LINKEDIN_KEYS.all });
     },

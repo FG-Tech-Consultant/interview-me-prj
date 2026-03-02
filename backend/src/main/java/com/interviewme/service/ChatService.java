@@ -289,7 +289,9 @@ public class ChatService {
         // Profile overview
         sb.append("CANDIDATE PROFILE:\n");
         sb.append("- Name: ").append(profile.getFullName()).append("\n");
-        sb.append("- Headline: ").append(profile.getHeadline()).append("\n");
+        if (profile.getHeadline() != null && !profile.getHeadline().isBlank()) {
+            sb.append("- Headline: ").append(profile.getHeadline()).append("\n");
+        }
         if (profile.getSummary() != null && !profile.getSummary().isBlank()) {
             sb.append("- Summary: ").append(profile.getSummary()).append("\n");
         }

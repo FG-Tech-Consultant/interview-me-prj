@@ -7,6 +7,7 @@ public record LinkedInAnalysisResponse(
     Long id,
     Long profileId,
     String status,
+    String sourceType,
     Integer overallScore,
     String errorMessage,
     String pdfFilename,

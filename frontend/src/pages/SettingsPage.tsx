@@ -144,7 +144,13 @@ export const SettingsPage = () => {
       </Typography>
 
       <Paper sx={{ mb: 3 }}>
-        <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)}>
+        <Tabs
+          value={activeTab}
+          onChange={(_, v) => setActiveTab(v)}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
+        >
           <Tab label={t('tabs.account')} />
           <Tab label={t('tabs.preferences')} />
           <Tab label={t('tabs.ai')} />

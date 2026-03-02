@@ -17,6 +17,9 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import RemoveIcon from '@mui/icons-material/Remove';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import FolderZipIcon from '@mui/icons-material/FolderZip';
+import PersonIcon from '@mui/icons-material/Person';
 import type { LinkedInAnalysisSummary } from '../../types/linkedinAnalysis';
 
 interface AnalysisHistoryProps {
@@ -32,6 +35,14 @@ function getStatusColor(status: string): 'success' | 'warning' | 'error' | 'defa
     case 'IN_PROGRESS': return 'warning';
     case 'FAILED': return 'error';
     default: return 'default';
+  }
+}
+
+function SourceTypeIcon({ sourceType }: { sourceType: string }) {
+  switch (sourceType) {
+    case 'ZIP': return <FolderZipIcon fontSize="small" color="action" />;
+    case 'PROFILE': return <PersonIcon fontSize="small" color="action" />;
+    default: return <PictureAsPdfIcon fontSize="small" color="action" />;
   }
 }
 
@@ -79,6 +90,7 @@ export default function AnalysisHistory({
           <TableHead>
             <TableRow>
               <TableCell>{t('history.date')}</TableCell>
+              <TableCell>{t('history.source')}</TableCell>
               <TableCell>{t('history.file')}</TableCell>
               <TableCell align="center">{t('history.score')}</TableCell>
               <TableCell align="center">{t('history.trend')}</TableCell>
@@ -93,6 +105,14 @@ export default function AnalysisHistory({
                   {analysis.analyzedAt
                     ? new Date(analysis.analyzedAt).toLocaleDateString()
                     : new Date(analysis.createdAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <SourceTypeIcon sourceType={analysis.sourceType || 'PDF'} />
+                    <Typography variant="body2">
+                      {t(`sourceSelector.${(analysis.sourceType || 'PDF').toLowerCase()}`)}
+                    </Typography>
+                  </Box>
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2" noWrap sx={{ maxWidth: 200 }}>

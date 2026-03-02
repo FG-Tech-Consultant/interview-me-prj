@@ -1,6 +1,6 @@
 {
-  "title": "Analisador de Perfil LinkedIn",
-  "description": "Envie seu PDF exportado do LinkedIn para obter uma analise com IA, com notas e sugestoes de melhoria para cada secao.",
+  "title": "Analisador de Perfil",
+  "description": "Analise seu perfil profissional usando IA para obter notas e sugestoes de melhoria para cada secao. Escolha entre enviar PDF, exportacao ZIP do LinkedIn ou analisar seu perfil cadastrado.",
   "uploadFailed": "Falha no envio. Tente novamente.",
   "analyzing": "Analisando seu perfil...",
   "analyzingWait": "Isso geralmente leva de 15 a 45 segundos. Aguarde.",
@@ -9,16 +9,34 @@
   "overallScore": "Pontuacao Geral do Perfil",
   "outOf100": "de 100",
   "analyzed": "Analisado: {{filename}}",
+  "analyzedSource": "Fonte: {{source}}",
   "sectionBreakdown": "Detalhamento por Secao",
   "suggestions": "Sugestoes",
   "getMoreSuggestions": "Obter mais sugestoes ({{cost}} creditos)",
   "generatingSuggestions": "Gerando...",
+  "sourceSelector": {
+    "title": "Escolha a Fonte de Analise",
+    "pdf": "Arquivo PDF",
+    "zip": "Arquivo ZIP",
+    "profile": "Meu Perfil",
+    "pdfDescription": "Envie qualquer arquivo PDF contendo seu perfil profissional ou curriculo.",
+    "zipDescription": "Envie um arquivo ZIP de exportacao de dados do LinkedIn para analise detalhada.",
+    "profileDescription": "Analise os dados do seu perfil cadastrado diretamente no sistema."
+  },
   "uploader": {
     "dropHere": "Solte seu PDF do LinkedIn aqui",
+    "dropHereFile": "Solte seu arquivo {{type}} aqui",
     "orBrowse": "ou clique para selecionar (max {{size}}MB)",
     "onlyPdf": "Apenas arquivos PDF sao aceitos",
+    "onlyZip": "Apenas arquivos ZIP sao aceitos",
     "fileTooLarge": "Arquivo excede o tamanho maximo de {{size}}MB",
     "analyzeProfile": "Analisar Perfil",
+    "analyzingButton": "Analisando..."
+  },
+  "profileAnalyzer": {
+    "title": "Analisar Seu Perfil",
+    "description": "Obtenha uma analise com IA dos dados do seu perfil cadastrado, incluindo experiencia, formacao, habilidades e historias. Nenhum envio de arquivo necessario.",
+    "analyzeButton": "Analisar Meu Perfil",
     "analyzingButton": "Analisando..."
   },
   "suggestion": {
@@ -39,8 +57,9 @@
   "history": {
     "title": "Historico de Analises",
     "newAnalysis": "Nova Analise",
-    "noHistory": "Nenhum historico de analise ainda. Envie um PDF do LinkedIn para comecar.",
+    "noHistory": "Nenhum historico de analise ainda. Escolha uma fonte acima para comecar.",
     "date": "Data",
+    "source": "Fonte",
     "file": "Arquivo",
     "score": "Nota",
     "trend": "Tendencia",
@@ -57,11 +76,15 @@
       "description": "O arquivo ZIP nao e gerado na hora. O LinkedIn precisa de tempo para preparar o arquivo dos seus dados. Voce recebera um email quando estiver pronto para download.",
       "instruction1": "Va para LinkedIn Configuracoes > Privacidade de Dados > Baixar seus dados",
       "instruction1Link": "https://www.linkedin.com/mypreferences/d/download-my-data",
-      "instruction2": "Selecione as categorias desejadas (Perfil, Cargos, Formacao, Habilidades, Idiomas)",
+      "instruction2": "Na pagina de exportacao, voce DEVE selecionar TODOS os campos/caixas de selecao disponiveis. Isso garante que suas experiencias, formacao, habilidades e outros detalhes sejam incluidos no arquivo de exportacao.",
       "instruction3": "Clique em \"Solicitar arquivo\" e aguarde o email do LinkedIn",
       "instruction4": "Quando receber o email, baixe o arquivo ZIP",
       "instruction5": "Volte aqui e envie o arquivo ZIP no proximo passo",
-      "note": "Nota: O LinkedIn pode levar de alguns minutos a varias horas para preparar seus dados. Voce recebera um email no endereco cadastrado no LinkedIn quando o download estiver pronto."
+      "note": "Nota: O LinkedIn pode levar de alguns minutos a varias horas para preparar seus dados. Voce recebera um email no endereco cadastrado no LinkedIn quando o download estiver pronto.",
+      "desktopOnlyTitle": "Apenas Desktop",
+      "desktopOnlyMessage": "A funcionalidade de exportacao de dados do LinkedIn esta disponivel APENAS na versao web para desktop do LinkedIn. Nao e possivel exportar seus dados pelo aplicativo movel do LinkedIn.",
+      "selectAllFieldsTitle": "Selecione Todos os Campos",
+      "selectAllFieldsMessage": "Ao solicitar a exportacao de dados, certifique-se de selecionar TODAS as caixas de selecao/campos disponiveis. Se voce pular algum campo, suas experiencias, formacao ou habilidades podem estar ausentes no arquivo exportado."
     },
     "step2": {
       "title": "Enviar Arquivo ZIP",

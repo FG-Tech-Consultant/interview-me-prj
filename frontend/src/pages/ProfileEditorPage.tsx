@@ -53,6 +53,7 @@ export const ProfileEditorPage: React.FC = () => {
           onChange={(_, newValue) => setActiveTab(newValue)}
           variant="scrollable"
           scrollButtons="auto"
+          allowScrollButtonsMobile
         >
           <Tab label={t('tabs.profileInfo')} />
           <Tab label={t('tabs.workExperience')} disabled={!hasProfile} />

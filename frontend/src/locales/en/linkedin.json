@@ -1,6 +1,6 @@
 {
-  "title": "LinkedIn Profile Analyzer",
-  "description": "Upload your LinkedIn PDF export to get an AI-powered analysis with scores and improvement suggestions for each section.",
+  "title": "Profile Analyzer",
+  "description": "Analyze your professional profile using AI to get scores and improvement suggestions for each section. Choose from PDF upload, LinkedIn ZIP export, or analyze your registered profile.",
   "uploadFailed": "Upload failed. Please try again.",
   "analyzing": "Analyzing your profile...",
   "analyzingWait": "This usually takes 15-45 seconds. Please wait.",
@@ -9,16 +9,34 @@
   "overallScore": "Overall Profile Score",
   "outOf100": "out of 100",
   "analyzed": "Analyzed: {{filename}}",
+  "analyzedSource": "Source: {{source}}",
   "sectionBreakdown": "Section Breakdown",
   "suggestions": "Suggestions",
   "getMoreSuggestions": "Get more suggestions ({{cost}} credits)",
   "generatingSuggestions": "Generating...",
+  "sourceSelector": {
+    "title": "Choose Analysis Source",
+    "pdf": "PDF File",
+    "zip": "ZIP File",
+    "profile": "My Profile",
+    "pdfDescription": "Upload any PDF file containing your professional profile or resume.",
+    "zipDescription": "Upload a LinkedIn data export ZIP file for detailed analysis.",
+    "profileDescription": "Analyze your registered profile data directly from the system."
+  },
   "uploader": {
     "dropHere": "Drop your LinkedIn PDF here",
+    "dropHereFile": "Drop your {{type}} file here",
     "orBrowse": "or click to browse (max {{size}}MB)",
     "onlyPdf": "Only PDF files are accepted",
+    "onlyZip": "Only ZIP files are accepted",
     "fileTooLarge": "File exceeds maximum size of {{size}}MB",
     "analyzeProfile": "Analyze Profile",
+    "analyzingButton": "Analyzing..."
+  },
+  "profileAnalyzer": {
+    "title": "Analyze Your Profile",
+    "description": "Get an AI-powered analysis of your registered profile data, including your experience, education, skills, and stories. No file upload needed.",
+    "analyzeButton": "Analyze My Profile",
     "analyzingButton": "Analyzing..."
   },
   "suggestion": {
@@ -39,8 +57,9 @@
   "history": {
     "title": "Analysis History",
     "newAnalysis": "New Analysis",
-    "noHistory": "No analysis history yet. Upload a LinkedIn PDF to get started.",
+    "noHistory": "No analysis history yet. Choose a source above to get started.",
     "date": "Date",
+    "source": "Source",
     "file": "File",
     "score": "Score",
     "trend": "Trend",
@@ -57,11 +76,15 @@
       "description": "The ZIP file is not generated instantly. LinkedIn needs time to prepare your data archive. You will receive an email when it's ready to download.",
       "instruction1": "Go to LinkedIn Settings > Data Privacy > Download your data",
       "instruction1Link": "https://www.linkedin.com/mypreferences/d/download-my-data",
-      "instruction2": "Select the data categories you want (Profile, Positions, Education, Skills, Languages)",
+      "instruction2": "On the export page, you MUST select ALL available fields/checkboxes. This ensures that your experiences, education, skills, and other details are included in the export file.",
       "instruction3": "Click \"Request archive\" and wait for the email from LinkedIn",
       "instruction4": "Once you receive the email, download the ZIP file",
       "instruction5": "Come back here and upload the ZIP file in the next step",
-      "note": "Note: LinkedIn may take a few minutes to several hours to prepare your data. You will receive an email at your LinkedIn address when the download is ready."
+      "note": "Note: LinkedIn may take a few minutes to several hours to prepare your data. You will receive an email at your LinkedIn address when the download is ready.",
+      "desktopOnlyTitle": "Desktop Only",
+      "desktopOnlyMessage": "The LinkedIn data export feature is ONLY available on the web desktop version of LinkedIn. You cannot export your data from the LinkedIn mobile app.",
+      "selectAllFieldsTitle": "Select All Fields",
+      "selectAllFieldsMessage": "When requesting your data export, make sure to select ALL available checkboxes/fields. If you skip any fields, your experiences, education, or skills may be missing from the export file."
     },
     "step2": {
       "title": "Upload ZIP File",
