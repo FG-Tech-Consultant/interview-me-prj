@@ -39,15 +39,15 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${IM_PG_PASSWORD:-postgres}
       - JWT_SECRET=${IM_JWT_SECRET:-your-256-bit-secret-must-be-at-least-32-characters-long-for-HS256}
       - JWT_EXPIRATION_MS=${IM_JWT_EXPIRATION_MS:-86400000}
-      - AI_DEFAULT_PROVIDER=openai
-      - OPENAI_API_KEY=not-needed
-      - OPENAI_BASE_URL=http://host.docker.internal:8000/v1
-      - OPENAI_CHAT_MODEL=claude-sonnet-4
-      - GEMINI_API_KEY=
-      - CLAUDE_API_KEY=
-      - OLLAMA_BASE_URL=http://interview-me-ollama:11434
-      - OLLAMA_CHAT_MODEL=qwen2.5:7b
-      - AI_EMBEDDING_PROVIDER=ollama
+      - AI_DEFAULT_PROVIDER=${IM_AI_PROVIDER:-openai}
+      - OPENAI_API_KEY=${IM_OPENAI_API_KEY:-not-needed}
+      - OPENAI_BASE_URL=${IM_OPENAI_BASE_URL:-http://host.docker.internal:8000/v1}
+      - OPENAI_CHAT_MODEL=${IM_OPENAI_CHAT_MODEL:-claude-sonnet-4}
+      - GEMINI_API_KEY=${IM_GEMINI_API_KEY:-}
+      - CLAUDE_API_KEY=${IM_CLAUDE_API_KEY:-}
+      - OLLAMA_BASE_URL=${IM_OLLAMA_BASE_URL:-http://interview-me-ollama:11434}
+      - OLLAMA_CHAT_MODEL=${IM_OLLAMA_CHAT_MODEL:-qwen2.5:7b}
+      - AI_EMBEDDING_PROVIDER=${IM_EMBEDDING_PROVIDER:-ollama}
       - TEST_CLEANUP_API_KEY=${IM_TEST_CLEANUP_API_KEY:-test-cleanup-secret-key-dev}
     ports:
       - "8081:8080"

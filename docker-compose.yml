@@ -41,15 +41,15 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
       JWT_SECRET: ${JWT_SECRET:-your-256-bit-secret-must-be-at-least-32-characters-long-for-HS256}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
-      AI_DEFAULT_PROVIDER: openai
-      OPENAI_API_KEY: not-needed
-      OPENAI_BASE_URL: http://host.docker.internal:8000/v1
-      OPENAI_CHAT_MODEL: claude-sonnet-4
-      GEMINI_API_KEY: ""
-      CLAUDE_API_KEY: ""
-      OLLAMA_BASE_URL: http://interview-me-ollama:11434
-      OLLAMA_CHAT_MODEL: qwen2.5:3b
-      AI_EMBEDDING_PROVIDER: ollama
+      AI_DEFAULT_PROVIDER: ${AI_DEFAULT_PROVIDER:-openai}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-not-needed}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-http://host.docker.internal:8000/v1}
+      OPENAI_CHAT_MODEL: ${OPENAI_CHAT_MODEL:-claude-sonnet-4}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      CLAUDE_API_KEY: ${CLAUDE_API_KEY:-}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://interview-me-ollama:11434}
+      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-qwen2.5:3b}
+      AI_EMBEDDING_PROVIDER: ${AI_EMBEDDING_PROVIDER:-ollama}
     ports:
       - "8080:8080"
     volumes:
