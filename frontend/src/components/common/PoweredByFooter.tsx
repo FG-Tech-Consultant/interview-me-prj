@@ -10,7 +10,7 @@ export default function PoweredByFooter() {
   return (
     <>
       <Divider sx={{ mt: 4, mb: 2 }} />
-      <Box sx={{ textAlign: 'center', py: 2 }}>
+      <Box sx={{ textAlign: 'center', py: 2, position: 'relative', zIndex: 1 }}>
         <Typography variant="caption" color="text.secondary">
           powered by{' '}
           <Link href={GITHUB_URL} color="primary" underline="hover" target="_blank" rel="noopener">

@@ -50,6 +50,9 @@ public class Visitor {
     @Column(name = "user_agent", length = 500)
     private String userAgent;
 
+    @Column(name = "locale", length = 10)
+    private String locale;
+
     @Column(name = "visitor_token", nullable = false, unique = true, length = 100)
     private String visitorToken;
 

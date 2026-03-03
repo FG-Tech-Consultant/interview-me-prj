@@ -53,13 +53,15 @@ export const ChatPanel: React.FC<ChatPanelProps> = ({
         position: 'fixed',
         bottom: isMobile ? 0 : 24,
         right: isMobile ? 0 : 24,
+        ...(isMobile && { top: 0, left: 0 }),
         width: isMobile ? '100%' : 400,
         height: isMobile ? '100%' : 520,
         display: 'flex',
         flexDirection: 'column',
         borderRadius: isMobile ? 0 : 3,
         overflow: 'hidden',
-        zIndex: 1100,
+        zIndex: 1300,
+        bgcolor: 'background.paper',
       }}
     >
       {/* Header */}

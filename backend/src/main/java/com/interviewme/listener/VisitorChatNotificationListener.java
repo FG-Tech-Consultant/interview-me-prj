@@ -52,7 +52,8 @@ public class VisitorChatNotificationListener {
                         event.profileId(),
                         event.visitorName(),
                         event.visitorCompany(),
-                        event.visitorJobRole());
+                        event.visitorJobRole(),
+                        event.locale());
             } finally {
                 scheduledNotifications.remove(sessionId);
             }

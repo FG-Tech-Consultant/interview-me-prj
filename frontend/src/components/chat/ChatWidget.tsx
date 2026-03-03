@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChatPanel } from './ChatPanel';
 import { VisitorIdentificationDialog, type VisitorFormData } from './VisitorIdentificationDialog';
 import { useChat } from '../../hooks/useChat';
@@ -19,6 +20,8 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({
   externalOpen,
   onOpenChange,
 }) => {
+  const { i18n } = useTranslation();
+
   const [visitorToken, setVisitorToken] = useState<string | null>(() => {
     try {
       return sessionStorage.getItem(VISITOR_TOKEN_KEY(slug));
@@ -59,7 +62,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({
     setIdentifyLoading(true);
     setIdentifyError(null);
     try {
-      const response = await visitorApi.identify(slug, data);
+      const response = await visitorApi.identify(slug, { ...data, locale: i18n.language });
       setVisitorToken(response.visitorToken);
       try {
         sessionStorage.setItem(VISITOR_TOKEN_KEY(slug), response.visitorToken);
@@ -76,7 +79,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({
     } finally {
       setIdentifyLoading(false);
     }
-  }, [slug, isOpen, toggle]);
+  }, [slug, isOpen, toggle, i18n.language]);
 
   const handleCloseIdentify = useCallback(() => {
     setShowIdentify(false);

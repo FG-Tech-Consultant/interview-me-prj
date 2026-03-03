@@ -4,12 +4,14 @@ import com.interviewme.common.dto.AuthResponse;
 import com.interviewme.common.dto.LoginRequest;
 import com.interviewme.common.dto.RegisterRequest;
 import com.interviewme.common.dto.UserInfoResponse;
+import com.interviewme.event.UserRegisteredEvent;
 import com.interviewme.model.Tenant;
 import com.interviewme.model.User;
 import com.interviewme.repository.TenantRepository;
 import com.interviewme.repository.UserRepository;
 import com.interviewme.security.JwtService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 
 @Service
@@ -31,17 +34,20 @@ public class AuthService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final ApplicationEventPublisher eventPublisher;
 
     public AuthService(UserRepository userRepository,
                        TenantRepository tenantRepository,
                        PasswordEncoder passwordEncoder,
                        JwtService jwtService,
-                       @Lazy AuthenticationManager authenticationManager) {
+                       @Lazy AuthenticationManager authenticationManager,
+                       ApplicationEventPublisher eventPublisher) {
         this.userRepository = userRepository;
         this.tenantRepository = tenantRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -71,6 +77,10 @@ public class AuthService implements UserDetailsService {
 
         // Generate JWT token
         String token = jwtService.generateToken(user.getEmail(), user.getTenantId());
+
+        // Publish registration event for welcome email
+        eventPublisher.publishEvent(new UserRegisteredEvent(
+                user.getId(), tenant.getId(), user.getEmail(), tenant.getName(), Instant.now()));
 
         return new AuthResponse(token, user.getEmail(), user.getTenantId());
     }

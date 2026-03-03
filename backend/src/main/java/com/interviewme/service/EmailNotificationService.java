@@ -21,7 +21,7 @@ public class EmailNotificationService {
     private final UserRepository userRepository;
     private final NotificationProperties notificationProperties;
 
-    public void sendVisitorChatNotification(Long profileId, String visitorName, String visitorCompany, String visitorJobRole) {
+    public void sendVisitorChatNotification(Long profileId, String visitorName, String visitorCompany, String visitorJobRole, String locale) {
         if (!notificationProperties.isEnabled()) {
             log.debug("Email notifications disabled, skipping for profileId={}", profileId);
             return;
@@ -43,27 +43,56 @@ public class EmailNotificationService {
         String visitorsUrl = notificationProperties.getBaseUrl() + "/visitors";
         String firstName = profile.getFullName().split(" ")[0];
 
-        String subject = "Someone interviewed your profile on Interview Me!";
-        String body = """
-                Hi %s,
+        boolean isPtBr = "pt-BR".equalsIgnoreCase(locale) || "pt".equalsIgnoreCase(locale);
 
-                You had a visitor on your Interview Me profile!
+        String subject = isPtBr
+                ? "Alguem entrevistou seu perfil no Interview Me!"
+                : "Someone interviewed your profile on Interview Me!";
 
-                Visitor: %s
-                Company: %s
-                Role: %s
+        String body;
+        if (isPtBr) {
+            body = """
+                    Oi %s,
 
-                They asked questions about your experience through your public profile chat.
+                    Voce recebeu um visitante no seu perfil do Interview Me!
 
-                View your visitors: %s
+                    Visitante: %s
+                    Empresa: %s
+                    Cargo: %s
 
-                --
-                Interview Me - Live Resume & Career Copilot
-                """.formatted(firstName,
-                visitorName != null ? visitorName : "Anonymous",
-                visitorCompany != null ? visitorCompany : "Not provided",
-                visitorJobRole != null ? visitorJobRole : "Not provided",
-                visitorsUrl);
+                    Eles fizeram perguntas sobre sua experiencia atraves do chat do seu perfil publico.
+
+                    Ver seus visitantes: %s
+
+                    --
+                    Interview Me - Live Resume & Career Copilot
+                    """.formatted(firstName,
+                    visitorName != null ? visitorName : "Anonimo",
+                    visitorCompany != null ? visitorCompany : "Nao informado",
+                    visitorJobRole != null ? visitorJobRole : "Nao informado",
+                    visitorsUrl);
+        } else {
+            body = """
+                    Hi %s,
+
+                    You had a visitor on your Interview Me profile!
+
+                    Visitor: %s
+                    Company: %s
+                    Role: %s
+
+                    They asked questions about your experience through your public profile chat.
+
+                    View your visitors: %s
+
+                    --
+                    Interview Me - Live Resume & Career Copilot
+                    """.formatted(firstName,
+                    visitorName != null ? visitorName : "Anonymous",
+                    visitorCompany != null ? visitorCompany : "Not provided",
+                    visitorJobRole != null ? visitorJobRole : "Not provided",
+                    visitorsUrl);
+        }
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -72,10 +101,88 @@ public class EmailNotificationService {
             message.setSubject(subject);
             message.setText(body);
             mailSender.send(message);
-            log.info("Visitor chat notification sent to={} for profileId={} visitor={} company={}",
-                    recipientEmail, profileId, visitorName, visitorCompany);
+            log.info("Visitor chat notification sent to={} for profileId={} visitor={} company={} locale={}",
+                    recipientEmail, profileId, visitorName, visitorCompany, locale);
         } catch (Exception e) {
             log.error("Failed to send visitor chat notification to={}: {}", recipientEmail, e.getMessage());
+        }
+    }
+
+    public void sendWelcomeEmail(String recipientEmail, String tenantName, String locale) {
+        if (!notificationProperties.isEnabled()) {
+            log.debug("Email notifications disabled, skipping welcome email for {}", recipientEmail);
+            return;
+        }
+
+        String baseUrl = notificationProperties.getBaseUrl();
+        boolean isPtBr = "pt-BR".equalsIgnoreCase(locale) || "pt".equalsIgnoreCase(locale);
+
+        String subject = isPtBr
+                ? "Bem-vindo ao Interview Me!"
+                : "Welcome to Interview Me!";
+
+        String body = isPtBr
+                ? """
+                Oi %s,
+
+                Bem-vindo ao Interview Me! Estamos felizes em ter voce aqui.
+
+                Proximos passos para configurar seu perfil:
+
+                1. Preencha seu perfil: Adicione seu nome, titulo profissional, resumo e experiencias.
+                   Voce tambem pode importar dados do LinkedIn para agilizar o processo.
+
+                2. Seu perfil publico: Apos preencher seu perfil, voce tera uma pagina publica
+                   onde recrutadores e empresas podem conhecer sua experiencia.
+                   Sua URL sera: %s/p/seu-slug
+
+                3. Assistente de Carreira com IA: Seu perfil publico tera um chat com IA integrado.
+                   Recrutadores podem fazer perguntas sobre sua experiencia, habilidades e projetos,
+                   e o assistente responde com base no seu perfil.
+
+                Acesse sua conta: %s/dashboard
+
+                Qualquer duvida, estamos aqui para ajudar!
+
+                --
+                Interview Me - Live Resume & Career Copilot
+                """.formatted(tenantName, baseUrl, baseUrl)
+                : """
+                Hi %s,
+
+                Welcome to Interview Me! We're excited to have you here.
+
+                Next steps to set up your profile:
+
+                1. Fill in your profile: Add your name, professional headline, summary, and experiences.
+                   You can also import data from LinkedIn to speed up the process.
+
+                2. Your public profile: Once your profile is set up, you'll have a public page
+                   where recruiters and companies can learn about your experience.
+                   Your URL will be: %s/p/your-slug
+
+                3. AI Career Assistant: Your public profile will have an integrated AI chat.
+                   Recruiters can ask questions about your experience, skills, and projects,
+                   and the assistant responds based on your profile.
+
+                Access your account: %s/dashboard
+
+                If you have any questions, we're here to help!
+
+                --
+                Interview Me - Live Resume & Career Copilot
+                """.formatted(tenantName, baseUrl, baseUrl);
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(notificationProperties.getFrom());
+            message.setTo(recipientEmail);
+            message.setSubject(subject);
+            message.setText(body);
+            mailSender.send(message);
+            log.info("Welcome email sent to={}", recipientEmail);
+        } catch (Exception e) {
+            log.error("Failed to send welcome email to={}: {}", recipientEmail, e.getMessage());
         }
     }
 

@@ -10,5 +10,6 @@ public record VisitorChatStartedEvent(
         String visitorName,
         String visitorCompany,
         String visitorJobRole,
+        String locale,
         Instant timestamp
 ) {}

@@ -118,6 +118,7 @@ public class ChatService {
                                 tenantId, profile.getId(), visitor.getId(),
                                 session.getId(),
                                 visitor.getName(), visitor.getCompany(), visitor.getJobRole(),
+                                visitor.getLocale(),
                                 Instant.now())));
             }
         }

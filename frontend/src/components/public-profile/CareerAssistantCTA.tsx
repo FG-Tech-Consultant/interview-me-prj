@@ -25,6 +25,9 @@ export const CareerAssistantCTA: React.FC<CareerAssistantCTAProps> = ({
         color: 'white',
         cursor: 'pointer',
         transition: 'transform 0.2s, box-shadow 0.2s',
+        position: 'relative',
+        zIndex: 1,
+        overflow: 'hidden',
         '&:hover': {
           transform: 'translateY(-2px)',
           boxShadow: '0 8px 24px rgba(25, 118, 210, 0.4)',

@@ -72,7 +72,15 @@ const PublicProfilePage: React.FC = () => {
     <>
       <PublicProfileSeo profile={profile} />
 
-      <Container maxWidth="md" sx={{ py: 6 }}>
+      <Container
+        maxWidth="md"
+        sx={{
+          py: 6,
+          pb: { xs: 10, md: 6 },
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word',
+        }}
+      >
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
           <LanguageSelector />
         </Box>

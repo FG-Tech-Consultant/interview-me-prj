@@ -71,7 +71,7 @@ export interface AccountResponse {
 
 export const visitorApi = {
   // Public: visitor identifies themselves
-  identify: async (slug: string, data: VisitorFormData): Promise<VisitorIdentifyResponse> => {
+  identify: async (slug: string, data: VisitorFormData & { locale?: string }): Promise<VisitorIdentifyResponse> => {
     const response = await publicClient.post<VisitorIdentifyResponse>(
       `/public/visitors/${slug}/identify`,
       data

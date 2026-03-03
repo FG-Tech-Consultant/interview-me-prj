@@ -52,6 +52,7 @@ public class VisitorService {
         visitor.setLinkedinUrl(request.linkedinUrl());
         visitor.setContactEmail(request.contactEmail());
         visitor.setContactWhatsapp(request.contactWhatsapp());
+        visitor.setLocale(request.locale() != null ? request.locale() : "en");
         visitor.setIpAddress(ipAddress);
         visitor.setUserAgent(userAgent);
         visitor.setVisitorToken(UUID.randomUUID().toString());
