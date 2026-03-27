@@ -34,5 +34,8 @@
     "button": "Comecar Agora",
     "loginLink": "Ja tem uma conta? Entrar"
   },
-  "backToLogin": "Voltar ao login"
+  "backToLogin": "Voltar ao login",
+  "contact": "Parcerias / Contato",
+  "contactClickHere": "clique aqui",
+  "contactEmail": "fernando@fhgomes.com"
 }

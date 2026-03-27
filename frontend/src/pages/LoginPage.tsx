@@ -16,6 +16,7 @@ import {
 import ChatIcon from '@mui/icons-material/Chat';
 import WorkIcon from '@mui/icons-material/Work';
 import ShareIcon from '@mui/icons-material/Share';
+import EmailIcon from '@mui/icons-material/Email';
 import { login, LoginRequest } from '../api/auth';
 import AppVersion from '../components/common/AppVersion';
 import LanguageSelector from '../components/layout/LanguageSelector';
@@ -27,6 +28,7 @@ export default function LoginPage() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showContactEmail, setShowContactEmail] = useState(false);
 
   const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) => login(data),
@@ -108,13 +110,15 @@ export default function LoginPage() {
               </Box>
             </Box>
           </Paper>
-          <AppVersion sx={{ mt: 2, textAlign: 'center' }} />
-          <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 1 }}>
-            Created and &copy; by{' '}
-            <a href="https://github.com/fhgomes" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
-              fhgomes
-            </a>
-          </Typography>
+          <Box sx={{ mt: 2, textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
+            <Typography variant="body2" color="text.secondary">
+              Created and &copy; by{' '}
+              <a href="https://github.com/fhgomes" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
+                fhgomes
+              </a>
+            </Typography>
+            <AppVersion sx={{}} />
+          </Box>
         </Grid>
 
         {/* Right — Hero Text */}
@@ -147,6 +151,28 @@ export default function LoginPage() {
                   {t('login.learnMore')} &rarr;
                 </Typography>
               </Link>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+              <EmailIcon fontSize="small" color="primary" sx={{ mr: 0.5 }} />
+              <Typography variant="body2" color="text.secondary">
+                {t('login.contact')} —{' '}
+                {showContactEmail ? (
+                  <a href="mailto:fernando@fhgomes.com" style={{ color: 'inherit' }}>
+                    {t('login.contactEmail')}
+                  </a>
+                ) : (
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="primary"
+                    sx={{ cursor: 'pointer', textDecoration: 'underline' }}
+                    onClick={() => setShowContactEmail(true)}
+                  >
+                    {t('login.contactClickHere')}
+                  </Typography>
+                )}
+              </Typography>
             </Box>
           </Box>
         </Grid>

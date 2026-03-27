@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
@@ -8,6 +9,7 @@ import {
   Paper,
   Button
 } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ShareIcon from '@mui/icons-material/Share';
@@ -19,6 +21,7 @@ import AppVersion from '../components/common/AppVersion';
 
 export default function AboutPage() {
   const { t } = useTranslation('about');
+  const [showEmail, setShowEmail] = useState(false);
 
   const steps = [
     { icon: <EditNoteIcon sx={{ fontSize: 40 }} color="primary" />, title: t('how.step1Title'), desc: t('how.step1Desc') },
@@ -43,9 +46,32 @@ export default function AboutPage() {
         <Typography variant="h3" fontWeight={700} gutterBottom color="primary.main">
           {t('title')}
         </Typography>
-        <Typography variant="h6" color="text.secondary" sx={{ mb: 5 }}>
+        <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
           {t('subtitle')}
         </Typography>
+
+        {/* Contact */}
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 5 }}>
+          <EmailIcon fontSize="small" color="primary" sx={{ mr: 0.5 }} />
+          <Typography variant="body2" color="text.secondary">
+            {t('contact')} —{' '}
+            {showEmail ? (
+              <a href="mailto:fernando@fhgomes.com" style={{ color: 'inherit' }}>
+                {t('contactEmail')}
+              </a>
+            ) : (
+              <Typography
+                component="span"
+                variant="body2"
+                color="primary"
+                sx={{ cursor: 'pointer', textDecoration: 'underline' }}
+                onClick={() => setShowEmail(true)}
+              >
+                {t('contactClickHere')}
+              </Typography>
+            )}
+          </Typography>
+        </Box>
 
         {/* What is it */}
         <Paper elevation={1} sx={{ p: 4, mb: 4 }}>
@@ -117,13 +143,15 @@ export default function AboutPage() {
           </Box>
         </Paper>
 
-        <AppVersion sx={{ textAlign: 'center' }} />
-        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 1 }}>
-          Created and &copy; by{' '}
-          <a href="https://github.com/fhgomes" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
-            fhgomes
-          </a>
-        </Typography>
+        <Box sx={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
+          <Typography variant="body2" color="text.secondary">
+            Created and &copy; by{' '}
+            <a href="https://github.com/fhgomes" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
+              fhgomes
+            </a>
+          </Typography>
+          <AppVersion sx={{}} />
+        </Box>
       </Container>
     </Box>
   );
