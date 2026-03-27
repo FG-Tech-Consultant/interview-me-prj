@@ -41,7 +41,7 @@ services:
       - JWT_EXPIRATION_MS=${IM_JWT_EXPIRATION_MS:-86400000}
       - AI_DEFAULT_PROVIDER=${IM_AI_PROVIDER:-openai}
       - OPENAI_API_KEY=${IM_OPENAI_API_KEY:-not-needed}
-      - OPENAI_BASE_URL=${IM_OPENAI_BASE_URL:-http://host.docker.internal:8000/v1}
+      - OPENAI_BASE_URL=${IM_OPENAI_BASE_URL:-http://openclaw-grokproxy:8000/v1}
       - OPENAI_CHAT_MODEL=${IM_OPENAI_CHAT_MODEL:-claude-sonnet-4}
       - GEMINI_API_KEY=${IM_GEMINI_API_KEY:-}
       - CLAUDE_API_KEY=${IM_CLAUDE_API_KEY:-}
@@ -60,6 +60,7 @@ services:
     networks:
       - dev-network
       - ollama_default
+      - grok-net
 
 volumes:
   interview-me-dev-pg-data:
@@ -70,3 +71,6 @@ networks:
     driver: bridge
   ollama_default:
     external: true
+  grok-net:
+    external: true
+    name: openclaw-docker-grok_openclaw-grok-net
