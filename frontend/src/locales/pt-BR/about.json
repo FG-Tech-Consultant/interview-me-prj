@@ -1,0 +1,38 @@
+{
+  "title": "Sobre o Interview Me",
+  "subtitle": "Uma forma mais inteligente de conectar talentos com oportunidades",
+  "what": {
+    "title": "O que e o Interview Me?",
+    "description": "O Interview Me e uma plataforma onde profissionais criam um perfil publico com experiencia, projetos, skills e historias de carreira. O diferencial: cada perfil tem um chat com IA que funciona como uma entrevista previa automatizada. Visitantes fazem perguntas e a IA responde com base nos dados reais do profissional."
+  },
+  "how": {
+    "title": "Como Funciona",
+    "step1Title": "Monte Seu Perfil",
+    "step1Desc": "Adicione experiencia, formacao, projetos, skills e historias. Quanto mais detalhes, melhor a IA te representa.",
+    "step2Title": "Compartilhe Seu Link",
+    "step2Desc": "Receba uma URL publica como /p/seu-nome. Compartilhe com recrutadores, no LinkedIn ou em candidaturas.",
+    "step3Title": "Deixe a IA Falar Por Voce",
+    "step3Desc": "Recrutadores visitam seu perfil e conversam com a IA para conhecer seu background — antes mesmo de agendar uma call."
+  },
+  "forRecruiters": {
+    "title": "Para Recrutadores",
+    "description": "Imagine poder fazer uma triagem previa de candidatos conversando com uma IA que conhece todo o historico deles. Sem precisar ler curriculos extensos — basta perguntar o que precisa saber.",
+    "bullet1": "Faca triagem em minutos, nao em horas",
+    "bullet2": "Pergunte sobre skills e experiencias especificas",
+    "bullet3": "Respostas baseadas nos dados reais do candidato"
+  },
+  "forProfessionals": {
+    "title": "Para Profissionais",
+    "description": "Destaque-se. Em vez de enviar um curriculo estatico, compartilhe um perfil vivo que responde perguntas sobre sua carreira 24/7.",
+    "bullet1": "Um link substitui multiplos documentos",
+    "bullet2": "A IA cuida das entrevistas preliminares por voce",
+    "bullet3": "Acompanhe quem visita e o que perguntam"
+  },
+  "cta": {
+    "title": "Pronto pra testar?",
+    "description": "Crie seu perfil em minutos e comece a compartilhar seu link inteligente de carreira.",
+    "button": "Comecar Agora",
+    "loginLink": "Ja tem uma conta? Entrar"
+  },
+  "backToLogin": "Voltar ao login"
+}

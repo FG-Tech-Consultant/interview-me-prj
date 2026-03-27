@@ -16,6 +16,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { VisitorsPage } from './pages/VisitorsPage';
 import { AdminPage } from './pages/AdminPage';
 import PublicProfilePage from './pages/PublicProfilePage';
+import AboutPage from './pages/AboutPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
 
@@ -53,6 +54,7 @@ function App() {
             <Route path="/p/:slug" element={<PublicProfilePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/about" element={<AboutPage />} />
 
             {/* Authenticated routes with app layout */}
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>

@@ -1,0 +1,38 @@
+{
+  "title": "About Interview Me",
+  "subtitle": "A smarter way to connect talent with opportunity",
+  "what": {
+    "title": "What is Interview Me?",
+    "description": "Interview Me is a platform where professionals create a public profile with their experience, projects, skills and career stories. The key feature: each profile has an AI-powered chat that works as an automated pre-interview. Visitors ask questions and the AI answers based on the professional's real data."
+  },
+  "how": {
+    "title": "How It Works",
+    "step1Title": "Build Your Profile",
+    "step1Desc": "Add your experience, education, projects, skills and stories. The more detail you provide, the better the AI represents you.",
+    "step2Title": "Share Your Link",
+    "step2Desc": "Get a public profile URL like /p/your-name. Share it with recruiters, on LinkedIn, or in job applications.",
+    "step3Title": "Let AI Do the Talking",
+    "step3Desc": "Recruiters visit your profile and chat with the AI to learn about your background — before even scheduling a call."
+  },
+  "forRecruiters": {
+    "title": "For Recruiters",
+    "description": "Imagine being able to pre-screen candidates by chatting with an AI that knows their full background. No more reading through lengthy resumes — just ask what you need to know.",
+    "bullet1": "Pre-screen candidates in minutes, not hours",
+    "bullet2": "Ask specific questions about skills and experience",
+    "bullet3": "Get answers grounded in the candidate's real data"
+  },
+  "forProfessionals": {
+    "title": "For Professionals",
+    "description": "Stand out from the crowd. Instead of sending a static resume, share a living profile that can answer questions about your career 24/7.",
+    "bullet1": "One link replaces multiple documents",
+    "bullet2": "AI handles preliminary interviews for you",
+    "bullet3": "Track who visits and what they ask"
+  },
+  "cta": {
+    "title": "Ready to try?",
+    "description": "Create your profile in minutes and start sharing your smart career link.",
+    "button": "Get Started",
+    "loginLink": "Already have an account? Login"
+  },
+  "backToLogin": "Back to login"
+}

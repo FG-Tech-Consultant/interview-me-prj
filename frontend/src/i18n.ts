@@ -17,6 +17,7 @@ import errorsEn from './locales/en/errors.json';
 import settingsEn from './locales/en/settings.json';
 import visitorsEn from './locales/en/visitors.json';
 import adminEn from './locales/en/admin.json';
+import aboutEn from './locales/en/about.json';
 
 import commonPtBR from './locales/pt-BR/common.json';
 import authPtBR from './locales/pt-BR/auth.json';
@@ -33,6 +34,7 @@ import errorsPtBR from './locales/pt-BR/errors.json';
 import settingsPtBR from './locales/pt-BR/settings.json';
 import visitorsPtBR from './locales/pt-BR/visitors.json';
 import adminPtBR from './locales/pt-BR/admin.json';
+import aboutPtBR from './locales/pt-BR/about.json';
 
 const resources = {
   en: {
@@ -51,6 +53,7 @@ const resources = {
     settings: settingsEn,
     visitors: visitorsEn,
     admin: adminEn,
+    about: aboutEn,
   },
   'pt-BR': {
     common: commonPtBR,
@@ -68,6 +71,7 @@ const resources = {
     settings: settingsPtBR,
     visitors: visitorsPtBR,
     admin: adminPtBR,
+    about: aboutPtBR,
   },
 };
 
@@ -94,6 +98,7 @@ i18n
       'settings',
       'visitors',
       'admin',
+      'about',
     ],
     defaultNS: 'common',
     detection: {
