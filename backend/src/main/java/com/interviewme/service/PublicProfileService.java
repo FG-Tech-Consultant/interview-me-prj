@@ -22,6 +22,7 @@ import com.interviewme.repository.UserSkillRepository;
 import com.interviewme.billing.config.BillingProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class PublicProfileService {
+
+    @Value("${notification.base-url:http://localhost:8080}")
+    private String baseUrl;
 
     private final ProfileRepository profileRepository;
     private final JobExperienceRepository jobExperienceRepository;
@@ -294,7 +298,7 @@ public class PublicProfileService {
         String description = profile.getSummary() != null
                 ? profile.getSummary().substring(0, Math.min(profile.getSummary().length(), 160))
                 : (profile.getHeadline() != null ? profile.getHeadline() : profile.getFullName());
-        String canonicalUrl = "https://interviewme.app/p/" + profile.getSlug();
+        String canonicalUrl = baseUrl + "/p/" + profile.getSlug();
         List<String> keywords = skills.stream()
                 .map(PublicSkillResponse::skillName)
                 .limit(10)

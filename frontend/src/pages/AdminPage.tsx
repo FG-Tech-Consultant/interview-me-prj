@@ -246,7 +246,7 @@ function AccountsTable({ accounts, loading }: { accounts: AccountResponse[] | un
               <TableCell>{account.role}</TableCell>
               <TableCell>
                 {account.publicProfileUrl ? (
-                  <Link href={account.publicProfileUrl} target="_blank" rel="noopener noreferrer">
+                  <Link href={`${import.meta.env.BASE_URL}${account.publicProfileUrl.replace(/^\//, '')}`} target="_blank" rel="noopener noreferrer">
                     {account.publicProfileUrl}
                   </Link>
                 ) : (
