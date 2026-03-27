@@ -109,6 +109,12 @@ export default function LoginPage() {
             </Box>
           </Paper>
           <AppVersion sx={{ mt: 2, textAlign: 'center' }} />
+          <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 1 }}>
+            Created and &copy; by{' '}
+            <a href="https://github.com/fhgomes" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
+              fhgomes
+            </a>
+          </Typography>
         </Grid>
 
         {/* Right — Hero Text */}

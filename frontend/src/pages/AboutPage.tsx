@@ -118,6 +118,12 @@ export default function AboutPage() {
         </Paper>
 
         <AppVersion sx={{ textAlign: 'center' }} />
+        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 1 }}>
+          Created and &copy; by{' '}
+          <a href="https://github.com/fhgomes" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
+            fhgomes
+          </a>
+        </Typography>
       </Container>
     </Box>
   );
