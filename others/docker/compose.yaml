@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=${IM_PG_PASSWORD:-postgres}
       - POSTGRES_DB=${IM_PG_DB:-interview_me}
     ports:
-      - "${IM_PG_PORT:-5432}:5432"
+      - "127.0.0.1:${IM_PG_PORT:-5432}:5432"
     volumes:
       - ./postgresql/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
       - interview-me-dev-pg-data:/var/lib/postgresql

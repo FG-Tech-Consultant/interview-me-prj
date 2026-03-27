@@ -4,7 +4,7 @@ import type { ChatResponse, ChatAnalyticsResponse } from '../types/chat';
 
 // Separate axios instance for public chat endpoints (no auth token)
 const publicChatClient = axios.create({
-  baseURL: '/api',
+  baseURL: `${import.meta.env.BASE_URL}api`,
   headers: {
     'Content-Type': 'application/json',
   },

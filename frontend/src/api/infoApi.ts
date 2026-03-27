@@ -23,6 +23,6 @@ export interface AppInfo {
 }
 
 export async function getAppInfo(): Promise<AppInfo> {
-  const response = await axios.get<AppInfo>('/actuator/info');
+  const response = await axios.get<AppInfo>(`${import.meta.env.BASE_URL}actuator/info`);
   return response.data;
 }

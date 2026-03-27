@@ -4,7 +4,7 @@ import type { VisitorFormData } from '../components/chat/VisitorIdentificationDi
 
 // Public client for visitor identification (no auth)
 const publicClient = axios.create({
-  baseURL: '/api',
+  baseURL: `${import.meta.env.BASE_URL}api`,
   headers: { 'Content-Type': 'application/json' },
 });
 

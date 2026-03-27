@@ -47,7 +47,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <BrowserRouter>
+        <BrowserRouter basename="/interviewme-app">
           <Routes>
             {/* Public routes (no auth) */}
             <Route path="/p/:slug" element={<PublicProfilePage />} />

@@ -5,7 +5,7 @@ import type { Profile } from '../types/profile';
 
 // Separate axios instance for public endpoints (no auth token)
 const publicClient = axios.create({
-  baseURL: '/api',
+  baseURL: `${import.meta.env.BASE_URL}api`,
   headers: {
     'Content-Type': 'application/json',
   },

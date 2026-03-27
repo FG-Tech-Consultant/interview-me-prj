@@ -44,5 +44,5 @@ export const getCurrentUser = async (): Promise<UserInfoResponse> => {
 
 export const logout = () => {
   localStorage.removeItem('token');
-  window.location.href = '/login';
+  window.location.href = `${import.meta.env.BASE_URL}login`;
 };

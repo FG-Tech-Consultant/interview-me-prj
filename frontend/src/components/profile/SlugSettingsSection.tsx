@@ -69,14 +69,14 @@ export const SlugSettingsSection: React.FC<SlugSettingsSectionProps> = ({
   };
 
   const handleCopyLink = () => {
-    const url = `${window.location.origin}/p/${slug}`;
+    const url = `${window.location.origin}${import.meta.env.BASE_URL}p/${slug}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handlePreview = () => {
-    window.open(`/p/${slug}`, '_blank');
+    window.open(`${import.meta.env.BASE_URL}p/${slug}`, '_blank');
   };
 
   const getHelperText = () => {

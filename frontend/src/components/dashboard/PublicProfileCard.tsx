@@ -36,7 +36,7 @@ const PublicProfileCard = () => {
   }
 
   const slug = profile?.slug;
-  const publicUrl = slug ? `${window.location.origin}/p/${slug}` : null;
+  const publicUrl = slug ? `${window.location.origin}${import.meta.env.BASE_URL}p/${slug}` : null;
 
   const handleCopy = async () => {
     if (publicUrl) {
