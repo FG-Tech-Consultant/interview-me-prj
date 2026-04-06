@@ -14,6 +14,7 @@ import { PublicWorkTimeline } from '../components/public-profile/PublicWorkTimel
 import { PublicEducationSection } from '../components/public-profile/PublicEducationSection';
 import { PublicProfileNotFound } from '../components/public-profile/PublicProfileNotFound';
 import { CareerAssistantCTA } from '../components/public-profile/CareerAssistantCTA';
+import { AboutCareerAssistant } from '../components/public-profile/AboutCareerAssistant';
 import { CollapsibleSection } from '../components/public-profile/CollapsibleSection';
 import { ChatWidget } from '../components/chat/ChatWidget';
 import PoweredByFooter from '../components/common/PoweredByFooter';
@@ -85,6 +86,8 @@ const PublicProfilePage: React.FC = () => {
           <LanguageSelector />
         </Box>
         <PublicProfileHeader profile={profile} />
+
+        <AboutCareerAssistant profileName={profile.fullName} />
 
         <CareerAssistantCTA
           profileName={profile.fullName}
