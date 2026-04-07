@@ -18,8 +18,8 @@
   "present": "Atual",
   "team": "Equipe: {{size}}",
   "aboutAssistant": {
-    "title": "Sobre este Assistente de Carreira",
-    "description": "Esta pagina conta com um Assistente de Carreira com IA que conhece profundamente o historico profissional de {{name}}. Voce pode fazer perguntas detalhadas sobre experiencia, habilidades tecnicas, projetos e conquistas — e receber respostas contextualizadas e completas."
+    "description": "Esta pagina conta com um Assistente de Carreira com IA que conhece o historico profissional de {{name}}. Pergunte sobre experiencia, habilidades, projetos e conquistas.",
+    "learnMore": "Saiba mais"
   },
   "cta": {
     "title": "Entreviste {{name}} com o Assistente de Carreira",

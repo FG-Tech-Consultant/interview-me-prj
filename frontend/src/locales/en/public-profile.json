@@ -18,8 +18,8 @@
   "present": "Present",
   "team": "Team: {{size}}",
   "aboutAssistant": {
-    "title": "About this Career Assistant",
-    "description": "This page features an AI-powered Career Assistant that deeply understands {{name}}'s professional background. You can ask detailed questions about their experience, technical skills, projects, and career achievements — and get thoughtful, contextual answers."
+    "description": "This page features an AI Career Assistant that understands {{name}}'s professional background. Ask about experience, skills, projects, and achievements.",
+    "learnMore": "Learn more"
   },
   "cta": {
     "title": "Interview {{name}} with Career Assistant",
