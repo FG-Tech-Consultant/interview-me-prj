@@ -17,6 +17,9 @@ import { VisitorsPage } from './pages/VisitorsPage';
 import { AdminPage } from './pages/AdminPage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import AboutPage from './pages/AboutPage';
+import { CompanyRegisterPage } from './pages/CompanyRegisterPage';
+import { CompanyDashboardPage } from './pages/CompanyDashboardPage';
+import { CompanyProfilePage } from './pages/CompanyProfilePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
 
@@ -55,6 +58,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/company/register" element={<CompanyRegisterPage />} />
 
             {/* Authenticated routes with app layout */}
             <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
@@ -69,6 +73,8 @@ function App() {
               <Route path="/visitors" element={<VisitorsPage />} />
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/company/dashboard" element={<CompanyDashboardPage />} />
+              <Route path="/company/profile" element={<CompanyProfilePage />} />
             </Route>
 
             <Route

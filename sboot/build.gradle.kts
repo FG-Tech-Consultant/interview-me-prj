@@ -71,7 +71,7 @@ val copyFrontend = tasks.register<Copy>("copyFrontend") {
     group = "build"
     description = "Copy frontend dist to sboot static resources"
     dependsOn(":frontend:npmBuild")
-    from("${project.rootDir}/frontend/dist")
+    from("${project.rootDir}/frontend/build")
     into("${project.layout.buildDirectory.get()}/resources/main/static")
 }
 

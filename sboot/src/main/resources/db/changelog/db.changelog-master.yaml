@@ -77,3 +77,5 @@ databaseChangeLog:
       file: db/changelog/20260302200308-add-source-type-to-linkedin-analysis.xml
   - include:
       file: db/changelog/20260302210000-add-locale-to-visitor.xml
+  - include:
+      file: db/changelog/20260429120000-create-company-table.xml

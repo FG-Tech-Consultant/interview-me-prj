@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/interviewme-app/',
   build: {
-    outDir: 'dist',
+    outDir: 'build',
     emptyOutDir: true
   },
   server: {

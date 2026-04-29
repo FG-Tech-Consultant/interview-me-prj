@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
+    boolean existsByEmail(String email);
     List<User> findByTenantId(Long tenantId);
 
     @Query(value = "SELECT * FROM users WHERE email LIKE :pattern", nativeQuery = true)
