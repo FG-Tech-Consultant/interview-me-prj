@@ -5,18 +5,22 @@ import {
   IconButton,
   Box,
   Chip,
+  Badge,
   useTheme,
   useMediaQuery,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout } from '../../api/auth';
 import { useAppInfo } from '../../hooks/useAppInfo';
 import { DRAWER_WIDTH_OPEN, DRAWER_WIDTH_COLLAPSED } from './Sidebar';
 import LanguageSelector from './LanguageSelector';
 import { CoinBalanceBadge } from '../billing/CoinBalanceBadge';
+import { notificationApi } from '../../api/notificationApi';
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -27,6 +31,7 @@ export default function TopBar({ onMenuClick, sidebarOpen }: TopBarProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { t } = useTranslation('common');
+  const navigate = useNavigate();
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -34,6 +39,12 @@ export default function TopBar({ onMenuClick, sidebarOpen }: TopBarProps) {
   });
 
   const { data: appInfo } = useAppInfo();
+
+  const { data: unreadCount } = useQuery({
+    queryKey: ['notification-count'],
+    queryFn: notificationApi.countUnread,
+    refetchInterval: 30000,
+  });
 
   const drawerWidth = isMobile ? 0 : sidebarOpen ? DRAWER_WIDTH_OPEN : DRAWER_WIDTH_COLLAPSED;
 
@@ -77,6 +88,11 @@ export default function TopBar({ onMenuClick, sidebarOpen }: TopBarProps) {
           )}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <IconButton color="inherit" onClick={() => navigate('/notifications')}>
+            <Badge badgeContent={unreadCount ?? 0} color="error">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
           <CoinBalanceBadge />
           <LanguageSelector />
           {user && (

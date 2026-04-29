@@ -212,4 +212,37 @@ public class EmailNotificationService {
         mailSender.send(message);
         log.info("Test email sent to={}", to);
     }
+
+    public void sendApplicationStatusEmail(String candidateEmail, String jobTitle, String newStatus) {
+        if (!notificationProperties.isEnabled()) {
+            log.debug("Email notifications disabled, skipping application status email");
+            return;
+        }
+
+        String subject = "Application Update: " + jobTitle;
+        String body = """
+                Hi,
+
+                Your application for "%s" has been updated.
+
+                New status: %s
+
+                Log in to your account for more details: %s/dashboard
+
+                --
+                Interview Me - Live Resume & Career Copilot
+                """.formatted(jobTitle, newStatus, notificationProperties.getBaseUrl());
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(notificationProperties.getFrom());
+            message.setTo(candidateEmail);
+            message.setSubject(subject);
+            message.setText(body);
+            mailSender.send(message);
+            log.info("Application status email sent to={} job={} status={}", candidateEmail, jobTitle, newStatus);
+        } catch (Exception e) {
+            log.error("Failed to send application status email to={}: {}", candidateEmail, e.getMessage());
+        }
+    }
 }

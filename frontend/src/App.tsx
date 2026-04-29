@@ -22,6 +22,7 @@ import { CompanyDashboardPage } from './pages/CompanyDashboardPage';
 import { CompanyProfilePage } from './pages/CompanyProfilePage';
 import { JobPostingListPage } from './pages/JobPostingListPage';
 import { JobPostingFormPage } from './pages/JobPostingFormPage';
+import { NotificationsPage } from './pages/NotificationsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
 
@@ -75,6 +76,7 @@ function App() {
               <Route path="/visitors" element={<VisitorsPage />} />
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/company/dashboard" element={<CompanyDashboardPage />} />
               <Route path="/company/profile" element={<CompanyProfilePage />} />
               <Route path="/company/jobs" element={<JobPostingListPage />} />

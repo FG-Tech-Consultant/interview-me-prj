@@ -85,3 +85,5 @@ databaseChangeLog:
       file: db/changelog/20260429213000-create-job-posting-table.xml
   - include:
       file: db/changelog/20260429213530-create-job-application-table.xml
+  - include:
+      file: db/changelog/20260429215000-create-notification-table.xml
