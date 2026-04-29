@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- 1. Add tsvector column for BM25 full-text search on content_embedding -->
+    <changeSet id="20260429200000-1" author="nando-coding-specialist">
+        <addColumn tableName="content_embedding">
+            <column name="search_vector" type="tsvector"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="content_embedding" columnName="search_vector"/>
+        </rollback>
+    </changeSet>
+
+    <!-- 2. GIN index for fast BM25 queries -->
+    <changeSet id="20260429200000-2" author="nando-coding-specialist">
+        <sql>
+            CREATE INDEX idx_content_embedding_search_vector
+            ON content_embedding USING GIN (search_vector);
+        </sql>
+        <rollback>
+            <sql>DROP INDEX IF EXISTS idx_content_embedding_search_vector;</sql>
+        </rollback>
+    </changeSet>
+
+    <!-- 3. Trigger to auto-populate search_vector on INSERT/UPDATE -->
+    <changeSet id="20260429200000-3" author="nando-coding-specialist">
+        <sql>
+            CREATE OR REPLACE FUNCTION content_embedding_search_vector_update()
+            RETURNS trigger AS $$
+            BEGIN
+                NEW.search_vector := to_tsvector('english', COALESCE(NEW.content_text, ''));
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE TRIGGER trg_content_embedding_search_vector
+            BEFORE INSERT OR UPDATE OF content_text ON content_embedding
+            FOR EACH ROW EXECUTE FUNCTION content_embedding_search_vector_update();
+        </sql>
+        <rollback>
+            <sql>
+                DROP TRIGGER IF EXISTS trg_content_embedding_search_vector ON content_embedding;
+                DROP FUNCTION IF EXISTS content_embedding_search_vector_update();
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <!-- 4. Backfill existing rows -->
+    <changeSet id="20260429200000-4" author="nando-coding-specialist">
+        <sql>
+            UPDATE content_embedding
+            SET search_vector = to_tsvector('english', COALESCE(content_text, ''))
+            WHERE search_vector IS NULL;
+        </sql>
+        <rollback/>
+    </changeSet>
+
+    <!-- 5. Document chunk table for parent-child chunking -->
+    <changeSet id="20260429200000-5" author="nando-coding-specialist">
+        <createTable tableName="document_chunk">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_chunk_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="chunk_index" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="chunk_text" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="embedding" type="vector(768)"/>
+            <column name="search_vector" type="tsvector"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="document_chunk"
+            baseColumnNames="parent_chunk_id"
+            referencedTableName="document_chunk"
+            referencedColumnNames="id"
+            constraintName="fk_document_chunk_parent"
+            onDelete="CASCADE"/>
+
+        <createIndex tableName="document_chunk" indexName="idx_document_chunk_tenant_content">
+            <column name="tenant_id"/>
+            <column name="content_type"/>
+            <column name="content_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="document_chunk"/>
+        </rollback>
+    </changeSet>
+
+    <!-- 6. GIN index on document_chunk.search_vector -->
+    <changeSet id="20260429200000-6" author="nando-coding-specialist">
+        <sql>
+            CREATE INDEX idx_document_chunk_search_vector
+            ON document_chunk USING GIN (search_vector);
+        </sql>
+        <rollback>
+            <sql>DROP INDEX IF EXISTS idx_document_chunk_search_vector;</sql>
+        </rollback>
+    </changeSet>
+
+    <!-- 7. Trigger to auto-populate search_vector on document_chunk -->
+    <changeSet id="20260429200000-7" author="nando-coding-specialist">
+        <sql>
+            CREATE OR REPLACE FUNCTION document_chunk_search_vector_update()
+            RETURNS trigger AS $$
+            BEGIN
+                NEW.search_vector := to_tsvector('english', COALESCE(NEW.chunk_text, ''));
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE TRIGGER trg_document_chunk_search_vector
+            BEFORE INSERT OR UPDATE OF chunk_text ON document_chunk
+            FOR EACH ROW EXECUTE FUNCTION document_chunk_search_vector_update();
+        </sql>
+        <rollback>
+            <sql>
+                DROP TRIGGER IF EXISTS trg_document_chunk_search_vector ON document_chunk;
+                DROP FUNCTION IF EXISTS document_chunk_search_vector_update();
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

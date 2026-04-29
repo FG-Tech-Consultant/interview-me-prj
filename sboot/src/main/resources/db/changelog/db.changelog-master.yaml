@@ -79,3 +79,5 @@ databaseChangeLog:
       file: db/changelog/20260302210000-add-locale-to-visitor.xml
   - include:
       file: db/changelog/20260429120000-create-company-table.xml
+  - include:
+      file: db/changelog/20260429200000-hybrid-rag-bm25-chunks.xml

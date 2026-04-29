@@ -1,6 +1,7 @@
 package com.interviewme.event;
 
 import com.interviewme.aichat.model.ContentType;
+import com.interviewme.aichat.service.ChunkingService;
 import com.interviewme.aichat.service.EmbeddingService;
 import com.interviewme.model.Education;
 import com.interviewme.model.ExperienceProject;
@@ -20,11 +21,13 @@ import java.util.List;
 public class ContentChangedEventListener {
 
     private final EmbeddingService embeddingService;
+    private final ChunkingService chunkingService;
 
     public void onSkillChanged(UserSkill skill) {
         if ("public".equals(skill.getVisibility()) && skill.getDeletedAt() == null) {
             String text = formatSkillText(skill);
             embeddingService.generateEmbedding(skill.getTenantId(), ContentType.SKILL, skill.getId(), text);
+            chunkingService.chunkAndStore(skill.getTenantId(), ContentType.SKILL, skill.getId(), text);
         } else {
             embeddingService.deleteEmbedding(skill.getTenantId(), ContentType.SKILL, skill.getId());
         }
@@ -34,6 +37,7 @@ public class ContentChangedEventListener {
         if ("public".equals(story.getVisibility()) && story.getDeletedAt() == null) {
             String text = formatStoryText(story);
             embeddingService.generateEmbedding(story.getTenantId(), ContentType.STORY, story.getId(), text);
+            chunkingService.chunkAndStore(story.getTenantId(), ContentType.STORY, story.getId(), text);
         } else {
             embeddingService.deleteEmbedding(story.getTenantId(), ContentType.STORY, story.getId());
         }
@@ -43,6 +47,7 @@ public class ContentChangedEventListener {
         if ("public".equals(project.getVisibility()) && project.getDeletedAt() == null) {
             String text = formatProjectText(project);
             embeddingService.generateEmbedding(project.getTenantId(), ContentType.PROJECT, project.getId(), text);
+            chunkingService.chunkAndStore(project.getTenantId(), ContentType.PROJECT, project.getId(), text);
         } else {
             embeddingService.deleteEmbedding(project.getTenantId(), ContentType.PROJECT, project.getId());
         }
@@ -52,6 +57,7 @@ public class ContentChangedEventListener {
         if ("public".equals(job.getVisibility()) && job.getDeletedAt() == null) {
             String text = formatJobText(job);
             embeddingService.generateEmbedding(job.getTenantId(), ContentType.JOB, job.getId(), text);
+            chunkingService.chunkAndStore(job.getTenantId(), ContentType.JOB, job.getId(), text);
         } else {
             embeddingService.deleteEmbedding(job.getTenantId(), ContentType.JOB, job.getId());
         }
@@ -61,6 +67,7 @@ public class ContentChangedEventListener {
         if ("public".equals(education.getVisibility()) && education.getDeletedAt() == null) {
             String text = formatEducationText(education);
             embeddingService.generateEmbedding(education.getTenantId(), ContentType.EDUCATION, education.getId(), text);
+            chunkingService.chunkAndStore(education.getTenantId(), ContentType.EDUCATION, education.getId(), text);
         } else {
             embeddingService.deleteEmbedding(education.getTenantId(), ContentType.EDUCATION, education.getId());
         }
@@ -70,6 +77,7 @@ public class ContentChangedEventListener {
         if (profile.getDeletedAt() == null && profile.getSummary() != null && !profile.getSummary().isBlank()) {
             String text = formatProfileSummaryText(profile);
             embeddingService.generateEmbedding(profile.getTenantId(), ContentType.PROFILE_SUMMARY, profile.getId(), text);
+            chunkingService.chunkAndStore(profile.getTenantId(), ContentType.PROFILE_SUMMARY, profile.getId(), text);
         } else {
             embeddingService.deleteEmbedding(profile.getTenantId(), ContentType.PROFILE_SUMMARY, profile.getId());
         }
@@ -78,6 +86,7 @@ public class ContentChangedEventListener {
         if (profile.getDeletedAt() == null && profile.getLanguages() != null && !profile.getLanguages().isEmpty()) {
             String text = formatLanguageText(profile);
             embeddingService.generateEmbedding(profile.getTenantId(), ContentType.LANGUAGE, profile.getId(), text);
+            chunkingService.chunkAndStore(profile.getTenantId(), ContentType.LANGUAGE, profile.getId(), text);
         } else {
             embeddingService.deleteEmbedding(profile.getTenantId(), ContentType.LANGUAGE, profile.getId());
         }
