@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20260429213530-1" author="nando-coding">
+        <createTable tableName="job_application">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tenant_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_posting_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="candidate_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="candidate_email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(30)" defaultValue="SUBMITTED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source" type="VARCHAR(30)" defaultValue="CHATBOT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fit_score" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="matched_skills" type="JSONB">
+                <constraints nullable="true"/>
+            </column>
+            <column name="gap_skills" type="JSONB">
+                <constraints nullable="true"/>
+            </column>
+            <column name="candidate_summary" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="linkedin_pdf_path" type="VARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="chat_session_token" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+            <column name="onboarding_data" type="JSONB">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="job_application"
+            baseColumnNames="job_posting_id"
+            constraintName="fk_application_job_posting"
+            referencedTableName="job_posting"
+            referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+            baseTableName="job_application"
+            baseColumnNames="user_id"
+            constraintName="fk_application_user"
+            referencedTableName="users"
+            referencedColumnNames="id"/>
+
+        <createIndex tableName="job_application" indexName="idx_application_job_posting_id">
+            <column name="job_posting_id"/>
+        </createIndex>
+
+        <createIndex tableName="job_application" indexName="idx_application_tenant_status">
+            <column name="tenant_id"/>
+            <column name="status"/>
+        </createIndex>
+
+        <createIndex tableName="job_application" indexName="idx_application_email_job">
+            <column name="candidate_email"/>
+            <column name="job_posting_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="job_application"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
