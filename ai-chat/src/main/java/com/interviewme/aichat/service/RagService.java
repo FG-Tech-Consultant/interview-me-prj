@@ -14,12 +14,12 @@ import dev.langchain4j.rag.query.router.LanguageModelQueryRouter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -31,51 +31,148 @@ public class RagService {
     private final LanguageModelQueryRouter queryRouter;
     private final HybridRetrievalService hybridRetrievalService;
     private final ReRankingService reRankingService;
+    private final MultiQueryExpander multiQueryExpander;
+    private final HyDEService hydeService;
+    private final GraphRagService graphRagService;
+    private final ContextualCompressionService compressionService;
+    private final RagasEvaluationService ragasService;
 
     public RagService(@Nullable EmbeddingClient embeddingClient,
                       ContentEmbeddingRepository embeddingRepository,
                       AiProperties aiProperties,
                       @Autowired(required = false) @Nullable LanguageModelQueryRouter queryRouter,
                       HybridRetrievalService hybridRetrievalService,
-                      ReRankingService reRankingService) {
+                      ReRankingService reRankingService,
+                      MultiQueryExpander multiQueryExpander,
+                      HyDEService hydeService,
+                      GraphRagService graphRagService,
+                      ContextualCompressionService compressionService,
+                      RagasEvaluationService ragasService) {
         this.embeddingClient = embeddingClient;
         this.embeddingRepository = embeddingRepository;
         this.aiProperties = aiProperties;
         this.queryRouter = queryRouter;
         this.hybridRetrievalService = hybridRetrievalService;
         this.reRankingService = reRankingService;
+        this.multiQueryExpander = multiQueryExpander;
+        this.hydeService = hydeService;
+        this.graphRagService = graphRagService;
+        this.compressionService = compressionService;
+        this.ragasService = ragasService;
     }
 
     @Transactional(readOnly = true)
     public String retrieveContext(Long tenantId, String question) {
-        // Try hybrid retrieval first (BM25 + pgvector + RRF + re-ranking)
+        // Primary: advanced RAG pipeline (multi-query + HyDE + hybrid + graph + compression)
+        try {
+            return retrieveAdvanced(tenantId, question);
+        } catch (Exception e) {
+            log.warn("Advanced RAG failed, falling back to hybrid: {}", e.getMessage());
+        }
+
+        // Fallback 1: hybrid retrieval
         try {
             return retrieveHybrid(tenantId, question);
         } catch (Exception e) {
             log.warn("Hybrid retrieval failed, falling back to legacy: {}", e.getMessage());
         }
 
-        // Fallback: query routing or simple vector search
+        // Fallback 2: query routing or simple vector
         if (queryRouter != null) {
             return retrieveWithQueryRouting(tenantId, question);
         }
         return retrieveWithFallback(tenantId, question);
     }
 
+    private String retrieveAdvanced(Long tenantId, String question) {
+        int topK = aiProperties.getEmbedding().getTopK();
+
+        // 1. Multi-query expansion: generate alternative perspectives
+        List<String> queries = multiQueryExpander.expand(tenantId, question);
+
+        // 2. HyDE: generate hypothetical document embedding
+        String hydeEmbedding = hydeService.generateHypotheticalEmbedding(tenantId, question);
+
+        // 3. Retrieve for each query variant via hybrid retrieval
+        Map<String, RetrievedDocument> allDocs = new LinkedHashMap<>();
+
+        for (String query : queries) {
+            List<RetrievedDocument> results = hybridRetrievalService.retrieve(tenantId, query, topK);
+            for (RetrievedDocument doc : results) {
+                String key = doc.getContentType() + ":" + doc.getContentId() + ":" + doc.getText().hashCode();
+                allDocs.putIfAbsent(key, doc);
+            }
+        }
+
+        // 4. If HyDE embedding is available, also do a vector-only search with it
+        if (hydeEmbedding != null) {
+            List<ContentEmbedding> hydeResults = embeddingRepository.findTopKBySimilarity(
+                tenantId, hydeEmbedding, topK, aiProperties.getEmbedding().getSimilarityThreshold());
+            for (ContentEmbedding ce : hydeResults) {
+                String key = ce.getContentType() + ":" + ce.getContentId() + ":" + ce.getContentText().hashCode();
+                allDocs.putIfAbsent(key, RetrievedDocument.fromContentEmbedding(ce));
+            }
+        }
+
+        if (allDocs.isEmpty()) {
+            return "No specific information available.";
+        }
+
+        // 5. Re-rank all candidates
+        List<RetrievedDocument> candidates = new ArrayList<>(allDocs.values());
+        List<RetrievedDocument> reranked = reRankingService.reRank(tenantId, question, candidates, topK);
+
+        // 6. Graph RAG: enrich with graph context
+        List<String> retrievedTexts = reranked.stream()
+            .map(RetrievedDocument::getText)
+            .collect(Collectors.toList());
+        GraphRagService.GraphContext graphCtx = graphRagService.enrichWithGraphContext(question, retrievedTexts);
+        String graphContextStr = graphRagService.buildGraphContextString(graphCtx);
+
+        // 7. Build raw context
+        StringBuilder rawContext = new StringBuilder();
+        for (RetrievedDocument doc : reranked) {
+            rawContext.append("--- ").append(doc.getContentType()).append(" ---\n")
+                      .append(doc.getContextText())
+                      .append("\n\n");
+        }
+
+        // 8. Append graph context
+        if (!graphContextStr.isEmpty()) {
+            rawContext.append(graphContextStr).append("\n");
+        }
+
+        // 9. Contextual compression
+        String compressed = compressionService.compress(tenantId, question, rawContext.toString());
+
+        log.info("Advanced RAG tenantId={} queries={} totalCandidates={} reranked={} graphSkills={} compressed={}→{}chars",
+            tenantId, queries.size(), allDocs.size(), reranked.size(),
+            graphCtx.mentionedSkills().size(),
+            rawContext.length(), compressed.length());
+
+        return compressed;
+    }
+
+    /**
+     * Triggers async RAGAS evaluation after a response is generated.
+     * Call this from the chat service after sending the response.
+     */
+    @Async
+    public void evaluateAsync(Long tenantId, String question, String context, String answer) {
+        ragasService.evaluate(tenantId, question, context, answer);
+    }
+
     private String retrieveHybrid(Long tenantId, String question) {
         int topK = aiProperties.getEmbedding().getTopK();
 
-        // 1. Hybrid retrieval: BM25 + pgvector + RRF
         List<RetrievedDocument> candidates = hybridRetrievalService.retrieve(tenantId, question, topK * 2);
 
         if (candidates.isEmpty()) {
             return "No specific information available.";
         }
 
-        // 2. Re-rank top candidates using LLM cross-encoder
         List<RetrievedDocument> reranked = reRankingService.reRank(tenantId, question, candidates, topK);
 
-        // 3. Build context string using parent text when available
         StringBuilder context = new StringBuilder();
         for (RetrievedDocument doc : reranked) {
             context.append("--- ").append(doc.getContentType()).append(" ---\n")

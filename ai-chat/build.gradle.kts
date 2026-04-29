@@ -39,6 +39,9 @@ dependencies {
     implementation("dev.langchain4j:langchain4j:1.11.0")
     implementation("dev.langchain4j:langchain4j-ollama:1.11.0")
 
+    // Neo4j driver for Graph RAG
+    implementation("org.neo4j.driver:neo4j-java-driver")
+
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 }
