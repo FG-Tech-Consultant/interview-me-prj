@@ -48,8 +48,8 @@ export const CompanyDashboardPage: React.FC = () => {
 
       <Grid container spacing={2}>
         <Grid item>
-          <Button variant="outlined" disabled>
-            Manage Jobs (Coming Soon)
+          <Button variant="contained" onClick={() => navigate('/company/jobs')}>
+            Manage Jobs
           </Button>
         </Grid>
         <Grid item>

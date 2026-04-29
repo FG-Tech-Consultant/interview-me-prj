@@ -20,6 +20,8 @@ import AboutPage from './pages/AboutPage';
 import { CompanyRegisterPage } from './pages/CompanyRegisterPage';
 import { CompanyDashboardPage } from './pages/CompanyDashboardPage';
 import { CompanyProfilePage } from './pages/CompanyProfilePage';
+import { JobPostingListPage } from './pages/JobPostingListPage';
+import { JobPostingFormPage } from './pages/JobPostingFormPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
 
@@ -75,6 +77,9 @@ function App() {
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/company/dashboard" element={<CompanyDashboardPage />} />
               <Route path="/company/profile" element={<CompanyProfilePage />} />
+              <Route path="/company/jobs" element={<JobPostingListPage />} />
+              <Route path="/company/jobs/new" element={<JobPostingFormPage />} />
+              <Route path="/company/jobs/:id/edit" element={<JobPostingFormPage />} />
             </Route>
 
             <Route
