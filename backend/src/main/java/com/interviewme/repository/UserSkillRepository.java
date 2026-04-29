@@ -27,4 +27,9 @@ public interface UserSkillRepository extends JpaRepository<UserSkill, Long> {
     List<UserSkill> findByProfileIdAndTenantId(
             @Param("profileId") Long profileId,
             @Param("tenantId") Long tenantId);
+
+    @Query("SELECT us FROM UserSkill us JOIN FETCH us.skill WHERE us.tenantId = :tenantId AND us.skillId IN :skillIds AND us.deletedAt IS NULL")
+    List<UserSkill> findByTenantIdAndSkillIdInAndDeletedAtIsNull(
+            @Param("tenantId") Long tenantId,
+            @Param("skillIds") List<Long> skillIds);
 }
