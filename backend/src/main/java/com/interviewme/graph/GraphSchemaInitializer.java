@@ -1,10 +1,9 @@
 package com.interviewme.graph;
 
+import com.ladybugdb.Connection;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.driver.Driver;
-import org.neo4j.driver.Session;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -14,25 +13,58 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GraphSchemaInitializer {
 
-    private final Driver neo4jDriver;
+    private final Connection graphConnection;
 
     @PostConstruct
     public void initSchema() {
-        log.info("Initializing Neo4j graph schema...");
-        try (Session session = neo4jDriver.session()) {
-            // Constraints
-            session.run("CREATE CONSTRAINT skill_id_unique IF NOT EXISTS FOR (s:Skill) REQUIRE s.id IS UNIQUE");
-            session.run("CREATE CONSTRAINT domain_id_unique IF NOT EXISTS FOR (d:Domain) REQUIRE d.id IS UNIQUE");
-            session.run("CREATE CONSTRAINT tag_name_unique IF NOT EXISTS FOR (t:Tag) REQUIRE t.name IS UNIQUE");
-            session.run("CREATE CONSTRAINT tenant_id_unique IF NOT EXISTS FOR (tn:Tenant) REQUIRE tn.id IS UNIQUE");
+        log.info("Initializing LadybugDB graph schema...");
+        try {
+            graphConnection.query("""
+                    CREATE NODE TABLE IF NOT EXISTS Skill(
+                        id STRING PRIMARY KEY,
+                        name STRING,
+                        category STRING,
+                        description STRING,
+                        isActive BOOLEAN,
+                        updatedAt STRING
+                    )
+                    """);
 
-            // Indexes
-            session.run("CREATE INDEX skill_name_idx IF NOT EXISTS FOR (s:Skill) ON (s.name)");
-            session.run("CREATE INDEX skill_category_idx IF NOT EXISTS FOR (s:Skill) ON (s.category)");
+            graphConnection.query("""
+                    CREATE NODE TABLE IF NOT EXISTS Domain(
+                        id STRING PRIMARY KEY,
+                        name STRING
+                    )
+                    """);
 
-            log.info("Neo4j graph schema initialized successfully.");
+            graphConnection.query("""
+                    CREATE NODE TABLE IF NOT EXISTS Tag(
+                        name STRING PRIMARY KEY
+                    )
+                    """);
+
+            graphConnection.query("""
+                    CREATE NODE TABLE IF NOT EXISTS Tenant(
+                        id STRING PRIMARY KEY
+                    )
+                    """);
+
+            graphConnection.query("""
+                    CREATE REL TABLE IF NOT EXISTS BELONGS_TO(
+                        FROM Skill TO Domain
+                    )
+                    """);
+
+            graphConnection.query("""
+                    CREATE REL TABLE IF NOT EXISTS SIMILAR_TO(
+                        FROM Skill TO Skill,
+                        weight DOUBLE
+                    )
+                    """);
+
+            log.info("LadybugDB graph schema initialized successfully.");
         } catch (Exception e) {
-            log.warn("Neo4j schema initialization skipped (DB may be unavailable): {}", e.getMessage());
+            log.warn("LadybugDB schema initialization failed: {}", e.getMessage());
         }
     }
 }

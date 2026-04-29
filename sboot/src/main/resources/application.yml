@@ -123,6 +123,9 @@ spring.mail:
         timeout: 5000
         writetimeout: 5000
 
+ladybugdb:
+  path: ${LADYBUGDB_PATH:./data/graph.lbug}
+
 notification:
   email:
     enabled: ${NOTIFICATION_EMAIL_ENABLED:false}

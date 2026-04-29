@@ -54,10 +54,12 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       NOTIFICATION_EMAIL_ENABLED: ${NOTIFICATION_EMAIL_ENABLED:-true}
       NOTIFICATION_BASE_URL: ${NOTIFICATION_BASE_URL:-http://localhost:8080}
+      LADYBUGDB_PATH: /app/data/graph.lbug
     ports:
       - "8080:8080"
     volumes:
       - /var/opt/interview-me-prj/logs_prod:/app/logs
+      - interview-me-prod-graph-data:/app/data
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
       interval: 30s
@@ -70,6 +72,8 @@ services:
 
 volumes:
   interview-me-prod-pg-data:
+    driver: local
+  interview-me-prod-graph-data:
     driver: local
 
 networks:

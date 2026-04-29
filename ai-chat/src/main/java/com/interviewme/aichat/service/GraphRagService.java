@@ -1,17 +1,16 @@
 package com.interviewme.aichat.service;
 
+import com.ladybugdb.Connection;
+import com.ladybugdb.FlatTuple;
+import com.ladybugdb.QueryResult;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.driver.Driver;
-import org.neo4j.driver.Record;
-import org.neo4j.driver.Session;
-import org.neo4j.driver.Result;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Graph RAG: enriches retrieval results with graph context from Neo4j.
+ * Graph RAG: enriches retrieval results with graph context from LadybugDB.
  * Traverses skill relationships (SIMILAR_TO, BELONGS_TO) to add related
  * context that pure text retrieval would miss.
  */
@@ -22,37 +21,30 @@ public class GraphRagService {
     private static final int MAX_GRAPH_HOPS = 2;
     private static final int MAX_RELATED_SKILLS = 10;
 
-    private final Driver neo4jDriver;
+    private final Connection graphConnection;
 
-    public GraphRagService(Driver neo4jDriver) {
-        this.neo4jDriver = neo4jDriver;
+    public GraphRagService(Connection graphConnection) {
+        this.graphConnection = graphConnection;
     }
 
-    /**
-     * Extracts skill names mentioned in the query context and finds
-     * related skills/domains via graph traversal.
-     */
-    public GraphContext enrichWithGraphContext(String query, List<String> retrievedTexts) {
-        // 1. Find skill names from retrieved texts via graph lookup
+    public synchronized GraphContext enrichWithGraphContext(String query, List<String> retrievedTexts) {
         Set<String> mentionedSkills = findMentionedSkills(query, retrievedTexts);
 
         if (mentionedSkills.isEmpty()) {
             return GraphContext.EMPTY;
         }
 
-        // 2. Traverse graph for related skills and domains
         Map<String, List<RelatedSkill>> relatedBySkill = new LinkedHashMap<>();
         Set<String> domains = new LinkedHashSet<>();
 
-        try (Session session = neo4jDriver.session()) {
+        try {
             for (String skillName : mentionedSkills) {
-                List<RelatedSkill> related = findRelatedSkills(session, skillName);
+                List<RelatedSkill> related = findRelatedSkills(skillName);
                 if (!related.isEmpty()) {
                     relatedBySkill.put(skillName, related);
                 }
 
-                // Find domain
-                String domain = findDomain(session, skillName);
+                String domain = findDomain(skillName);
                 if (domain != null) {
                     domains.add(domain);
                 }
@@ -70,9 +62,6 @@ public class GraphRagService {
         return new GraphContext(mentionedSkills, relatedBySkill, domains);
     }
 
-    /**
-     * Builds a context string from graph relationships for injection into RAG context.
-     */
     public String buildGraphContextString(GraphContext ctx) {
         if (ctx == null || ctx.isEmpty()) {
             return "";
@@ -100,12 +89,13 @@ public class GraphRagService {
         String combined = query + " " + String.join(" ", texts);
         String lowerCombined = combined.toLowerCase();
 
-        try (Session session = neo4jDriver.session()) {
-            Result result = session.run("MATCH (s:Skill) WHERE s.isActive = true RETURN s.name AS name");
+        try {
+            QueryResult result = graphConnection.query("MATCH (s:Skill) WHERE s.isActive = true RETURN s.name AS name");
             while (result.hasNext()) {
-                String skillName = result.next().get("name").asString();
-                if (lowerCombined.contains(skillName.toLowerCase())) {
-                    mentioned.add(skillName);
+                FlatTuple row = result.getNext();
+                String skillName = row.getValue(0).getValue();
+                if (lowerCombined.contains(skillName.toString().toLowerCase())) {
+                    mentioned.add(skillName.toString());
                 }
             }
         } catch (Exception e) {
@@ -115,24 +105,22 @@ public class GraphRagService {
         return mentioned;
     }
 
-    private List<RelatedSkill> findRelatedSkills(Session session, String skillName) {
+    private List<RelatedSkill> findRelatedSkills(String skillName) {
         List<RelatedSkill> related = new ArrayList<>();
         try {
-            Result result = session.run("""
-                MATCH (s:Skill {name: $name})-[r:SIMILAR_TO*1..%d]-(related:Skill)
-                WHERE related.isActive = true AND related.name <> $name
-                RETURN DISTINCT related.name AS name,
-                       min(r[0].weight) AS weight
-                ORDER BY weight DESC
-                LIMIT $limit
-                """.formatted(MAX_GRAPH_HOPS),
-                Map.of("name", skillName, "limit", MAX_RELATED_SKILLS));
+            String escaped = skillName.replace("'", "\\'");
+            QueryResult result = graphConnection.query(
+                    ("MATCH (s:Skill {name: '%s'})-[r:SIMILAR_TO*1..%d]-(related:Skill) " +
+                     "WHERE related.isActive = true AND related.name <> '%s' " +
+                     "RETURN DISTINCT related.name AS name, min(r.weight) AS weight " +
+                     "ORDER BY weight DESC LIMIT %d")
+                            .formatted(escaped, MAX_GRAPH_HOPS, escaped, MAX_RELATED_SKILLS));
 
             while (result.hasNext()) {
-                Record record = result.next();
+                FlatTuple row = result.getNext();
                 related.add(new RelatedSkill(
-                    record.get("name").asString(),
-                    record.get("weight").asDouble()
+                    row.getValue(0).getValue().toString(),
+                    ((Number) row.getValue(1).getValue()).doubleValue()
                 ));
             }
         } catch (Exception e) {
@@ -141,13 +129,14 @@ public class GraphRagService {
         return related;
     }
 
-    private String findDomain(Session session, String skillName) {
+    private String findDomain(String skillName) {
         try {
-            Result result = session.run(
-                "MATCH (s:Skill {name: $name})-[:BELONGS_TO]->(d:Domain) RETURN d.name AS domain",
-                Map.of("name", skillName));
+            String escaped = skillName.replace("'", "\\'");
+            QueryResult result = graphConnection.query(
+                    "MATCH (s:Skill {name: '%s'})-[:BELONGS_TO]->(d:Domain) RETURN d.name AS domain"
+                            .formatted(escaped));
             if (result.hasNext()) {
-                return result.next().get("domain").asString();
+                return result.getNext().getValue(0).getValue().toString();
             }
         } catch (Exception e) {
             log.debug("Failed to find domain for '{}': {}", skillName, e.getMessage());

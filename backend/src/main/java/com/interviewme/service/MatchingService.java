@@ -10,10 +10,10 @@ import com.interviewme.model.UserSkill;
 import com.interviewme.repository.ProfileRepository;
 import com.interviewme.repository.SkillRepository;
 import com.interviewme.repository.UserSkillRepository;
+import com.ladybugdb.Connection;
+import com.ladybugdb.FlatTuple;
+import com.ladybugdb.QueryResult;
 import lombok.extern.slf4j.Slf4j;
-import org.neo4j.driver.Driver;
-import org.neo4j.driver.Record;
-import org.neo4j.driver.Session;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MatchingService {
 
-    private final Driver neo4jDriver;
+    private final Connection graphConnection;
     private final SkillRepository skillRepository;
     private final UserSkillRepository userSkillRepository;
     private final ProfileRepository profileRepository;
@@ -35,13 +35,13 @@ public class MatchingService {
     private static final double GRAPH_WEIGHT = 0.4;
     private static final double VECTOR_WEIGHT = 0.6;
 
-    public MatchingService(Driver neo4jDriver,
+    public MatchingService(Connection graphConnection,
                            SkillRepository skillRepository,
                            UserSkillRepository userSkillRepository,
                            ProfileRepository profileRepository,
                            ContentEmbeddingRepository embeddingRepository,
                            @Nullable EmbeddingClient embeddingClient) {
-        this.neo4jDriver = neo4jDriver;
+        this.graphConnection = graphConnection;
         this.skillRepository = skillRepository;
         this.userSkillRepository = userSkillRepository;
         this.profileRepository = profileRepository;
@@ -53,13 +53,11 @@ public class MatchingService {
     public MatchResponse matchCandidates(Long tenantId, MatchRequest request) {
         log.info("Matching candidates for tenantId={} skillIds={} topK={}", tenantId, request.skillIds(), request.topK());
 
-        // 1. Resolve requested skills from PG
         List<Skill> requestedSkills = skillRepository.findAllById(request.skillIds());
         if (requestedSkills.isEmpty()) {
             return new MatchResponse(List.of(), 0, List.of());
         }
 
-        // 2. Graph traversal: expand skills via SIMILAR_TO relationships
         Set<String> expandedSkillNames = new LinkedHashSet<>();
         Set<Long> expandedSkillIds = new LinkedHashSet<>();
         Map<Long, String> skillIdToMatchType = new LinkedHashMap<>();
@@ -78,16 +76,13 @@ public class MatchingService {
             }
         }
 
-        // Load adjacent skill names
         if (!adjacentIds.isEmpty()) {
             skillRepository.findAllById(adjacentIds).forEach(s -> expandedSkillNames.add(s.getName()));
         }
 
-        // 3. Graph score: find candidates that have any of the expanded skills
         Map<Long, List<MatchedSkill>> candidateSkillMap = buildCandidateSkillMap(
                 tenantId, expandedSkillIds, skillIdToMatchType);
 
-        // Compute graph score per candidate (% of requested skills matched, weighted)
         int totalRequested = requestedSkills.size();
         Map<Long, Double> graphScores = new LinkedHashMap<>();
         for (var entry : candidateSkillMap.entrySet()) {
@@ -101,14 +96,12 @@ public class MatchingService {
             graphScores.put(entry.getKey(), Math.min(score, 1.0));
         }
 
-        // 4. Vector score: cosine similarity on candidate profile embeddings
         Map<Long, Double> vectorScores = new LinkedHashMap<>();
         if (embeddingClient != null) {
             String queryText = buildQueryText(requestedSkills, request.description());
             vectorScores = computeVectorScores(tenantId, queryText, request.topK(), request.threshold());
         }
 
-        // 5. Combine scores: merge all candidate IDs
         Set<Long> allCandidateIds = new LinkedHashSet<>();
         allCandidateIds.addAll(graphScores.keySet());
         allCandidateIds.addAll(vectorScores.keySet());
@@ -121,15 +114,12 @@ public class MatchingService {
             scored.add(new ScoredCandidate(profileId, combined, gs, vs));
         }
 
-        // Sort by combined score descending
         scored.sort(Comparator.comparingDouble(ScoredCandidate::combined).reversed());
 
-        // Limit to topK
         List<ScoredCandidate> topCandidates = scored.stream()
                 .limit(request.topK())
                 .toList();
 
-        // 6. Load profile info
         Set<Long> profileIds = topCandidates.stream().map(ScoredCandidate::profileId).collect(Collectors.toSet());
         Map<Long, Profile> profileMap = profileRepository.findAllById(profileIds).stream()
                 .collect(Collectors.toMap(Profile::getId, p -> p));
@@ -153,42 +143,32 @@ public class MatchingService {
         return new MatchResponse(results, results.size(), new ArrayList<>(expandedSkillNames));
     }
 
-    /**
-     * Neo4j traversal: find skills connected via SIMILAR_TO to the requested skills.
-     */
-    private Set<Long> findAdjacentSkills(List<Skill> requestedSkills) {
+    private synchronized Set<Long> findAdjacentSkills(List<Skill> requestedSkills) {
         Set<Long> adjacent = new LinkedHashSet<>();
-        List<String> skillIds = requestedSkills.stream()
-                .map(s -> s.getId().toString())
-                .toList();
 
-        try (Session session = neo4jDriver.session()) {
-            var result = session.run("""
-                    UNWIND $ids AS sid
-                    MATCH (s:Skill {id: sid})-[:SIMILAR_TO]-(adj:Skill)
-                    WHERE adj.isActive = true
-                    RETURN DISTINCT adj.id AS adjId
-                    """,
-                    Map.of("ids", skillIds));
+        for (Skill skill : requestedSkills) {
+            try {
+                QueryResult result = graphConnection.query(
+                        "MATCH (s:Skill {id: '%s'})-[:SIMILAR_TO]-(adj:Skill) WHERE adj.isActive = true RETURN adj.id AS adjId"
+                                .formatted(skill.getId().toString()));
 
-            while (result.hasNext()) {
-                Record record = result.next();
-                String adjIdStr = record.get("adjId").asString();
-                try {
-                    adjacent.add(Long.parseLong(adjIdStr));
-                } catch (NumberFormatException e) {
-                    log.debug("Non-numeric skill ID in graph: {}", adjIdStr);
+                while (result.hasNext()) {
+                    FlatTuple row = result.getNext();
+                    String adjIdStr = row.getValue(0).getValue().toString();
+                    try {
+                        adjacent.add(Long.parseLong(adjIdStr));
+                    } catch (NumberFormatException e) {
+                        log.debug("Non-numeric skill ID in graph: {}", adjIdStr);
+                    }
                 }
+            } catch (Exception e) {
+                log.warn("LadybugDB traversal failed for skill {}: {}", skill.getId(), e.getMessage());
             }
-        } catch (Exception e) {
-            log.warn("Neo4j traversal failed, continuing with direct skills only: {}", e.getMessage());
         }
+
         return adjacent;
     }
 
-    /**
-     * Find candidates (profiles) that have any of the expanded skills via UserSkill table.
-     */
     private Map<Long, List<MatchedSkill>> buildCandidateSkillMap(
             Long tenantId, Set<Long> skillIds, Map<Long, String> skillIdToMatchType) {
 
@@ -211,9 +191,6 @@ public class MatchingService {
         return result;
     }
 
-    /**
-     * Compute vector similarity scores for candidate profiles.
-     */
     private Map<Long, Double> computeVectorScores(Long tenantId, String queryText, int topK, double threshold) {
         Map<Long, Double> scores = new LinkedHashMap<>();
         try {
@@ -224,7 +201,6 @@ public class MatchingService {
                     tenantId, embeddingStr, "PROFILE_SUMMARY", topK, threshold);
 
             for (var ce : similar) {
-                // contentId = profileId for PROFILE_SUMMARY type
                 scores.put(ce.getContentId(), computeCosineSimilarity(queryEmbedding, ce.getEmbedding()));
             }
         } catch (Exception e) {
@@ -234,8 +210,6 @@ public class MatchingService {
     }
 
     private double computeCosineSimilarity(float[] query, String storedEmbedding) {
-        // The DB already orders by cosine distance, so we use the position-based score
-        // For now, parse the stored vector and compute actual cosine similarity
         try {
             String cleaned = storedEmbedding.replace("[", "").replace("]", "");
             String[] parts = cleaned.split(",");

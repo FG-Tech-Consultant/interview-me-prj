@@ -46,8 +46,8 @@ dependencies {
     // Hypersistence Utils for JSONB support
     implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.7.0")
 
-    // Neo4j Graph Database Driver
-    implementation("org.neo4j.driver:neo4j-java-driver:${property("neo4jDriverVersion")}")
+    // LadybugDB Embedded Graph Database
+    implementation("com.ladybugdb:lbug:${property("ladybugDbVersion")}")
 
     // Lombok
     compileOnly("org.projectlombok:lombok")
@@ -62,7 +62,7 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers:1.21.0")
     testImplementation("org.testcontainers:postgresql:1.21.0")
     testImplementation("org.testcontainers:junit-jupiter:1.21.0")
-    testImplementation("org.testcontainers:neo4j:1.21.0")
+    // LadybugDB is embedded — no testcontainer needed
     testRuntimeOnly("org.postgresql:postgresql")
 }
 
