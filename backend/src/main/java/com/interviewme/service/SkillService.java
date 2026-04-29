@@ -5,6 +5,7 @@ import com.interviewme.common.exception.SkillNotFoundException;
 import com.interviewme.dto.skill.CreateSkillDto;
 import com.interviewme.dto.skill.SkillDto;
 import com.interviewme.dto.skill.UpdateSkillDto;
+import com.interviewme.graph.GraphSkillSyncService;
 import com.interviewme.model.Skill;
 import com.interviewme.mapper.SkillMapper;
 import com.interviewme.repository.SkillRepository;
@@ -21,6 +22,7 @@ import java.util.List;
 public class SkillService {
 
     private final SkillRepository skillRepository;
+    private final GraphSkillSyncService graphSkillSyncService;
 
     @Transactional(readOnly = true)
     public List<SkillDto> searchActive(String query) {
@@ -63,6 +65,7 @@ public class SkillService {
         Skill skill = SkillMapper.toEntity(dto);
         Skill saved = skillRepository.save(skill);
         log.info("Catalog skill created with id: {}", saved.getId());
+        graphSkillSyncService.syncSkill(saved);
         return SkillMapper.toDto(saved);
     }
 
@@ -83,6 +86,7 @@ public class SkillService {
         SkillMapper.updateEntity(skill, dto);
         Skill updated = skillRepository.save(skill);
         log.info("Catalog skill updated: {}", id);
+        graphSkillSyncService.syncSkill(updated);
         return SkillMapper.toDto(updated);
     }
 

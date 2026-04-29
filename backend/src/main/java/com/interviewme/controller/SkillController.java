@@ -1,6 +1,8 @@
 package com.interviewme.controller;
 
 import com.interviewme.dto.skill.CreateSkillDto;
+import com.interviewme.graph.SkillExtractionService;
+import com.interviewme.common.util.TenantContext;
 import com.interviewme.dto.skill.SkillDto;
 import com.interviewme.dto.skill.UpdateSkillDto;
 import com.interviewme.service.SkillService;
@@ -21,6 +23,7 @@ import java.util.List;
 public class SkillController {
 
     private final SkillService skillService;
+    private final SkillExtractionService skillExtractionService;
 
     @GetMapping("/search")
     public ResponseEntity<List<SkillDto>> searchCatalog(@RequestParam("q") String query) {
@@ -69,5 +72,18 @@ public class SkillController {
         log.info("POST /api/v1/skills/catalog/{}/reactivate", id);
         SkillDto reactivated = skillService.reactivateSkill(id);
         return ResponseEntity.ok(reactivated);
+    }
+
+    @PostMapping("/extract")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<SkillDto>> extractSkills(@RequestBody java.util.Map<String, String> body) {
+        String text = body.get("text");
+        if (text == null || text.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Long tenantId = TenantContext.getCurrentTenantId();
+        log.info("POST /api/v1/skills/catalog/extract - tenant: {}, text chars: {}", tenantId, text.length());
+        List<SkillDto> extracted = skillExtractionService.extractAndSync(tenantId, text);
+        return ResponseEntity.ok(extracted);
     }
 }
