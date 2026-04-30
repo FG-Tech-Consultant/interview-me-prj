@@ -1,9 +1,13 @@
 {
   "title": "Sobre o Interview Me",
-  "subtitle": "Uma forma mais inteligente de conectar talentos com oportunidades",
+  "subtitle": "A plataforma com IA que conecta profissionais e empresas — de forma mais inteligente, rapida e 24/7.",
   "what": {
     "title": "O que e o Interview Me?",
-    "description": "O Interview Me e uma plataforma onde profissionais criam um perfil publico com experiencia, projetos, skills e historias de carreira. O diferencial: cada perfil tem um chat com IA que funciona como uma entrevista previa automatizada. Visitantes fazem perguntas e a IA responde com base nos dados reais do profissional."
+    "description": "O Interview Me e uma plataforma que usa IA para transformar o processo de contratacao — dos dois lados. Profissionais criam perfis inteligentes com um chat de IA que responde perguntas de recrutadores automaticamente. Empresas publicam vagas, descobrem talentos e fazem triagem de candidatos por conversas com IA — tudo antes de agendar uma unica call."
+  },
+  "audienceToggle": {
+    "professionals": "Sou Profissional",
+    "companies": "Sou Empresa"
   },
   "how": {
     "title": "Como Funciona",
@@ -13,6 +17,15 @@
     "step2Desc": "Receba uma URL publica como /p/seu-nome. Compartilhe com recrutadores, no LinkedIn ou em candidaturas.",
     "step3Title": "Deixe a IA Falar Por Voce",
     "step3Desc": "Recrutadores visitam seu perfil e conversam com a IA para conhecer seu background — antes mesmo de agendar uma call."
+  },
+  "howCompany": {
+    "title": "Como Funciona para Empresas",
+    "step1Title": "Cadastre Sua Empresa",
+    "step1Desc": "Crie uma conta empresarial com perfil, setor e descricao. Monte sua presenca de contratacao em minutos.",
+    "step2Title": "Publique Vagas e Descubra Talentos",
+    "step2Desc": "Publique posicoes abertas e navegue pelos perfis de profissionais. Use o chat com IA para triagem instantanea.",
+    "step3Title": "Contrate Melhor",
+    "step3Desc": "Analise insights das conversas com IA, faca shortlist e agende entrevistas so com os melhores candidatos."
   },
   "forRecruiters": {
     "title": "Para Recrutadores",
@@ -28,10 +41,19 @@
     "bullet2": "A IA cuida das entrevistas preliminares por voce",
     "bullet3": "Acompanhe quem visita e o que perguntam"
   },
+  "forCompanies": {
+    "title": "Para Empresas",
+    "description": "Simplifique seu pipeline de contratacao. Publique vagas, descubra profissionais e deixe a IA fazer a primeira rodada de triagem — economizando horas de trabalho manual.",
+    "bullet1": "Publique vagas e atraia candidatos qualificados",
+    "bullet2": "Triagem via chat com IA nos perfis dos candidatos",
+    "bullet3": "Dashboard com metricas: vagas, candidatos, visualizacoes",
+    "bullet4": "Construa sua marca empregadora com perfil da empresa"
+  },
   "cta": {
     "title": "Pronto pra testar?",
     "description": "Crie seu perfil em minutos e comece a compartilhar seu link inteligente de carreira.",
-    "button": "Comecar Agora",
+    "button": "Comecar como Profissional",
+    "companyButton": "Cadastrar Empresa",
     "loginLink": "Ja tem uma conta? Entrar"
   },
   "backToLogin": "Voltar ao login",

@@ -1,9 +1,13 @@
 {
   "title": "About Interview Me",
-  "subtitle": "A smarter way to connect talent with opportunity",
+  "subtitle": "The AI-powered platform that connects professionals and companies — smarter, faster, 24/7.",
   "what": {
     "title": "What is Interview Me?",
-    "description": "Interview Me is a platform where professionals create a public profile with their experience, projects, skills and career stories. The key feature: each profile has an AI-powered chat that works as an automated pre-interview. Visitors ask questions and the AI answers based on the professional's real data."
+    "description": "Interview Me is a platform that uses AI to transform how hiring works — for both sides. Professionals create smart profiles with an AI chat that answers recruiters' questions automatically. Companies post jobs, discover talent, and pre-screen candidates through AI-powered conversations — all before scheduling a single call."
+  },
+  "audienceToggle": {
+    "professionals": "I'm a Professional",
+    "companies": "I'm a Company"
   },
   "how": {
     "title": "How It Works",
@@ -13,6 +17,15 @@
     "step2Desc": "Get a public profile URL like /p/your-name. Share it with recruiters, on LinkedIn, or in job applications.",
     "step3Title": "Let AI Do the Talking",
     "step3Desc": "Recruiters visit your profile and chat with the AI to learn about your background — before even scheduling a call."
+  },
+  "howCompany": {
+    "title": "How It Works for Companies",
+    "step1Title": "Register Your Company",
+    "step1Desc": "Create a company account with your profile, sector, and description. Set up your hiring presence in minutes.",
+    "step2Title": "Post Jobs & Discover Talent",
+    "step2Desc": "Publish open positions and browse professional profiles. Use AI chat to pre-screen candidates instantly.",
+    "step3Title": "Hire Smarter",
+    "step3Desc": "Review AI-powered conversation insights, shortlist candidates, and schedule interviews only with the best matches."
   },
   "forRecruiters": {
     "title": "For Recruiters",
@@ -28,10 +41,19 @@
     "bullet2": "AI handles preliminary interviews for you",
     "bullet3": "Track who visits and what they ask"
   },
+  "forCompanies": {
+    "title": "For Companies",
+    "description": "Streamline your hiring pipeline. Post jobs, discover professionals, and let AI handle the first round of screening — saving your team hours of manual work.",
+    "bullet1": "Post jobs and attract qualified candidates",
+    "bullet2": "Pre-screen via AI chat on candidate profiles",
+    "bullet3": "Company dashboard with metrics: jobs, candidates, views",
+    "bullet4": "Build your employer brand with a company profile"
+  },
   "cta": {
     "title": "Ready to try?",
     "description": "Create your profile in minutes and start sharing your smart career link.",
-    "button": "Get Started",
+    "button": "Get Started as Professional",
+    "companyButton": "Register Your Company",
     "loginLink": "Already have an account? Login"
   },
   "backToLogin": "Back to login",
